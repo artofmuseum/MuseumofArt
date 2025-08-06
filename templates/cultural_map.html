@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Kültür Haritası - Pro</title>
+
+    <!-- External Libraries -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" xintegrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            /* New Professional Color Palette */
+            --dark-bg: #181512;
+            --primary-burgundy: #722f37;
+            --primary-burgundy-light: #b23a48;
+            --warm-cream: #f8f5e4;
+            --light-gray: #bdbdbd;
+            --dark-card: rgba(24, 21, 18, 0.85);
+            --dark-border: rgba(248, 245, 228, 0.15);
+            --accent-gold: #d4af37;
+
+            /* Font Families */
+            --font-family-sans: 'Inter', sans-serif;
+            --font-family-serif: 'Playfair Display', serif;
+        }
+
+        /* Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-family-sans);
+            background-color: var(--dark-bg);
+            color: var(--warm-cream);
+            overflow: hidden; /* Prevent body scroll */
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        body.adding-point {
+            cursor: crosshair;
+        }
+        
+        /* Light Theme */
+        body.light {
+            --dark-bg: #f8f5e4;
+            --warm-cream: #181512;
+            --light-gray: #722f37;
+            --dark-card: rgba(248, 245, 228, 0.85);
+            --dark-border: rgba(24, 21, 18, 0.15);
+        }
+
+        /* Map Container */
+        #map {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        /* Main UI Container */
+        .ui-container {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            z-index: 10;
+            display: flex;
+            gap: 15px;
+            pointer-events: none;
+            align-items: flex-start;
+        }
+
+        /* Glassmorphism Card Style */
+        .glass-card {
+            background: var(--dark-card);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--dark-border);
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            padding: 12px;
+            pointer-events: all;
+            transition: all 0.3s ease;
+        }
+
+        /* Search and Filter Bar */
+        .search-filter-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-grow: 1;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-grow: 0;
+            background-color: rgba(0,0,0,0.2);
+            border-radius: 12px;
+            padding: 0 15px;
+            border: 1px solid var(--dark-border);
+        }
+        
+        body.light .search-box {
+             background-color: rgba(255,255,255,0.2);
+        }
+
+        .search-box i {
+            color: var(--accent-gold);
+            font-size: 16px;
+        }
+
+        .search-box input {
+            width: 250px;
+            border: none;
+            background: transparent;
+            outline: none;
+            padding: 12px 0;
+            font-family: var(--font-family-sans);
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--warm-cream);
+        }
+        
+        .search-box input::placeholder {
+            color: var(--light-gray);
+        }
+
+        .filter-chips {
+            display: flex;
+            gap: 8px;
+            flex-grow: 1;
+        }
+
+        .filter-chip {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 15px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid var(--dark-border);
+            background-color: transparent;
+            color: var(--light-gray);
+        }
+
+        .filter-chip.active, .filter-chip:hover {
+            background-color: var(--primary-burgundy);
+            color: var(--warm-cream);
+            border-color: var(--primary-burgundy-light);
+        }
+
+        .filter-chip i {
+            font-size: 14px;
+        }
+
+        /* Action Buttons */
+        .action-buttons-wrapper {
+            position: relative;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            border: 1px solid var(--dark-border);
+            background-color: transparent;
+            color: var(--light-gray);
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .action-btn.active, .action-btn:hover {
+            background-color: var(--primary-burgundy);
+            color: var(--warm-cream);
+            border-color: var(--primary-burgundy-light);
+        }
+        
+        /* Map Type Switcher */
+        .map-type-switcher {
+            position: absolute;
+            top: 65px;
+            right: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+        }
+
+        .map-type-switcher.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        
+        .map-type-option {
+            background: none;
+            border: none;
+            color: var(--light-gray);
+            font-family: var(--font-family-sans);
+            font-weight: 600;
+            font-size: 14px;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 10px;
+            width: 100%;
+            text-align: left;
+            transition: all 0.2s ease;
+        }
+        
+        .map-type-option:hover {
+            background-color: rgba(255,255,255,0.05);
+            color: var(--warm-cream);
+        }
+        
+        body.light .map-type-option:hover {
+            background-color: rgba(0,0,0,0.05);
+        }
+
+        .map-type-option.active {
+            background-color: var(--primary-burgundy);
+            color: var(--warm-cream);
+        }
+
+        /* Detail Sidebar */
+        .detail-sidebar {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 400px;
+            height: 100%;
+            z-index: 1001;
+            background: var(--dark-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-left: 1px solid var(--dark-border);
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            transition: right 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .detail-sidebar.active {
+            right: 0;
+        }
+
+        .sidebar-content {
+            padding: 25px;
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+
+        .sidebar-image {
+            width: 100%;
+            height: 220px;
+            border-radius: 15px;
+            object-fit: cover;
+            margin-bottom: 20px;
+            border: 1px solid var(--dark-border);
+        }
+
+        .sidebar-category {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--accent-gold);
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .sidebar-title {
+            font-family: var(--font-family-serif);
+            font-size: 28px;
+            color: var(--warm-cream);
+            margin-bottom: 15px;
+            line-height: 1.2;
+        }
+
+        .sidebar-description {
+            font-size: 15px;
+            line-height: 1.7;
+            color: var(--light-gray);
+            margin-bottom: 25px;
+        }
+
+        .sidebar-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .sidebar-btn {
+            flex-grow: 1;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid var(--dark-border);
+            font-family: var(--font-family-sans);
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .sidebar-btn.primary {
+            background-color: var(--primary-burgundy-light);
+            color: var(--warm-cream);
+            border-color: var(--primary-burgundy);
+        }
+        .sidebar-btn.primary:hover {
+            background-color: var(--primary-burgundy);
+        }
+        
+        .sidebar-btn.secondary {
+            background-color: transparent;
+            color: var(--light-gray);
+        }
+        .sidebar-btn.secondary:hover {
+            background-color: rgba(255,255,255,0.05);
+            color: var(--warm-cream);
+        }
+        
+        body.light .sidebar-btn.secondary:hover {
+             background-color: rgba(0,0,0,0.05);
+        }
+
+        .sidebar-close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--dark-border);
+            background: rgba(0,0,0,0.2);
+            color: var(--light-gray);
+            border-radius: 50%;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            z-index: 1002;
+        }
+        
+        body.light .sidebar-close-btn {
+             background: rgba(255,255,255,0.2);
+        }
+        
+        .sidebar-close-btn:hover {
+            background-color: var(--primary-burgundy);
+            color: var(--warm-cream);
+        }
+        
+        /* New Marker and Cluster Styles */
+        .custom-marker-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--warm-cream);
+            font-size: 12px;
+            border: 2px solid var(--warm-cream);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .custom-marker-icon:hover {
+            transform: scale(1.15);
+        }
+        
+        .custom-cluster-icon {
+            background-color: rgba(178, 58, 72, 0.9); /* primary-burgundy-light with opacity */
+            backdrop-filter: blur(5px);
+            color: var(--warm-cream);
+            border-radius: 50%;
+            text-align: center;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--warm-cream);
+            box-shadow: 0 0 15px rgba(0,0,0,0.5);
+            font-family: var(--font-family-sans);
+        }
+
+        /* Loading Spinner */
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--dark-bg);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid var(--primary-burgundy);
+            border-top-color: var(--accent-gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .ui-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .search-box input {
+                width: 100%;
+            }
+            .filter-chips {
+                display: none; /* Hide chips on smaller screens, can be a dropdown */
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .ui-container {
+                top: 10px;
+                left: 10px;
+                right: 10px;
+            }
+            .glass-card {
+                padding: 10px;
+                border-radius: 15px;
+            }
+            .search-box {
+                padding: 0 12px;
+            }
+            .action-btn {
+                width: 44px;
+                height: 44px;
+            }
+            .detail-sidebar {
+                width: 100%;
+                border-left: none;
+            }
+        }
+
+        /* Modal stilleri - bu kısım head içindeki style etiketine eklenecek */
+        #addPlaceModal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #addPlaceModal.hidden {
+            display: none;
+        }
+        #addPlaceModal .glass-card {
+            min-width: 400px;
+            max-width: 90vw;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        #addPlaceModal label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: var(--warm-cream);
+        }
+        #addPlaceModal input,
+        #addPlaceModal textarea,
+        #addPlaceModal select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid var(--dark-border);
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--warm-cream);
+            font-family: var(--font-family-sans);
+            margin-bottom: 15px;
+        }
+        #addPlaceModal input::placeholder,
+        #addPlaceModal textarea::placeholder {
+            color: var(--light-gray);
+        }
+        body.light #addPlaceModal input,
+        body.light #addPlaceModal textarea,
+        body.light #addPlaceModal select {
+            background-color: rgba(0, 0, 0, 0.05);
+            color: var(--warm-cream);
+        }
+        #addPlaceModal select, 
+        #addPlaceModal option {
+            background-color: #181512;
+            color: #f8f5e4;
+        }
+        body.light #addPlaceModal select, 
+        body.light #addPlaceModal option {
+            background-color: #fffbe9;
+            color: #181512;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="map"></div>
+
+    <div class="ui-container">
+        <div class="glass-card search-filter-bar">
+            <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="searchInput" placeholder="Bir yer veya şehir arayın...">
+            </div>
+            <div class="filter-chips">
+                <div class="filter-chip active" data-filter="all">
+                    <i class="fa-solid fa-layer-group"></i>
+                    <span>Tümü</span>
+                </div>
+                <div class="filter-chip" data-filter="Müze">
+                    <i class="fa-solid fa-landmark"></i>
+                    <span>Müzeler</span>
+                </div>
+                <div class="filter-chip" data-filter="Galeri">
+                    <i class="fa-solid fa-palette"></i>
+                    <span>Galeriler</span>
+                </div>
+                <div class="filter-chip" data-filter="Tarihi">
+                    <i class="fa-solid fa-monument"></i>
+                    <span>Tarihi Yerler</span>
+                </div>
+                <div class="filter-chip" data-filter="Etkinlik">
+                    <i class="fa-solid fa-calendar-star"></i>
+                    <span>Etkinlik Alanları</span>
+                </div>
+            </div>
+        </div>
+        <div class="action-buttons-wrapper">
+            <div class="glass-card action-buttons">
+                <button class="action-btn" id="homeBtn" title="Ana Sayfa"><i class="fa-solid fa-house"></i></button>
+                <button class="action-btn" id="addPointBtn" title="Nokta Ekle"><i class="fa-solid fa-plus"></i></button>
+                <button class="action-btn" id="locationBtn" title="Konumum"><i class="fa-solid fa-location-crosshairs"></i></button>
+                <button class="action-btn" id="mapTypeBtn" title="Harita Tipi"><i class="fa-solid fa-layer-group"></i></button>
+            </div>
+            <div class="glass-card map-type-switcher" id="mapTypeSwitcher">
+                <button class="map-type-option active" data-map-type="dark">Koyu</button>
+                <button class="map-type-option" data-map-type="light">Açık</button>
+                <button class="map-type-option" data-map-type="satellite">Uydu</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="detail-sidebar" id="detailSidebar">
+        <button class="sidebar-close-btn" id="sidebarCloseBtn"><i class="fa-solid fa-xmark"></i></button>
+        <div class="sidebar-content" id="sidebarContent">
+            <!-- Content will be injected by JavaScript -->
+        </div>
+    </div>
+    
+    <div id="addPlaceModal" class="hidden">
+        <div class="glass-card">
+            <h2 style="font-size:1.5rem;font-weight:700;margin-bottom:20px;color:var(--warm-cream);">Yeni Kültürel Yer Ekle</h2>
+            <form id="addPlaceForm">
+                <div>
+                    <label for="placeName">Yer Adı*</label>
+                    <input type="text" id="placeName" required>
+                </div>
+                <div>
+                    <label for="placeDesc">Açıklama*</label>
+                    <textarea id="placeDesc" required rows="3"></textarea>
+                </div>
+                <div style="display:flex;gap:10px;">
+                    <div style="flex:1;">
+                        <label for="placeLat">Enlem*</label>
+                        <input type="number" id="placeLat" step="any" required>
+                    </div>
+                    <div style="flex:1;">
+                        <label for="placeLng">Boylam*</label>
+                        <input type="number" id="placeLng" step="any" required>
+                    </div>
+                </div>
+                <div>
+                    <label for="placeCategory">Kategori*</label>
+                    <select id="placeCategory" required>
+                        <option value="">Seçiniz</option>
+                        <option value="Müze">Müze</option>
+                        <option value="Galeri">Galeri</option>
+                        <option value="Tarihi">Tarihi Yer</option>
+                        <option value="Etkinlik">Etkinlik Alanı</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="placeImage">Görsel Yükle</label>
+                    <input type="file" id="placeImage" accept="image/*">
+                    <img id="imagePreview" src="" alt="Önizleme" style="display:none;width:100%;max-height:120px;margin-top:8px;border-radius:8px;object-fit:cover;">
+                </div>
+                <div style="margin-bottom:15px; color:var(--primary-burgundy-light); font-size:13px;">
+                    <span>💡 Haritada bir noktaya tıklayarak enlem ve boylamı otomatik doldurabilirsin.</span>
+                </div>
+                <div style="display:flex;gap:10px;justify-content:flex-end;">
+                    <button type="button" id="cancelAddPlace" class="sidebar-btn secondary">Vazgeç</button>
+                    <button type="submit" class="sidebar-btn primary">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div class="loader" id="loader">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- DOM ELEMENTS ---
+            const mapElement = document.getElementById('map');
+            const searchInput = document.getElementById('searchInput');
+            const filterChips = document.querySelectorAll('.filter-chip');
+            const locationBtn = document.getElementById('locationBtn');
+            const homeBtn = document.getElementById('homeBtn');
+            const addPointBtn = document.getElementById('addPointBtn');
+            const mapTypeBtn = document.getElementById('mapTypeBtn');
+            const mapTypeSwitcher = document.getElementById('mapTypeSwitcher');
+            const detailSidebar = document.getElementById('detailSidebar');
+            const sidebarContent = document.getElementById('sidebarContent');
+            const sidebarCloseBtn = document.getElementById('sidebarCloseBtn');
+            const loader = document.getElementById('loader');
+
+            // --- STATE ---
+            let map;
+            let markerCluster;
+            let allMarkers = [];
+            let activeFilter = 'all';
+            let culturalPlaces = [];
+            let isAddingPoint = false;
+            let currentMapType = 'satellite'; // Varsayılan harita tipi artık uydu
+
+            // --- MAP TILE LAYERS ---
+            const tileLayers = {
+                dark: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+                light: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
+                satellite: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
+            };
+            let currentTileLayer;
+            
+            // --- CATEGORY STYLES ---
+            const categoryStyles = {
+                'Müze': { icon: 'fa-landmark', color: '#b23a48' },
+                'Galeri': { icon: 'fa-palette', color: '#722f37' },
+                'Tarihi': { icon: 'fa-monument', color: '#d4af37' },
+                'Etkinlik': { icon: 'fa-calendar-star', color: '#8a5a44' },
+                'Default': { icon: 'fa-map-pin', color: '#bdbdbd' }
+            };
+
+            // --- INITIALIZATION ---
+            async function initializeApp() {
+                try {
+                    initMap();
+                    culturalPlaces = await fetchData();
+                    populateMap(culturalPlaces);
+                    initEventListeners();
+                } catch (error) {
+                    console.error("Uygulama başlatılamadı:", error);
+                } finally {
+                    loader.style.opacity = '0';
+                    setTimeout(() => loader.style.display = 'none', 500);
+                }
+            }
+
+            // --- DATA FETCHING ---
+            async function fetchData() {
+                // In a real app, this would be an API call.
+                return [
+                    { id: 1, name: "Topkapı Sarayı Müzesi", category: "Müze", lat: 41.0116, lng: 28.9833, description: "Osmanlı İmparatorluğu'nun 600 yıllık tarihinin 400 yılı boyunca, devletin idare merkezi olarak kullanılan ve Osmanlı padişahlarının yaşadığı saraydır.", image: "https://images.unsplash.com/photo-1595838224792-74b36d461582?q=80&w=800&auto=format&fit=crop" },
+                    { id: 2, name: "Ayasofya", category: "Tarihi", lat: 41.0086, lng: 28.9802, description: "Bizans İmparatoru I. Justinianus tarafından MS 532-537 yılları arasında inşa ettirilen bazilika planlı bir patrik katedrali olup, 1453 yılında İstanbul'un fethinden sonra Fatih Sultan Mehmed tarafından camiye çevrilmiştir.", image: "https://images.unsplash.com/photo-1662991372562-58327343e5a3?q=80&w=800&auto=format&fit=crop" },
+                    { id: 3, name: "Anadolu Medeniyetleri Müzesi", category: "Müze", lat: 39.9375, lng: 32.8608, description: "Ankara'da bulunan, Paleolitik Çağ'dan itibaren Anadolu'da yaşamış medeniyetlere ait eserlerin sergilendiği önemli bir müzedir.", image: "https://images.unsplash.com/photo-1588321213495-638a6a0a7d7f?q=80&w=800&auto=format&fit=crop" },
+                    { id: 4, name: "Efes Antik Kenti", category: "Tarihi", lat: 37.9413, lng: 27.3426, description: "Klasik Yunan döneminde İyonya'nın on iki şehrinden biriydi. Kuruluşu Cilalı Taş Devri MÖ 6000 yıllarına dayanır.", image: "https://images.unsplash.com/photo-1619574755860-a933997e5975?q=80&w=800&auto=format&fit=crop" },
+                    { id: 5, name: "Arter", category: "Galeri", lat: 41.0423, lng: 28.9895, description: "İstanbul'da yer alan, çağdaş sanata odaklanan bir sanat galerisi ve kültür merkezidir.", image: "https://images.unsplash.com/photo-1531243289924-d3356a62455b?q=80&w=800&auto=format&fit=crop" },
+                    { id: 6, name: "Göbeklitepe", category: "Tarihi", lat: 37.2233, lng: 38.9225, description: "İnsanlık tarihinin bilnen en eski anıtsal tapınağı olarak kabul edilen, Şanlıurfa'da bulunan arkeolojik bir alandır.", image: "https://images.unsplash.com/photo-1634237934428-4a6f2c3a5e1d?q=80&w=800&auto=format&fit=crop" },
+                    { id: 7, name: "Pera Müzesi", category: "Müze", lat: 41.0322, lng: 28.9778, description: "Oryantalist Resim, Anadolu Ağırlık ve Ölçüleri ve Kütahya Çini ve Seramikleri koleksiyonlarını barındıran özel bir müzedir.", image: "https://images.unsplash.com/photo-1507652313519-d4e9174c762f?q=80&w=800&auto=format&fit=crop" },
+                    { id: 8, name: "SALT Galata", category: "Galeri", lat: 41.0238, lng: 28.9740, description: "Sanat, mimarlık, tasarım ve sosyal tarih alanlarında sergiler ve araştırmalar sunan bir kültür kurumudur.", image: "https://images.unsplash.com/photo-1518998053901-5348d3961a04?q=80&w=800&auto=format&fit=crop" },
+                    { id: 9, name: "İstanbul Film Festivali", category: "Etkinlik", lat: 41.034, lng: 28.9784, description: "Her yıl Nisan ayında düzenlenen, Türkiye'nin en köklü ve prestijli uluslararası film festivalidir.", image: "https://images.unsplash.com/photo-1517604931442-7e0c8ed29633?q=80&w=800&auto=format&fit=crop" }
+                ];
+            }
+
+            // --- MAP FUNCTIONS ---
+            function initMap() {
+                map = L.map(mapElement, {
+                    center: [44, 25], // Europe and Turkey focus
+                    zoom: 5,
+                    zoomControl: false,
+                    attributionControl: false
+                });
+                
+                setMapType(currentMapType);
+                
+                markerCluster = L.markerClusterGroup({
+                    chunkedLoading: true,
+                    maxClusterRadius: 60,
+                    iconCreateFunction: function (cluster) {
+                        const count = cluster.getChildCount();
+                        return L.divIcon({
+                            html: `<span class="count">${count}</span>`,
+                            className: `custom-cluster-icon`,
+                            iconSize: L.point(40, 40, true),
+                        });
+                    }
+                });
+                map.addLayer(markerCluster);
+            }
+            
+            function setMapType(type) {
+                if (currentTileLayer) {
+                    map.removeLayer(currentTileLayer);
+                }
+                currentTileLayer = L.tileLayer(tileLayers[type], {
+                    attribution: '© OpenStreetMap contributors & © CARTO'
+                }).addTo(map);
+                currentMapType = type;
+
+                // Update UI Theme
+                if (type === 'light') {
+                    document.body.classList.add('light');
+                } else {
+                    document.body.classList.remove('light');
+                }
+                
+                // Update active button in switcher
+                document.querySelectorAll('.map-type-option').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.mapType === type);
+                });
+            }
+
+            function populateMap(places) {
+                markerCluster.clearLayers();
+                allMarkers = [];
+
+                places.forEach(place => {
+                    const marker = createMarkerForPlace(place);
+                    allMarkers.push(marker);
+                });
+
+                markerCluster.addLayers(allMarkers);
+            }
+            
+            function createMarkerForPlace(place) {
+                const style = categoryStyles[place.category] || categoryStyles['Default'];
+                const iconHtml = `<div class="custom-marker-icon" style="background-color: ${style.color};"><i class="fa-solid ${style.icon}"></i></div>`;
+                
+                const customIcon = L.divIcon({
+                    html: iconHtml,
+                    className: '',
+                    iconSize: [28, 28],
+                    iconAnchor: [14, 14]
+                });
+
+                const marker = L.marker([place.lat, place.lng], { icon: customIcon });
+                marker.placeData = place;
+                marker.on('click', () => openSidebar(place));
+                return marker;
+            }
+            
+            function filterAndSearchMarkers() {
+                const query = searchInput.value.trim().toLowerCase();
+                
+                const filteredMarkers = allMarkers.filter(marker => {
+                    const place = marker.placeData;
+                    const categoryMatch = activeFilter === 'all' || place.category === activeFilter;
+                    const searchMatch = !query || place.name.toLowerCase().includes(query) || place.description.toLowerCase().includes(query);
+                    return categoryMatch && searchMatch;
+                });
+
+                markerCluster.clearLayers();
+                markerCluster.addLayers(filteredMarkers);
+            }
+
+            // --- UI FUNCTIONS ---
+            function openSidebar(place) {
+                sidebarContent.innerHTML = `
+                    <img src="${place.image}" alt="${place.name}" class="sidebar-image">
+                    <p class="sidebar-category">${place.category}</p>
+                    <h2 class="sidebar-title">${place.name}</h2>
+                    <p class="sidebar-description">${place.description}</p>
+                    <div class="sidebar-actions">
+                        <button class="sidebar-btn primary" onclick="window.open('https://www.google.com/maps/dir/?api=1&destination=${place.lat},${place.lng}', '_blank')">
+                            <i class="fa-solid fa-diamond-turn-right"></i>
+                            <span>Yol Tarifi</span>
+                        </button>
+                        <button class="sidebar-btn secondary">
+                            <i class="fa-solid fa-share-nodes"></i>
+                            <span>Paylaş</span>
+                        </button>
+                    </div>
+                `;
+                detailSidebar.classList.add('active');
+            }
+
+            function closeSidebar() {
+                detailSidebar.classList.remove('active');
+            }
+
+            function handleAddPoint(e) {
+                const newPlace = {
+                    id: Date.now(),
+                    name: "Yeni Eklenen Nokta",
+                    category: "Default",
+                    lat: e.latlng.lat,
+                    lng: e.latlng.lng,
+                    description: "Bu nokta kullanıcı tarafından eklendi. Detayları düzenleyebilirsiniz.",
+                    image: "https://images.unsplash.com/photo-1593328242565-3d78bce1b46c?q=80&w=800&auto=format&fit=crop"
+                };
+                
+                culturalPlaces.push(newPlace);
+                const newMarker = createMarkerForPlace(newPlace);
+                allMarkers.push(newMarker);
+                markerCluster.addLayer(newMarker);
+                
+                openSidebar(newPlace);
+                toggleAddPointMode(); // Turn off adding mode after adding a point
+            }
+            
+            function toggleAddPointMode() {
+                isAddingPoint = !isAddingPoint;
+                document.body.classList.toggle('adding-point', isAddingPoint);
+                addPointBtn.classList.toggle('active', isAddingPoint);
+                
+                if (isAddingPoint) {
+                    map.on('click', handleAddPoint);
+                } else {
+                    map.off('click', handleAddPoint);
+                }
+            }
+
+            // --- EVENT LISTENERS ---
+            function initEventListeners() {
+                searchInput.addEventListener('input', filterAndSearchMarkers);
+
+                filterChips.forEach(chip => {
+                    chip.addEventListener('click', () => {
+                        filterChips.forEach(c => c.classList.remove('active'));
+                        chip.classList.add('active');
+                        activeFilter = chip.dataset.filter;
+                        filterAndSearchMarkers();
+                    });
+                });
+
+                locationBtn.addEventListener('click', () => {
+                    if (navigator.geolocation) {
+                        navigator.geolocation.getCurrentPosition(pos => {
+                            const { latitude, longitude } = pos.coords;
+                            map.setView([latitude, longitude], 13);
+                            
+                            const primaryColor = getComputedStyle(document.body).getPropertyValue('--primary-burgundy-light').trim();
+                            
+                            L.circle([latitude, longitude], {
+                                radius: 100,
+                                color: primaryColor,
+                                fillColor: primaryColor,
+                                fillOpacity: 0.2,
+                                weight: 1
+                            }).addTo(map);
+                        }, () => {
+                            alert("Konum bilgisi alınamadı.");
+                        });
+                    }
+                });
+                
+                homeBtn.addEventListener('click', () => {
+                    window.location.href = '/'; // Navigate to home
+                });
+                
+                let mapClickForCoords = null;
+                addPointBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    // Modalı aç
+                    const modal = document.getElementById('addPlaceModal');
+                    modal.classList.remove('hidden');
+                    // Formu sıfırla
+                    document.getElementById('addPlaceForm').reset();
+                    document.getElementById('imagePreview').style.display = 'none';
+                    // Koordinat doldurma için harita tıklama eventini ekle
+                    mapClickForCoords = function(e) {
+                        document.getElementById('placeLat').value = e.latlng.lat.toFixed(6);
+                        document.getElementById('placeLng').value = e.latlng.lng.toFixed(6);
+                    };
+                    map.on('click', mapClickForCoords);
+                });
+                // Modal kapatma
+                document.getElementById('cancelAddPlace').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    document.getElementById('addPlaceModal').classList.add('hidden');
+                    // Harita tıklama eventini kaldır
+                    if (mapClickForCoords) {
+                        map.off('click', mapClickForCoords);
+                        mapClickForCoords = null;
+                    }
+                });
+                // Modal dışına tıklanınca kapanması için
+                document.getElementById('addPlaceModal').addEventListener('click', (e) => {
+                    if (e.target === e.currentTarget) {
+                        document.getElementById('addPlaceModal').classList.add('hidden');
+                        if (mapClickForCoords) {
+                            map.off('click', mapClickForCoords);
+                            mapClickForCoords = null;
+                        }
+                    }
+                });
+                // Görsel önizleme
+                document.getElementById('placeImage').addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    const preview = document.getElementById('imagePreview');
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(ev) {
+                            preview.src = ev.target.result;
+                            preview.style.display = 'block';
+                        };
+                        reader.readAsDataURL(file);
+                    } else {
+                        preview.src = '';
+                        preview.style.display = 'none';
+                    }
+                });
+                // Form submit
+                document.getElementById('addPlaceForm').addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const name = document.getElementById('placeName').value.trim();
+                    const desc = document.getElementById('placeDesc').value.trim();
+                    const lat = parseFloat(document.getElementById('placeLat').value);
+                    const lng = parseFloat(document.getElementById('placeLng').value);
+                    const category = document.getElementById('placeCategory').value;
+                    const imageInput = document.getElementById('placeImage');
+                    let image = '';
+                    if (imageInput.files[0]) {
+                        image = document.getElementById('imagePreview').src;
+                    } else {
+                        image = 'https://images.unsplash.com/photo-1593328242565-3d78bce1b46c?q=80&w=800&auto=format&fit=crop';
+                    }
+                    if (!name || !desc || isNaN(lat) || isNaN(lng) || !category) {
+                        alert('Lütfen tüm zorunlu alanları doldurun.');
+                        return;
+                    }
+                    const newPlace = {
+                        id: Date.now(),
+                        name,
+                        category,
+                        lat,
+                        lng,
+                        description: desc,
+                        image
+                    };
+                    culturalPlaces.push(newPlace);
+                    const newMarker = createMarkerForPlace(newPlace);
+                    allMarkers.push(newMarker);
+                    markerCluster.addLayer(newMarker);
+                    // Modalı kapat
+                    document.getElementById('addPlaceModal').classList.add('hidden');
+                    // Harita tıklama eventini kaldır
+                    if (mapClickForCoords) {
+                        map.off('click', mapClickForCoords);
+                        mapClickForCoords = null;
+                    }
+                    // Sidebar'ı aç ve yeni eklenen yeri göster
+                    openSidebar(newPlace);
+                    // Haritayı yeni eklenen yere odakla
+                    map.setView([lat, lng], 15);
+                });
+                
+                mapTypeBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    mapTypeSwitcher.classList.toggle('visible');
+                });
+                
+                document.querySelectorAll('.map-type-option').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const type = btn.dataset.mapType;
+                        setMapType(type);
+                        mapTypeSwitcher.classList.remove('visible');
+                    });
+                });
+
+                sidebarCloseBtn.addEventListener('click', closeSidebar);
+                
+                // Global click listener to close popups
+                document.addEventListener('click', (e) => {
+                    if (!mapTypeSwitcher.contains(e.target) && !mapTypeBtn.contains(e.target)) {
+                        mapTypeSwitcher.classList.remove('visible');
+                    }
+                });
+                
+                map.on('click', (e) => {
+                    if (!isAddingPoint) {
+                        closeSidebar();
+                    }
+                    mapTypeSwitcher.classList.remove('visible');
+                });
+            }
+
+            // --- START THE APP ---
+            initializeApp();
+        });
+    </script>
+</body>
+</html>

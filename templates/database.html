@@ -1,0 +1,196 @@
+{% extends "layout_tailwind.html" %}
+{% block content %}
+<div class="max-w-7xl mx-auto py-8 px-4">
+    <div class="text-center mb-12">
+        <h1 class="text-4xl font-bold text-gray-800 dark:text-white mb-4">Veritabanı Genel Bakış</h1>
+        <p class="text-lg text-gray-600 dark:text-gray-300">Art of Museum veritabanındaki tüm tablolar ve istatistikler</p>
+    </div>
+
+    <!-- İstatistik Kartları -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+        <div class="bg-gradient-to-br from-rose-50 to-pink-50 dark:from-rose-900/20 dark:to-pink-900/20 rounded-2xl p-6 border border-rose-200 dark:border-rose-800">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="text-2xl font-bold text-rose-800 dark:text-rose-200">{{ total_users }}</h3>
+                    <p class="text-rose-600 dark:text-rose-400 font-medium">Kullanıcı</p>
+                </div>
+                <div class="w-12 h-12 bg-rose-100 dark:bg-rose-900/30 rounded-xl flex items-center justify-center">
+                    <i class="fa-solid fa-users text-rose-600 dark:text-rose-400 text-xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-2xl p-6 border border-amber-200 dark:border-amber-800">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="text-2xl font-bold text-amber-800 dark:text-amber-200">{{ total_posts }}</h3>
+                    <p class="text-amber-600 dark:text-amber-400 font-medium">Blog Yazısı</p>
+                </div>
+                <div class="w-12 h-12 bg-amber-100 dark:bg-amber-900/30 rounded-xl flex items-center justify-center">
+                    <i class="fa-solid fa-newspaper text-amber-600 dark:text-amber-400 text-xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 rounded-2xl p-6 border border-emerald-200 dark:border-emerald-800">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="text-2xl font-bold text-emerald-800 dark:text-emerald-200">{{ total_artists }}</h3>
+                    <p class="text-emerald-600 dark:text-emerald-400 font-medium">Sanatçı</p>
+                </div>
+                <div class="w-12 h-12 bg-emerald-100 dark:bg-emerald-900/30 rounded-xl flex items-center justify-center">
+                    <i class="fa-solid fa-palette text-emerald-600 dark:text-emerald-400 text-xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 rounded-2xl p-6 border border-indigo-200 dark:border-indigo-800">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="text-2xl font-bold text-indigo-800 dark:text-indigo-200">{{ total_movements }}</h3>
+                    <p class="text-indigo-600 dark:text-indigo-400 font-medium">Sanat Akımı</p>
+                </div>
+                <div class="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/30 rounded-xl flex items-center justify-center">
+                    <i class="fa-solid fa-paintbrush text-indigo-600 dark:text-indigo-400 text-xl"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tablo Detayları -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Ana Tablolar -->
+        <div class="space-y-6">
+            <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6">Ana Tablolar</h2>
+            
+            <!-- Kullanıcılar -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-white">Kullanıcılar (users)</h3>
+                    <span class="bg-rose-100 text-rose-800 text-sm font-medium px-3 py-1 rounded-full">{{ total_users }}</span>
+                </div>
+                <div class="space-y-2 text-sm text-gray-600 dark:text-gray-300">
+                    <p><i class="fa-solid fa-user text-rose-500 mr-2"></i>Admin: {{ admin_count }}</p>
+                    <p><i class="fa-solid fa-user-graduate text-amber-500 mr-2"></i>Akademisyen: {{ akademisyen_count }}</p>
+                    <p><i class="fa-solid fa-user-tie text-emerald-500 mr-2"></i>Araştırmacı: {{ arastirmaci_count }}</p>
+                    <p><i class="fa-solid fa-user text-blue-500 mr-2"></i>Kullanıcı: {{ kullanici_count }}</p>
+                </div>
+            </div>
+
+            <!-- Blog Yazıları -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-white">Blog Yazıları (blog_posts)</h3>
+                    <span class="bg-amber-100 text-amber-800 text-sm font-medium px-3 py-1 rounded-full">{{ total_posts }}</span>
+                </div>
+                <div class="space-y-2 text-sm text-gray-600 dark:text-gray-300">
+                    <p><i class="fa-solid fa-check text-green-500 mr-2"></i>Yayınlanan: {{ published_posts }}</p>
+                    <p><i class="fa-solid fa-clock text-yellow-500 mr-2"></i>Bekleyen: {{ pending_posts }}</p>
+                    <p><i class="fa-solid fa-comment text-blue-500 mr-2"></i>Toplam Yorum: {{ total_comments }}</p>
+                </div>
+            </div>
+
+            <!-- Sanatçılar -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-white">Sanatçılar (artists)</h3>
+                    <span class="bg-emerald-100 text-emerald-800 text-sm font-medium px-3 py-1 rounded-full">{{ total_artists }}</span>
+                </div>
+                <div class="space-y-2 text-sm text-gray-600 dark:text-gray-300">
+                    <p><i class="fa-solid fa-palette text-emerald-500 mr-2"></i>Toplam Sanatçı: {{ total_artists }}</p>
+                    <p><i class="fa-solid fa-paintbrush text-purple-500 mr-2"></i>Akımlı Sanatçı: {{ artists_with_movement }}</p>
+                </div>
+            </div>
+
+            <!-- Sanat Akımları -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-white">Sanat Akımları (art_movements)</h3>
+                    <span class="bg-indigo-100 text-indigo-800 text-sm font-medium px-3 py-1 rounded-full">{{ total_movements }}</span>
+                </div>
+                <div class="space-y-2 text-sm text-gray-600 dark:text-gray-300">
+                    <p><i class="fa-solid fa-paintbrush text-indigo-500 mr-2"></i>Toplam Akım: {{ total_movements }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Diğer Tablolar -->
+        <div class="space-y-6">
+            <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6">Diğer Tablolar</h2>
+            
+            <!-- Kültür Yerleri -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-white">Kültür Yerleri (cultural_place)</h3>
+                    <span class="bg-purple-100 text-purple-800 text-sm font-medium px-3 py-1 rounded-full">{{ total_cultural_places }}</span>
+                </div>
+                <div class="space-y-2 text-sm text-gray-600 dark:text-gray-300">
+                    <p><i class="fa-solid fa-map-marker-alt text-purple-500 mr-2"></i>Onaylı Yerler: {{ approved_cultural_places }}</p>
+                    <p><i class="fa-solid fa-clock text-yellow-500 mr-2"></i>Bekleyen Öneriler: {{ pending_suggestions }}</p>
+                </div>
+            </div>
+
+            <!-- Müzeler -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-white">Sanal Müzeler (virtual_museums)</h3>
+                    <span class="bg-teal-100 text-teal-800 text-sm font-medium px-3 py-1 rounded-full">{{ total_museums }}</span>
+                </div>
+                <div class="space-y-2 text-sm text-gray-600 dark:text-gray-300">
+                    <p><i class="fa-solid fa-landmark text-teal-500 mr-2"></i>Toplam Müze: {{ total_museums }}</p>
+                </div>
+            </div>
+
+            <!-- Kategoriler -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-white">Blog Kategorileri (blog_category)</h3>
+                    <span class="bg-pink-100 text-pink-800 text-sm font-medium px-3 py-1 rounded-full">{{ total_categories }}</span>
+                </div>
+                <div class="space-y-2 text-sm text-gray-600 dark:text-gray-300">
+                    <p><i class="fa-solid fa-tags text-pink-500 mr-2"></i>Toplam Kategori: {{ total_categories }}</p>
+                </div>
+            </div>
+
+            <!-- Newsletter -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-white">Newsletter Aboneleri</h3>
+                    <span class="bg-cyan-100 text-cyan-800 text-sm font-medium px-3 py-1 rounded-full">{{ total_subscribers }}</span>
+                </div>
+                <div class="space-y-2 text-sm text-gray-600 dark:text-gray-300">
+                    <p><i class="fa-solid fa-envelope text-cyan-500 mr-2"></i>Toplam Abone: {{ total_subscribers }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sistem Bilgileri -->
+    <div class="mt-12 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 rounded-2xl p-8 border border-gray-200 dark:border-gray-700">
+        <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6">Sistem Bilgileri</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="text-center">
+                <div class="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fa-solid fa-database text-blue-600 dark:text-blue-400 text-2xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-2">Veritabanı</h3>
+                <p class="text-gray-600 dark:text-gray-300 text-sm">SQLite</p>
+            </div>
+            <div class="text-center">
+                <div class="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fa-solid fa-code text-green-600 dark:text-green-400 text-2xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-2">Framework</h3>
+                <p class="text-gray-600 dark:text-gray-300 text-sm">Flask + SQLAlchemy</p>
+            </div>
+            <div class="text-center">
+                <div class="w-16 h-16 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fa-solid fa-palette text-purple-600 dark:text-purple-400 text-2xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-2">CSS Framework</h3>
+                <p class="text-gray-600 dark:text-gray-300 text-sm">Tailwind CSS</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

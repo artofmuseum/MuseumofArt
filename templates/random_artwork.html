@@ -1,0 +1,562 @@
+{% extends "layout_tailwind.html" %}
+
+{% block title %}Rastgele Eser - Art of Museum{% endblock %}
+
+{% block content %}
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+  .gradient-bg {
+    background: linear-gradient(135deg, #fee9e0 0%, #f3e8ff 50%, #e0f2fe 100%);
+  }
+  .artwork-card {
+    transition: all 0.4s ease;
+    backdrop-filter: blur(10px);
+  }
+  .artwork-card:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+  }
+  .shuffle-animation {
+    animation: shuffle 0.6s ease-in-out;
+  }
+  @keyframes shuffle {
+    0% { transform: rotate(0deg) scale(1); }
+    25% { transform: rotate(-5deg) scale(0.95); }
+    50% { transform: rotate(5deg) scale(0.9); }
+    75% { transform: rotate(-3deg) scale(0.95); }
+    100% { transform: rotate(0deg) scale(1); }
+  }
+  .favorite-animation {
+    animation: heartBeat 0.6s ease-in-out;
+  }
+  @keyframes heartBeat {
+    0% { transform: scale(1); }
+    25% { transform: scale(1.2); }
+    50% { transform: scale(0.9); }
+    75% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+  }
+</style>
+
+<!-- Header -->
+<header class="gradient-bg text-gray-800 py-12 mb-8">
+  <div class="max-w-4xl mx-auto px-6 text-center">
+    <h1 class="text-5xl font-bold mb-4">🎲 Rastgele Eser</h1>
+    <p class="text-lg text-gray-600">Sanat dünyasında keşfedilmemiş hazineleri keşfedin</p>
+    
+    <!-- Eser Ekleme Butonu -->
+    <div class="mt-8">
+      <a href="{{ url_for('add_artwork_user') }}" 
+         class="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold rounded-xl hover:from-amber-600 hover:to-orange-600 transition-all shadow-lg hover:shadow-xl transform hover:scale-105">
+        <i class="fa-solid fa-plus text-xl"></i>
+        Yeni Eser Ekle
+      </a>
+      <p class="text-sm text-gray-600 mt-3">Kendi sanat eserlerinizi ekleyerek koleksiyonumuzu genişletin</p>
+    </div>
+  </div>
+</header>
+
+<div class="max-w-6xl mx-auto px-6">
+  <!-- Controls Section -->
+  <div class="bg-white rounded-2xl shadow-lg p-8 mb-8 border border-gray-100">
+    <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+      <div class="flex items-center gap-6">
+        <button id="shuffleBtn" onclick="shuffleArtwork()" 
+                class="flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold rounded-xl hover:from-purple-600 hover:to-pink-600 transition-all shadow-lg hover:shadow-xl transform hover:scale-105">
+          <i class="fa-solid fa-shuffle text-xl"></i>
+          Yeni Eser
+        </button>
+        <div class="bg-gradient-to-r from-gray-50 to-gray-100 px-6 py-3 rounded-xl border border-gray-200">
+          <div class="text-sm text-gray-600 font-medium">
+            <span id="artworkCount" class="text-purple-600 font-bold">0</span> eser arasından seçiliyor
+          </div>
+        </div>
+      </div>
+      
+             <div class="flex items-center gap-4">
+         <button id="likeBtn" onclick="toggleLike()" 
+                 class="p-4 text-gray-400 hover:text-blue-500 transition-all hover:scale-110 bg-gray-50 hover:bg-blue-50 rounded-xl">
+           <i class="fa-regular fa-thumbs-up text-2xl"></i>
+         </button>
+         <button id="favoriteBtn" onclick="toggleFavorite()" 
+                 class="p-4 text-gray-400 hover:text-red-500 transition-all hover:scale-110 bg-gray-50 hover:bg-red-50 rounded-xl">
+           <i class="fa-regular fa-heart text-2xl"></i>
+         </button>
+         <button onclick="shareArtwork()" 
+                 class="p-4 text-gray-400 hover:text-blue-500 transition-all hover:scale-110 bg-gray-50 hover:bg-blue-50 rounded-xl">
+           <i class="fa-solid fa-share text-2xl"></i>
+         </button>
+         <button onclick="showArtworkInfo()" 
+                 class="p-4 text-gray-400 hover:text-green-500 transition-all hover:scale-110 bg-gray-50 hover:bg-green-50 rounded-xl">
+           <i class="fa-solid fa-info-circle text-2xl"></i>
+         </button>
+         <a href="{{ url_for('add_artwork_user') }}" 
+            class="p-4 text-gray-400 hover:text-amber-500 transition-all hover:scale-110 bg-gray-50 hover:bg-amber-50 rounded-xl">
+           <i class="fa-solid fa-plus text-2xl"></i>
+         </a>
+       </div>
+    </div>
+  </div>
+
+  <!-- Artwork Display -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+         <!-- Artwork Image -->
+     <div class="artwork-card bg-white rounded-2xl shadow-lg overflow-hidden">
+       <div class="relative h-[500px]">
+         <img id="artworkImage" src="" alt="Sanat Eseri" 
+              class="w-full h-full object-contain bg-gray-50 cursor-pointer hover:scale-105 transition-transform duration-300"
+              onclick="openFullscreen()">
+         <div class="absolute top-4 right-4">
+           <span id="artworkPeriod" class="bg-black/60 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm font-semibold shadow-lg"></span>
+         </div>
+         <!-- Fullscreen button -->
+         <div class="absolute bottom-4 right-4">
+           <button onclick="openFullscreen()" 
+                   class="bg-black/60 backdrop-blur-sm text-white p-3 rounded-full hover:bg-black/80 transition-all hover:scale-110">
+             <i class="fa-solid fa-expand text-lg"></i>
+           </button>
+         </div>
+         <!-- Subtle gradient overlay -->
+         <div class="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent pointer-events-none"></div>
+       </div>
+     </div>
+
+    <!-- Artwork Details -->
+    <div class="artwork-card bg-white rounded-2xl shadow-lg p-8 flex flex-col justify-between">
+      <div>
+        <div class="mb-8">
+          <h2 id="artworkTitle" class="text-4xl font-bold text-gray-800 mb-3"></h2>
+          <p id="artworkArtist" class="text-2xl text-gray-600 mb-6 font-medium"></p>
+          <div class="flex flex-wrap items-center gap-3 mb-6">
+            <span id="artworkYear" class="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-md"></span>
+            <span id="artworkMedium" class="bg-gradient-to-r from-green-500 to-green-600 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-md"></span>
+            <span id="artworkLocation" class="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-md"></span>
+          </div>
+        </div>
+
+        <div class="space-y-6">
+          <div class="bg-gradient-to-r from-rose-50 to-pink-50 rounded-xl p-6 border border-rose-100">
+            <h3 class="text-lg font-bold text-gray-800 mb-3 flex items-center gap-2">
+              <i class="fa-solid fa-book-open text-rose-500"></i>
+              📖 Açıklama
+            </h3>
+            <p id="artworkDescription" class="text-gray-700 leading-relaxed text-base"></p>
+          </div>
+
+          <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-100">
+            <h3 class="text-lg font-bold text-gray-800 mb-3 flex items-center gap-2">
+              <i class="fa-solid fa-palette text-blue-500"></i>
+              🎨 Teknik Detaylar
+            </h3>
+            <p id="artworkTechnique" class="text-gray-700 leading-relaxed text-base"></p>
+          </div>
+
+          <div class="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-6 border border-green-100">
+            <h3 class="text-lg font-bold text-gray-800 mb-3 flex items-center gap-2">
+              <i class="fa-solid fa-landmark text-green-500"></i>
+              🏛️ Bulunduğu Yer
+            </h3>
+            <p id="artworkMuseum" class="text-gray-700 leading-relaxed text-base"></p>
+          </div>
+
+          <div class="bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl p-6 border border-amber-100">
+            <h3 class="text-lg font-bold text-gray-800 mb-3 flex items-center gap-2">
+              <i class="fa-solid fa-lightbulb text-amber-500"></i>
+              💡 İlginç Bilgiler
+            </h3>
+            <p id="artworkFacts" class="text-gray-700 leading-relaxed text-base"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Related Artworks -->
+  <div class="mt-16">
+    <div class="text-center mb-10">
+      <h3 class="text-3xl font-bold text-gray-800 mb-3">🔗 Benzer Eserler</h3>
+      <p class="text-gray-600 text-lg">Bu eserle ilgili diğer sanat eserlerini keşfedin</p>
+    </div>
+    <div id="relatedArtworks" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <!-- Related artworks will be populated by JavaScript -->
+    </div>
+  </div>
+</div>
+
+ <!-- Share Modal -->
+ <div id="shareModal" class="fixed inset-0 bg-black/50 hidden z-50">
+   <div class="flex items-center justify-center min-h-screen p-4">
+     <div class="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full">
+       <div class="flex justify-between items-center mb-6">
+         <h3 class="text-xl font-bold text-gray-800">Paylaş</h3>
+         <button onclick="closeShareModal()" class="text-gray-400 hover:text-gray-600">
+           <i class="fa-solid fa-times text-xl"></i>
+         </button>
+       </div>
+       
+       <div class="space-y-4">
+         <button onclick="shareToSocial('whatsapp')" class="w-full flex items-center gap-3 p-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors">
+           <i class="fa-brands fa-whatsapp text-xl"></i>
+           WhatsApp
+         </button>
+         
+         <button onclick="shareToSocial('facebook')" class="w-full flex items-center gap-3 p-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+           <i class="fa-brands fa-facebook text-xl"></i>
+           Facebook
+         </button>
+         
+         <button onclick="shareToSocial('twitter')" class="w-full flex items-center gap-3 p-3 bg-sky-500 text-white rounded-lg hover:bg-sky-600 transition-colors">
+           <i class="fa-brands fa-twitter text-xl"></i>
+           Twitter
+         </button>
+         
+         <button onclick="shareToSocial('instagram')" class="w-full flex items-center gap-3 p-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all">
+           <i class="fa-brands fa-instagram text-xl"></i>
+           Instagram
+         </button>
+         
+         <button onclick="copyLink()" class="w-full flex items-center gap-3 p-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
+           <i class="fa-solid fa-link text-xl"></i>
+           Bağlantıyı Kopyala
+         </button>
+       </div>
+     </div>
+   </div>
+ </div>
+
+ <!-- Fullscreen Modal -->
+ <div id="fullscreenModal" class="fixed inset-0 bg-black/90 hidden z-[9999]">
+   <div class="flex items-center justify-center min-h-screen p-4">
+     <div class="relative max-w-7xl w-full">
+       <!-- Close button -->
+       <button onclick="closeFullscreen()" 
+               class="absolute top-4 right-4 bg-black/50 text-white p-4 rounded-full hover:bg-black/70 transition-all z-20">
+         <i class="fa-solid fa-times text-2xl"></i>
+       </button>
+       
+       <!-- Artwork info -->
+       <div class="absolute top-4 left-4 bg-black/50 backdrop-blur-sm text-white p-4 rounded-xl z-20">
+         <h3 id="fullscreenTitle" class="text-xl font-bold mb-2"></h3>
+         <p id="fullscreenArtist" class="text-lg opacity-90"></p>
+         <p id="fullscreenYear" class="text-sm opacity-75"></p>
+       </div>
+       
+       <!-- Fullscreen image -->
+       <div class="flex items-center justify-center">
+         <img id="fullscreenImage" src="" alt="Sanat Eseri" 
+              class="max-w-full max-h-[90vh] object-contain">
+       </div>
+       
+       <!-- Navigation buttons -->
+       <button onclick="previousArtwork()" 
+               class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/50 text-white p-4 rounded-full hover:bg-black/70 transition-all z-20">
+         <i class="fa-solid fa-chevron-left text-2xl"></i>
+       </button>
+       
+       <button onclick="nextArtwork()" 
+               class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/50 text-white p-4 rounded-full hover:bg-black/70 transition-all z-20">
+         <i class="fa-solid fa-chevron-right text-2xl"></i>
+       </button>
+     </div>
+   </div>
+ </div>
+
+<script>
+  // Artwork database from server
+  const artworks = {{ artworks|tojson|safe }};
+
+     let currentArtwork = null;
+   let isFavorite = false;
+   let isLiked = false;
+
+  function shuffleArtwork() {
+    if (artworks.length === 0) {
+      showToast('Henüz eser eklenmemiş!');
+      return;
+    }
+    
+    const btn = document.getElementById('shuffleBtn');
+    btn.classList.add('shuffle-animation');
+    
+    setTimeout(() => {
+      const randomIndex = Math.floor(Math.random() * artworks.length);
+      currentArtwork = artworks[randomIndex];
+      displayArtwork(currentArtwork);
+      btn.classList.remove('shuffle-animation');
+    }, 300);
+  }
+
+  function displayArtwork(artwork) {
+    document.getElementById('artworkImage').src = artwork.image_url;
+    document.getElementById('artworkTitle').textContent = artwork.title;
+    document.getElementById('artworkArtist').textContent = artwork.artist;
+    document.getElementById('artworkYear').textContent = artwork.year;
+    document.getElementById('artworkPeriod').textContent = artwork.period;
+    document.getElementById('artworkMedium').textContent = artwork.medium;
+    document.getElementById('artworkLocation').textContent = artwork.location;
+    document.getElementById('artworkDescription').textContent = artwork.description;
+    document.getElementById('artworkTechnique').textContent = artwork.technique;
+    document.getElementById('artworkMuseum').textContent = artwork.museum;
+    document.getElementById('artworkFacts').textContent = artwork.facts;
+    
+    document.getElementById('artworkCount').textContent = artworks.length;
+    
+         // Reset favorite and like state
+     isFavorite = false;
+     isLiked = false;
+     updateFavoriteButton();
+     updateLikeButton();
+    
+    // Generate related artworks
+    generateRelatedArtworks(artwork);
+  }
+
+  function generateRelatedArtworks(currentArtwork) {
+    const relatedContainer = document.getElementById('relatedArtworks');
+    const related = artworks.filter(a => a.id !== currentArtwork.id).slice(0, 3);
+    
+         relatedContainer.innerHTML = related.map(artwork => `
+       <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer transform hover:scale-105 border border-gray-100" onclick="showArtwork(${artwork.id})">
+         <div class="relative h-56">
+           <img src="${artwork.image_url}" alt="${artwork.title}" class="w-full h-full object-contain bg-gray-50">
+           <div class="absolute top-4 right-4">
+             <span class="bg-black/60 backdrop-blur-sm text-white px-3 py-1 rounded-full text-xs font-semibold shadow-lg">${artwork.period}</span>
+           </div>
+         </div>
+         <div class="p-6">
+           <h4 class="text-xl font-bold text-gray-800 mb-2">${artwork.title}</h4>
+           <p class="text-lg text-gray-600 mb-4 font-medium">${artwork.artist}</p>
+           <div class="flex items-center gap-2">
+             <span class="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-3 py-1 rounded-full text-xs font-semibold">${artwork.year}</span>
+             <span class="bg-gradient-to-r from-green-500 to-green-600 text-white px-3 py-1 rounded-full text-xs font-semibold">${artwork.medium}</span>
+           </div>
+         </div>
+       </div>
+     `).join('');
+  }
+
+  function showArtwork(id) {
+    const artwork = artworks.find(a => a.id === id);
+    if (artwork) {
+      currentArtwork = artwork;
+      displayArtwork(artwork);
+    }
+  }
+
+           function toggleLike() {
+        if (!currentArtwork) return;
+        
+        fetch(`/artwork/${currentArtwork.id}/like`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        })
+        .then(response => response.json())
+        .then(data => {
+          isLiked = data.status === 'liked';
+          updateLikeButton();
+          
+          const btn = document.getElementById('likeBtn');
+          btn.classList.add('favorite-animation');
+          setTimeout(() => btn.classList.remove('favorite-animation'), 600);
+          
+          showToast(data.message);
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          showToast('Bir hata oluştu!');
+        });
+      }
+
+      function toggleFavorite() {
+        if (!currentArtwork) return;
+        
+        fetch(`/artwork/${currentArtwork.id}/favorite`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        })
+        .then(response => response.json())
+        .then(data => {
+          isFavorite = data.status === 'favorited';
+          updateFavoriteButton();
+          
+          const btn = document.getElementById('favoriteBtn');
+          btn.classList.add('favorite-animation');
+          setTimeout(() => btn.classList.remove('favorite-animation'), 600);
+          
+          showToast(data.message);
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          showToast('Bir hata oluştu!');
+        });
+      }
+
+     function updateLikeButton() {
+     const btn = document.getElementById('likeBtn');
+     const icon = btn.querySelector('i');
+     
+     if (isLiked) {
+       icon.className = 'fa-solid fa-thumbs-up text-xl text-blue-500';
+     } else {
+       icon.className = 'fa-regular fa-thumbs-up text-xl';
+     }
+   }
+
+   function updateFavoriteButton() {
+     const btn = document.getElementById('favoriteBtn');
+     const icon = btn.querySelector('i');
+     
+     if (isFavorite) {
+       icon.className = 'fa-solid fa-heart text-xl text-red-500';
+     } else {
+       icon.className = 'fa-regular fa-heart text-xl';
+     }
+   }
+
+  function shareArtwork() {
+    document.getElementById('shareModal').classList.remove('hidden');
+  }
+
+  function closeShareModal() {
+    document.getElementById('shareModal').classList.add('hidden');
+  }
+
+  function shareToSocial(platform) {
+    const text = `${currentArtwork.title} - ${currentArtwork.artist}`;
+    const url = window.location.href;
+    
+    let shareUrl = '';
+    switch(platform) {
+      case 'whatsapp':
+        shareUrl = `https://wa.me/?text=${encodeURIComponent(text + ' ' + url)}`;
+        break;
+      case 'facebook':
+        shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+        break;
+      case 'twitter':
+        shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
+        break;
+      case 'instagram':
+        // Instagram doesn't support direct sharing, show message
+        showToast('Instagram\'da paylaşmak için ekran görüntüsü alabilirsiniz!');
+        return;
+    }
+    
+    window.open(shareUrl, '_blank');
+    closeShareModal();
+  }
+
+  function copyLink() {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      showToast('Bağlantı kopyalandı!');
+      closeShareModal();
+    });
+  }
+
+  function showArtworkInfo() {
+    if (!currentArtwork) return;
+    
+    const info = `
+      Eser: ${currentArtwork.title}
+      Sanatçı: ${currentArtwork.artist}
+      Yıl: ${currentArtwork.year}
+      Dönem: ${currentArtwork.period}
+      Teknik: ${currentArtwork.medium}
+      Bulunduğu Yer: ${currentArtwork.location}
+    `;
+    
+    alert(info);
+  }
+
+     function showToast(message) {
+     // Simple toast notification
+     const toast = document.createElement('div');
+     toast.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+     toast.textContent = message;
+     document.body.appendChild(toast);
+     
+     setTimeout(() => {
+       toast.remove();
+     }, 3000);
+   }
+
+   // Fullscreen functions
+   function openFullscreen() {
+     if (!currentArtwork) return;
+     
+     document.getElementById('fullscreenImage').src = currentArtwork.image_url;
+     document.getElementById('fullscreenTitle').textContent = currentArtwork.title;
+     document.getElementById('fullscreenArtist').textContent = currentArtwork.artist;
+     document.getElementById('fullscreenYear').textContent = currentArtwork.year;
+     
+     document.getElementById('fullscreenModal').classList.remove('hidden');
+     document.body.style.overflow = 'hidden';
+   }
+
+   function closeFullscreen() {
+     document.getElementById('fullscreenModal').classList.add('hidden');
+     document.body.style.overflow = 'auto';
+   }
+
+   function previousArtwork() {
+     if (!currentArtwork) return;
+     
+     const currentIndex = artworks.findIndex(a => a.id === currentArtwork.id);
+     const previousIndex = currentIndex > 0 ? currentIndex - 1 : artworks.length - 1;
+     currentArtwork = artworks[previousIndex];
+     displayArtwork(currentArtwork);
+     openFullscreen();
+   }
+
+   function nextArtwork() {
+     if (!currentArtwork) return;
+     
+     const currentIndex = artworks.findIndex(a => a.id === currentArtwork.id);
+     const nextIndex = currentIndex < artworks.length - 1 ? currentIndex + 1 : 0;
+     currentArtwork = artworks[nextIndex];
+     displayArtwork(currentArtwork);
+     openFullscreen();
+   }
+
+  // Initialize page
+  document.addEventListener('DOMContentLoaded', function() {
+    if (artworks.length === 0) {
+      document.getElementById('artworkCount').textContent = '0';
+      showToast('Henüz eser eklenmemiş! Admin panelinden eser ekleyebilirsiniz.');
+    } else {
+      shuffleArtwork();
+    }
+  });
+
+     // Keyboard shortcuts
+   document.addEventListener('keydown', function(e) {
+     if (e.key === ' ' || e.key === 'Enter') {
+       e.preventDefault();
+       shuffleArtwork();
+     }
+     
+     // Fullscreen shortcuts
+     if (document.getElementById('fullscreenModal').classList.contains('hidden')) {
+       if (e.key === 'f' || e.key === 'F') {
+         e.preventDefault();
+         openFullscreen();
+       }
+     } else {
+       if (e.key === 'Escape') {
+         e.preventDefault();
+         closeFullscreen();
+       } else if (e.key === 'ArrowLeft') {
+         e.preventDefault();
+         previousArtwork();
+       } else if (e.key === 'ArrowRight') {
+         e.preventDefault();
+         nextArtwork();
+       }
+     }
+   });
+</script>
+{% endblock %} 

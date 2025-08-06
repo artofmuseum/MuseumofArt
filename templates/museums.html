@@ -1,0 +1,49 @@
+{% extends "layout_tailwind.html" %}
+
+{% block title %}Müzeler - Art of Museum{% endblock %}
+
+{% block content %}
+    <h1 class="text-3xl font-bold text-rose-800 mb-8 text-center">Müzeler - Art of Museum</h1>
+    <p class="text-center text-gray-600 mb-8">Dünyanın dört bir yanından önemli müzeleri ve galerileri sanal olarak keşfedin.</p>
+    <hr class="mb-8">
+    <div class="museum-list-container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {% if museums %}
+            {% for museum in museums %}
+                <div class="glass-effect rounded-2xl shadow-lg p-6 flex flex-col items-center card-hover border border-white/50">
+                    <img src="{{ url_for('static', filename='uploads/' + museum.image_file) }}" alt="{{ museum.name }}" class="w-full h-40 object-cover rounded-xl mb-4 shadow-md">
+                    <h3 class="text-xl font-bold text-rose-900 mb-2">{{ museum.name }}</h3>
+                    <p class="text-gray-600 mb-2">{{ museum.city }}, {{ museum.country }}</p>
+                    
+                    <!-- Ek Fotoğraflar -->
+                    {% if museum.images %}
+                        <div class="w-full mb-4">
+                            <h4 class="text-sm font-semibold text-gray-700 mb-2">Ek Fotoğraflar:</h4>
+                            <div class="grid grid-cols-3 gap-2">
+                                {% for image in museum.images[:6] %}
+                                    <img src="{{ url_for('static', filename='uploads/' + image.image_file) }}" 
+                                         alt="{{ museum.name }}" 
+                                         class="w-full h-16 object-cover rounded-lg shadow-sm hover:scale-105 transition-transform">
+                                {% endfor %}
+                            </div>
+                            {% if museum.images|length > 6 %}
+                                <p class="text-xs text-gray-500 mt-1">+{{ museum.images|length - 6 }} fotoğraf daha</p>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                    
+                    <a href="{{ museum.tour_url }}" target="_blank" class="inline-block bg-gradient-to-r from-teal-600 to-teal-700 text-white px-4 py-2 rounded-full font-semibold mt-2 hover:from-teal-700 hover:to-teal-800 transition-all">Sanal Tura Git</a>
+                </div>
+                {% if current_user.is_authenticated and current_user.role == 'admin' %}
+                    <div class="card-admin-actions mt-2 flex gap-2">
+                        <a href="{{ url_for('delete_museum_confirm_page', museum_id=museum.id) }}" class="bg-rose-600 text-white px-3 py-1 rounded hover:bg-rose-800 transition">Sil</a>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% else %}
+            <div class="col-span-full text-center text-gray-500 mt-16">
+                <i class="fa-solid fa-landmark text-4xl mb-4"></i>
+                <div class="text-lg">Henüz gösterilecek sanal müze bulunmuyor.</div>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

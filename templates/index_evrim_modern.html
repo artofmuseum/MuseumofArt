@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Art of Museum - Sanatın Dijital Evi{% endblock %}</title>
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style_evrim_modern.css') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='uploads/favicon_new.png') }}">
+    
+    <!-- Meta Tags -->
+    <meta name="description" content="Sanat tarihinin derinliklerini keşfedin. Sanatçılar, akımlar, müzeler ve daha fazlası Art of Museum'da.">
+    <meta name="keywords" content="sanat, müze, sanatçı, sanat tarihi, sergi, kültür">
+    <meta name="author" content="Art of Museum">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Art of Museum - Sanatın Dijital Evi">
+    <meta property="og:description" content="Sanat tarihinin derinliklerini keşfedin">
+    <meta property="og:image" content="{{ url_for('static', filename='uploads/logo.png') }}">
+    <meta property="og:url" content="{{ request.url }}">
+    <meta property="og:type" content="website">
+</head>
+<body>
+    <!-- Header -->
+    <header class="main-header">
+        <div class="header-overlay"></div>
+        <div class="header-container">
+            <div class="logo-section">
+                <div class="logo-icon">
+                    <i class="fas fa-palette"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>Art of Museum</h1>
+                    <span class="logo-subtitle">Sanatın Dijital Evi</span>
+                </div>
+            </div>
+            
+            <div class="search-section">
+                <form class="search-form" method="POST" action="{{ url_for('search_page') }}">
+                    {{ search_form.hidden_tag() if search_form }}
+                    <div class="search-container">
+                        <i class="fas fa-search search-icon"></i>
+                    <input type="text" name="searched" class="search-input" placeholder="Sanatçı, eser veya akım arayın..." required>
+                    <button type="submit" class="search-btn">
+                            <i class="fas fa-arrow-right"></i>
+                    </button>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="user-section">
+                {% if current_user.is_authenticated %}
+                    <div class="user-welcome">
+                        <span class="welcome-text">Hoş geldin</span>
+                        <span class="user-name">{{ current_user.username }}</span>
+                    </div>
+                    <a href="{{ url_for('user_panel_page') }}" class="user-btn user-btn-profile">
+                        <i class="fas fa-user-circle"></i>
+                    </a>
+                    <a href="{{ url_for('logout_page') }}" class="user-btn user-btn-logout">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </a>
+                {% else %}
+                    <a href="{{ url_for('login_page') }}" class="user-btn user-btn-primary">
+                        <i class="fas fa-sign-in-alt"></i>
+                        <span>Giriş Yap</span>
+                    </a>
+                    <a href="{{ url_for('register_page') }}" class="user-btn user-btn-secondary">
+                        <i class="fas fa-user-plus"></i>
+                        <span>Üye Ol</span>
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Layout -->
+    <div class="layout-grid">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-title">Keşfet</div>
+                <ul class="nav-list">
+                    <li class="nav-item">
+                        <a href="{{ url_for('home') }}" class="nav-link active">
+                            <i class="nav-icon fas fa-home"></i>
+                            Ana Sayfa
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ url_for('blog_list_page') }}" class="nav-link">
+                            <i class="nav-icon fas fa-newspaper"></i>
+                            Blog Yazıları
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ url_for('artists_page') }}" class="nav-link">
+                            <i class="nav-icon fas fa-palette"></i>
+                            Sanatçılar
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ url_for('movements_page') }}" class="nav-link">
+                            <i class="nav-icon fas fa-layer-group"></i>
+                            Sanat Akımları
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ url_for('museums_page') }}" class="nav-link">
+                            <i class="nav-icon fas fa-landmark"></i>
+                            Müzeler
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Kategoriler Bölümü -->
+            <div class="sidebar-section">
+                <div class="sidebar-title">Kategoriler</div>
+                <ul class="nav-list">
+                    <li class="nav-item">
+                        <a href="/blog/kategori/1" class="nav-link">
+                            <i class="nav-icon fas fa-shovel" style="color: #059669;"></i>
+                            Arkeoloji
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/blog/kategori/2" class="nav-link">
+                            <i class="nav-icon fas fa-palette" style="color: #dc2626;"></i>
+                            Sanat Tarihi
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/blog/kategori/3" class="nav-link">
+                            <i class="nav-icon fas fa-users" style="color: #f59e0b;"></i>
+                            Antropoloji
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/blog/kategori/4" class="nav-link">
+                            <i class="nav-icon fas fa-landmark" style="color: #8b4513;"></i>
+                            Tarih
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/blog/kategori/5" class="nav-link">
+                            <i class="nav-icon fas fa-building-columns" style="color: #0891b2;"></i>
+                            Müze Bilimi
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/blog/kategori/6" class="nav-link">
+                            <i class="nav-icon fas fa-crown" style="color: #a855f7;"></i>
+                            Kültür Mirası
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-title">Özel Özellikler</div>
+                <ul class="nav-list">
+                    <li class="nav-item">
+                        <a href="{{ url_for('cultural_map') }}" class="nav-link">
+                            <i class="nav-icon fas fa-map-marked-alt"></i>
+                            Kültürel Harita
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ url_for('maya_chat') }}" class="nav-link">
+                            <i class="nav-icon fas fa-robot"></i>
+                            Maya AI Asistan
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="nav-icon fas fa-random"></i>
+                            Rastgele Eser
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="nav-icon fas fa-question-circle"></i>
+                            Sanat Quiz'i
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-title">İstatistikler</div>
+                <div class="stats-section">
+                    <div class="stat-card">
+                        <span class="stat-number">{{ total_posts or 0 }}</span>
+                        <span class="stat-label">Blog Yazısı</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number">{{ total_artists or 0 }}</span>
+                        <span class="stat-label">Sanatçı</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number">{{ total_comments or 0 }}</span>
+                        <span class="stat-label">Yorum</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Hero Section -->
+            <section class="hero-section animate-fade-in">
+                <div class="hero-content">
+                    <h1 class="hero-title">Sanatın Zamansız Dünyasına Hoş Geldiniz</h1>
+                    <p class="hero-subtitle">
+                        Rönesans'tan modern sanata, klasikten çağdaşa kadar sanat tarihinin en değerli hazinelerini keşfedin. 
+                        Uzman yazarlarımızın rehberliğinde sanatın derinliklerinde bir yolculuğa çıkın.
+                    </p>
+                    <div class="hero-buttons">
+                        <a href="{{ url_for('blog_list_page') }}" class="btn btn-primary">
+                            <i class="fas fa-book-open"></i>
+                            Yazıları Keşfet
+                        </a>
+                        <a href="{{ url_for('artists_page') }}" class="btn btn-secondary">
+                            <i class="fas fa-palette"></i>
+                            Sanatçıları İncele
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Featured Articles Section -->
+            <section class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Öne Çıkan Yazılar</h2>
+                    <p class="section-subtitle">Sanat dünyasından en güncel ve ilginç içerikler</p>
+                </div>
+                
+                <div class="card-grid">
+                    {% if latest_posts %}
+                        {% for post in latest_posts[:6] %}
+                            <article class="card">
+                                <div class="card-image">
+                                    {% set image_url = url_for('static', filename='uploads/' + post.image_file) %}
+                                    <img src="{{ image_url }}" alt="{{ post.title }}" loading="lazy">
+                                </div>
+                                <div class="card-content">
+                                    <h3 class="card-title">{{ post.title }}</h3>
+                                    <p class="card-text">{{ post.summary[:120] }}{% if post.summary|length > 120 %}...{% endif %}</p>
+                                    <div class="card-meta">
+                                        <span><i class="fas fa-user"></i> {{ post.author.username }}</span>
+                                        <span><i class="fas fa-calendar"></i> {{ post.date_posted.strftime('%d.%m.%Y') }}</span>
+                                        <span><i class="fas fa-comments"></i> {{ post.comments.count() }}</span>
+                                    </div>
+                                    <a href="{{ url_for('blog_post_detail_page', post_id=post.id) }}" class="card-link">
+                                        Devamını Oku <i class="fas fa-arrow-right"></i>
+                                    </a>
+                                </div>
+                            </article>
+                        {% endfor %}
+                    {% else %}
+                        <div class="empty-state">
+                            <div style="text-align: center; padding: 3rem;">
+                                <i class="fas fa-newspaper" style="font-size: 3rem; color: var(--text-light); margin-bottom: 1rem;"></i>
+                                <h3>Henüz Blog Yazısı Yok</h3>
+                                <p>İlk blog yazısının yayınlanmasını bekleyin veya siz de katkıda bulunun!</p>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </section>
+
+            <!-- Featured Artists Section -->
+            <section class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Öne Çıkan Sanatçılar</h2>
+                    <p class="section-subtitle">Sanat tarihinin etkili isimleri</p>
+                </div>
+                
+                <div class="card-grid">
+                    {% if featured_artists %}
+                        {% for artist in featured_artists[:6] %}
+                            <div class="card">
+                                <div class="card-image">
+                                    {% set image_url = url_for('static', filename='uploads/' + artist.image_file) %}
+                                    <img src="{{ image_url }}" alt="{{ artist.name }}" loading="lazy">
+                                </div>
+                                <div class="card-content">
+                                    <h3 class="card-title">{{ artist.name }}</h3>
+                                    {% if artist.birth_year and artist.death_year %}
+                                        <div class="card-meta">
+                                            <span><i class="fas fa-calendar-alt"></i> {{ artist.birth_year }} - {{ artist.death_year }}</span>
+                                        </div>
+                                    {% endif %}
+                                    {% if artist.movement %}
+                                        <div class="card-meta">
+                                            <span><i class="fas fa-tag"></i> {{ artist.movement.name }}</span>
+                                        </div>
+                                    {% endif %}
+                                    {% if artist.bio %}
+                                        <p class="card-text">{{ artist.bio[:120] }}{% if artist.bio|length > 120 %}...{% endif %}</p>
+                                    {% endif %}
+                                    <a href="{{ url_for('artist_detail_page', artist_id=artist.id) }}" class="card-link">
+                                        Profili Gör <i class="fas fa-arrow-right"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="empty-state">
+                            <div style="text-align: center; padding: 3rem;">
+                                <i class="fas fa-palette" style="font-size: 3rem; color: var(--text-light); margin-bottom: 1rem;"></i>
+                                <h3>Henüz Sanatçı Profili Yok</h3>
+                                <p>Sanatçı profillerinin eklenmesini bekleyin!</p>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </section>
+
+            <!-- Features Section -->
+            <section class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Platform Özellikleri</h2>
+                    <p class="section-subtitle">Art of Museum size neler sunuyor?</p>
+                </div>
+                
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <h3 class="feature-title">Uzman Yazıları</h3>
+                        <p class="feature-text">Sanat tarihi uzmanları tarafından yazılmış derinlemesine analizler ve makaleler.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-palette"></i>
+                        </div>
+                        <h3 class="feature-title">Sanatçı Profilleri</h3>
+                        <p class="feature-text">Ünlü sanatçıların hayat hikayeleri, eserleri ve sanat dünyasına katkıları.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-landmark"></i>
+                        </div>
+                        <h3 class="feature-title">Sanal Müzeler</h3>
+                        <p class="feature-text">Dünyanın en ünlü müzelerini ve koleksiyonlarını sanal olarak keşfedin.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <h3 class="feature-title">AI Asistan Maya</h3>
+                        <p class="feature-text">Sanat hakkındaki sorularınıza yanıt veren yapay zeka asistanı.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Newsletter Section -->
+            <section class="newsletter-section">
+                <h2 class="newsletter-title">Sanat Dünyasından Haberdar Olun</h2>
+                <p class="newsletter-text">
+                    Yeni içerikler, özel yazılar ve sanat etkinliklerinden ilk siz haberdar olun.
+                </p>
+                <form class="newsletter-form" method="POST" action="{{ url_for('newsletter_subscribe') if 'newsletter_subscribe' in globals() else '#' }}">
+                    <input type="email" name="email" class="newsletter-input" placeholder="E-posta adresinizi girin" required>
+                    <button type="submit" class="newsletter-btn">
+                        <i class="fas fa-paper-plane"></i> Abone Ol
+                    </button>
+                </form>
+            </section>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Art of Museum</h4>
+                <p>Sanatın dijital evi. Sanat tarihinin derinliklerini keşfedin, öğrenin ve paylaşın.</p>
+            </div>
+            
+            <div class="footer-section">
+                <h4>Hızlı Bağlantılar</h4>
+                <ul class="footer-links">
+                    <li><a href="{{ url_for('home') }}">Ana Sayfa</a></li>
+                    <li><a href="{{ url_for('blog_list_page') }}">Blog</a></li>
+                    <li><a href="{{ url_for('artists_page') }}">Sanatçılar</a></li>
+                    <li><a href="{{ url_for('museums_page') }}">Müzeler</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h4>Bilgi</h4>
+                <ul class="footer-links">
+                    <li><a href="{{ url_for('hakkimizda') }}">Hakkımızda</a></li>
+                    <li><a href="{{ url_for('iletisim') }}">İletişim</a></li>
+                    <li><a href="{{ url_for('gizlilik_politikasi') }}">Gizlilik Politikası</a></li>
+                    <li><a href="{{ url_for('kullanici_sozlesmesi') }}">Kullanıcı Sözleşmesi</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h4>Bizi Takip Edin</h4>
+                <ul class="footer-links">
+                    <li><a href="#"><i class="fab fa-facebook"></i> Facebook</a></li>
+                    <li><a href="#"><i class="fab fa-twitter"></i> Twitter</a></li>
+                    <li><a href="#"><i class="fab fa-instagram"></i> Instagram</a></li>
+                    <li><a href="#"><i class="fab fa-youtube"></i> YouTube</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2024 Art of Museum. Tüm hakları saklıdır.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Add active class to current navigation item
+        const currentLocation = location.pathname;
+        const navLinks = document.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            if (link.getAttribute('href') === currentLocation) {
+                link.classList.add('active');
+            } else {
+                link.classList.remove('active');
+            }
+        });
+
+        // Add loading animation to cards
+        const cards = document.querySelectorAll('.card');
+        cards.forEach((card, index) => {
+            card.style.animationDelay = `${index * 0.1}s`;
+            card.classList.add('animate-fade-in');
+        });
+    </script>
+</body>
+</html> 

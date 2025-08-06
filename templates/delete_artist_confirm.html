@@ -1,0 +1,18 @@
+    {% extends "layout.html" %}
+
+    {% block title %}Sanatçı Silme Onayı - Art of Museum{% endblock %}
+
+    {% block content %}
+        <div class="form-container">
+            <h2>Silme Onayı</h2>
+            <p><strong>"{{ artist_to_delete.name }}"</strong> adlı sanatçıyı ve ilgili tüm bilgilerini kalıcı olarak silmek istediğinizden emin misiniz?</p>
+            <p>Bu işlem geri alınamaz.</p>
+            
+            <form method="POST" action="{{ url_for('delete_artist_page', artist_id=artist_to_delete.id) }}" style="display: inline;">
+                <input type="submit" value="Evet, Sanatçıyı Sil" class="btn btn-danger">
+            </form>
+
+            <a href="{{ url_for('artist_detail_page', artist_id=artist_to_delete.id) }}" class="btn btn-secondary" style="display: inline; margin-left: 10px;">Vazgeç</a>
+        </div>
+    {% endblock %}
+    

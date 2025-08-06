@@ -1,0 +1,34 @@
+{% extends "layout_tailwind.html" %}
+
+{% block title %}Keşfet - Art of Museum{% endblock %}
+
+{% block content %}
+    <h1 class="text-3xl font-bold text-rose-800 mb-8 text-center">Keşfet - Art of Museum</h1>
+    <p class="text-center text-gray-600 mb-8">Sanat tarihinin derinliklerinde, sanatçılar, eserler, müzeler ve akımlar arasında keşfe çıkın.</p>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <a href="/artists" class="glass-effect rounded-2xl shadow-lg p-8 flex flex-col items-center card-hover border border-white/50">
+            <i class="fa-solid fa-palette text-4xl text-rose-600 mb-4"></i>
+            <h2 class="text-xl font-bold text-rose-900 mb-2">Sanatçılar</h2>
+            <p class="text-gray-600 mb-2">Ünlü sanatçıların profilleri ve eserleri.</p>
+            <span class="inline-block bg-gradient-to-r from-rose-600 to-rose-700 text-white px-4 py-2 rounded-full font-semibold mt-2">Keşfet</span>
+        </a>
+        <a href="/museums" class="glass-effect rounded-2xl shadow-lg p-8 flex flex-col items-center card-hover border border-white/50">
+            <i class="fa-solid fa-landmark text-4xl text-teal-600 mb-4"></i>
+            <h2 class="text-xl font-bold text-rose-900 mb-2">Müzeler</h2>
+            <p class="text-gray-600 mb-2">Dünyanın dört bir yanından önemli müzeler.</p>
+            <span class="inline-block bg-gradient-to-r from-teal-600 to-teal-700 text-white px-4 py-2 rounded-full font-semibold mt-2">Keşfet</span>
+        </a>
+        <a href="/movements" class="glass-effect rounded-2xl shadow-lg p-8 flex flex-col items-center card-hover border border-white/50">
+            <i class="fa-solid fa-layer-group text-4xl text-purple-600 mb-4"></i>
+            <h2 class="text-xl font-bold text-rose-900 mb-2">Sanat Akımları</h2>
+            <p class="text-gray-600 mb-2">Sanat tarihine yön veren akımlar ve dönemler.</p>
+            <span class="inline-block bg-gradient-to-r from-purple-600 to-purple-700 text-white px-4 py-2 rounded-full font-semibold mt-2">Keşfet</span>
+        </a>
+        <a href="/blog" class="glass-effect rounded-2xl shadow-lg p-8 flex flex-col items-center card-hover border border-white/50">
+            <i class="fa-solid fa-book-open text-4xl text-blue-600 mb-4"></i>
+            <h2 class="text-xl font-bold text-rose-900 mb-2">Blog</h2>
+            <p class="text-gray-600 mb-2">Sanat tarihi yazıları, analizler ve güncel içerikler.</p>
+            <span class="inline-block bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-2 rounded-full font-semibold mt-2">Keşfet</span>
+        </a>
+    </div>
+{% endblock %} 

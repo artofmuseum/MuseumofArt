@@ -1,0 +1,227 @@
+{% extends "layout_tailwind.html" %}
+
+{% block title %}Eser Düzenle - Admin Panel{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-8">
+    <div class="max-w-4xl mx-auto px-6">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-800 mb-4">✏️ Eser Düzenle</h1>
+            <p class="text-lg text-gray-600">{{ artwork.title }} - {{ artwork.artist }}</p>
+        </div>
+
+        <!-- Form Card -->
+        <div class="bg-white rounded-2xl shadow-lg p-8">
+            <form method="POST" enctype="multipart/form-data" class="space-y-6">
+                {{ form.hidden_tag() }}
+                
+                <!-- Basic Info Section -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                            {{ form.title.label }}
+                        </label>
+                        {{ form.title(class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all") }}
+                        {% if form.title.errors %}
+                            <div class="text-red-500 text-sm mt-1">
+                                {% for error in form.title.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                            {{ form.artist.label }}
+                        </label>
+                        {{ form.artist(class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all") }}
+                        {% if form.artist.errors %}
+                            <div class="text-red-500 text-sm mt-1">
+                                {% for error in form.artist.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                            {{ form.year.label }}
+                        </label>
+                        {{ form.year(class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all") }}
+                        {% if form.year.errors %}
+                            <div class="text-red-500 text-sm mt-1">
+                                {% for error in form.year.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                            {{ form.period.label }}
+                        </label>
+                        {{ form.period(class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all") }}
+                        {% if form.period.errors %}
+                            <div class="text-red-500 text-sm mt-1">
+                                {% for error in form.period.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                            {{ form.medium.label }}
+                        </label>
+                        {{ form.medium(class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all") }}
+                        {% if form.medium.errors %}
+                            <div class="text-red-500 text-sm mt-1">
+                                {% for error in form.medium.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                            {{ form.location.label }}
+                        </label>
+                        {{ form.location(class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all") }}
+                        {% if form.location.errors %}
+                            <div class="text-red-500 text-sm mt-1">
+                                {% for error in form.location.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Image Options -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Image URL -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                            {{ form.image_url.label }}
+                        </label>
+                        {{ form.image_url(class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all") }}
+                        {% if form.image_url.errors %}
+                            <div class="text-red-500 text-sm mt-1">
+                                {% for error in form.image_url.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        <p class="text-sm text-gray-500 mt-1">Wikimedia Commons veya başka bir kaynaktan resim URL'si</p>
+                    </div>
+                    
+                    <!-- Image File Upload -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                            {{ form.image_file.label }}
+                        </label>
+                        <div class="relative">
+                            {{ form.image_file(class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100") }}
+                        </div>
+                        {% if form.image_file.errors %}
+                            <div class="text-red-500 text-sm mt-1">
+                                {% for error in form.image_file.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        <p class="text-sm text-gray-500 mt-1">JPG, PNG, JPEG, GIF dosyaları kabul edilir</p>
+                    </div>
+                </div>
+
+                <!-- Museum Info -->
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                        {{ form.museum.label }}
+                    </label>
+                    {{ form.museum(class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all") }}
+                    {% if form.museum.errors %}
+                        <div class="text-red-500 text-sm mt-1">
+                            {% for error in form.museum.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Description -->
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                        {{ form.description.label }}
+                    </label>
+                    {{ form.description(class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all", rows="4") }}
+                    {% if form.description.errors %}
+                        <div class="text-red-500 text-sm mt-1">
+                            {% for error in form.description.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Technique -->
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                        {{ form.technique.label }}
+                    </label>
+                    {{ form.technique(class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all", rows="3") }}
+                    {% if form.technique.errors %}
+                        <div class="text-red-500 text-sm mt-1">
+                            {% for error in form.technique.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Facts -->
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                        {{ form.facts.label }}
+                    </label>
+                    {{ form.facts(class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all", rows="3") }}
+                    {% if form.facts.errors %}
+                        <div class="text-red-500 text-sm mt-1">
+                            {% for error in form.facts.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Submit Buttons -->
+                <div class="flex justify-end space-x-4 pt-6">
+                    <a href="{{ url_for('admin_artworks_page') }}" 
+                       class="px-6 py-3 bg-gray-500 text-white rounded-xl hover:bg-gray-600 transition-all">
+                        İptal
+                    </a>
+                    {{ form.submit(class="px-8 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold rounded-xl hover:from-purple-600 hover:to-pink-600 transition-all shadow-lg hover:shadow-xl", value="Güncelle") }}
+                </div>
+            </form>
+        </div>
+
+        <!-- Current Image Preview -->
+        <div class="mt-8 bg-white rounded-2xl shadow-lg p-6">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">🖼️ Mevcut Resim</h3>
+            <div class="flex items-center space-x-4">
+                <img src="{{ artwork.image_url }}" alt="{{ artwork.title }}" class="w-32 h-32 object-cover rounded-xl">
+                <div>
+                    <p class="text-sm text-gray-600">Resim URL: <span class="font-mono text-xs">{{ artwork.image_url }}</span></p>
+                    <p class="text-sm text-gray-500 mt-1">Resmi değiştirmek için yukarıdaki "Resim URL" alanını güncelleyin</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

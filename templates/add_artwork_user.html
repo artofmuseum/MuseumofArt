@@ -1,0 +1,146 @@
+{% extends "layout_tailwind.html" %}
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-amber-50 via-white to-orange-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-8">
+    <div class="max-w-4xl mx-auto px-4">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold gradient-text mb-4">Sanat Eseri Ekle</h1>
+            <p class="text-gray-600 dark:text-gray-300 text-lg">Yeni bir sanat eseri ekleyerek topluluğumuza katkıda bulunun</p>
+        </div>
+        
+        <!-- Form Card -->
+        <div class="glass-effect rounded-3xl shadow-xl p-8 border border-white/50">
+            <form method="POST" enctype="multipart/form-data" class="space-y-6">
+                {{ form.hidden_tag() }}
+                
+                <!-- Eser Adı -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <i class="fa-solid fa-palette mr-2 text-amber-500"></i>Eser Adı *
+                    </label>
+                    {{ form.title(class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-amber-500 focus:border-transparent") }}
+                    {% if form.title.errors %}
+                        <div class="text-red-500 text-sm mt-1">{{ form.title.errors[0] }}</div>
+                    {% endif %}
+                </div>
+                
+                <!-- Sanatçı -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <i class="fa-solid fa-user mr-2 text-purple-500"></i>Sanatçı *
+                    </label>
+                    {{ form.artist(class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent") }}
+                    {% if form.artist.errors %}
+                        <div class="text-red-500 text-sm mt-1">{{ form.artist.errors[0] }}</div>
+                    {% endif %}
+                </div>
+                
+                <!-- Dönem -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <i class="fa-solid fa-calendar mr-2 text-green-500"></i>Dönem *
+                    </label>
+                    {{ form.period(class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-green-500 focus:border-transparent") }}
+                    {% if form.period.errors %}
+                        <div class="text-red-500 text-sm mt-1">{{ form.period.errors[0] }}</div>
+                    {% endif %}
+                </div>
+                
+                <!-- Teknik -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <i class="fa-solid fa-brush mr-2 text-blue-500"></i>Teknik *
+                    </label>
+                    {{ form.technique(class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent") }}
+                    {% if form.technique.errors %}
+                        <div class="text-red-500 text-sm mt-1">{{ form.technique.errors[0] }}</div>
+                    {% endif %}
+                </div>
+                
+                <!-- Boyutlar -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <i class="fa-solid fa-ruler mr-2 text-indigo-500"></i>Boyutlar
+                    </label>
+                    {{ form.dimensions(class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent", placeholder="Örn: 77 x 53 cm") }}
+                    {% if form.dimensions.errors %}
+                        <div class="text-red-500 text-sm mt-1">{{ form.dimensions.errors[0] }}</div>
+                    {% endif %}
+                </div>
+                
+                <!-- Konum -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <i class="fa-solid fa-location-dot mr-2 text-red-500"></i>Konum *
+                    </label>
+                    {{ form.location(class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 focus:border-transparent", placeholder="Müze, şehir, ülke") }}
+                    {% if form.location.errors %}
+                        <div class="text-red-500 text-sm mt-1">{{ form.location.errors[0] }}</div>
+                    {% endif %}
+                </div>
+                
+                <!-- Açıklama -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <i class="fa-solid fa-align-left mr-2 text-teal-500"></i>Açıklama *
+                    </label>
+                    {{ form.description(class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-teal-500 focus:border-transparent", rows="6", placeholder="Eserin detaylı açıklamasını yazın...") }}
+                    {% if form.description.errors %}
+                        <div class="text-red-500 text-sm mt-1">{{ form.description.errors[0] }}</div>
+                    {% endif %}
+                </div>
+                
+                <!-- Görsel -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <i class="fa-solid fa-image mr-2 text-pink-500"></i>Eser Görseli
+                    </label>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Dosya Yükle</label>
+                            {{ form.image_file(class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-pink-500 focus:border-transparent") }}
+                        </div>
+                        <div class="text-center">
+                            <span class="text-gray-500 dark:text-gray-400">veya</span>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">URL Girin</label>
+                            {{ form.image_url(class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-pink-500 focus:border-transparent", placeholder="https://example.com/image.jpg") }}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Butonlar -->
+                <div class="flex gap-4 pt-6">
+                    <button type="submit" class="flex-1 bg-gradient-to-r from-amber-500 to-orange-600 text-white py-3 rounded-xl font-semibold hover:from-amber-600 hover:to-orange-700 transition-all shadow-lg hover:shadow-xl">
+                        <i class="fa-solid fa-plus mr-2"></i>Eseri Ekle
+                    </button>
+                    <button type="button" onclick="window.location.href='/random-artwork'" class="px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-all">
+                        <i class="fa-solid fa-times mr-2"></i>İptal
+                    </button>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Bilgi Kartı -->
+        <div class="mt-8 glass-effect rounded-2xl p-6 border border-white/50">
+            <div class="flex items-start gap-4">
+                <div class="w-12 h-12 bg-gradient-to-r from-amber-500 to-orange-600 rounded-full flex items-center justify-center flex-shrink-0">
+                    <i class="fa-solid fa-lightbulb text-white"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-gray-900 dark:text-white mb-2">İpuçları</h3>
+                    <ul class="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                        <li>• Eser adı ve sanatçı bilgisi zorunludur</li>
+                        <li>• Dönem bilgisi eserin yapıldığı tarihi belirtir</li>
+                        <li>• Teknik alanında kullanılan malzeme ve yöntemi belirtin</li>
+                        <li>• Konum bilgisi eserin bulunduğu müze veya koleksiyonu gösterir</li>
+                        <li>• Açıklama alanında eserin detaylı analizini yapın</li>
+                        <li>• Eklediğiniz eserler topluluk tarafından incelenecektir</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

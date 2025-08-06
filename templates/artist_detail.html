@@ -1,0 +1,61 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    {% if artist %}{{ artist.name }}{% else %}Sanatçı Bulunamadı{% endif %} - Art of Museum
+{% endblock %}
+
+{% block content %}
+    {% if artist %}
+        {% set image_url = url_for('static', filename='uploads/' + artist.image_file) %}
+        
+        <div class="artist-detail-header">
+            <img src="{{ image_url }}" alt="Sanatçı: {{ artist.name }}" class="artist-image-large">
+            <div>
+                <h1>{{ artist.name }}</h1>
+                <p><strong>Dönem:</strong> {{ artist.period }}</p>
+                {# Sanatçının bir akımı varsa, onu göster ve link ver #}
+                {% if artist.movement %}
+                    <p>
+                        <strong>Akım:</strong> 
+                        <a href="{{ url_for('movement_detail_page', movement_id=artist.movement.id) }}">
+                            {{ artist.movement.name }}
+                        </a>
+                    </p>
+                {% endif %}
+            </div>
+        </div>
+        
+        {% if artist.bio %}
+            <div class="bio-content">
+                <h3>Biyografi</h3>
+                <p>{{ artist.bio | safe }}</p>
+            </div>
+        {% endif %}
+
+        {% if current_user.is_authenticated and current_user.role == 'admin' %}
+            <div class="admin-actions">
+                <a href="{{ url_for('edit_artist_page', artist_id=artist.id) }}" class="btn btn-secondary">Düzenle</a>
+                <a href="{{ url_for('delete_artist_confirm_page', artist_id=artist.id) }}" class="btn btn-danger">Sanatçıyı Sil</a>
+            </div>
+        {% endif %}
+
+        {# YENİ: İlişkili Blog Yazıları Bölümü #}
+        {% if artist.posts.all() %}
+            <div class="related-section">
+                <h2>{{ artist.name }} Hakkındaki Yazılar</h2>
+                <ul class="related-list">
+                    {% for post in artist.posts %}
+                        <li><a href="{{ url_for('blog_post_detail_page', post_id=post.id) }}">{{ post.title }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+
+    {% else %}
+        <h1>Sanatçı Bulunamadı</h1>
+        <p>Aradığınız ID ile bir sanatçı bulunamadı.</p>
+    {% endif %}
+
+    <hr>
+    <p><a href="{{ url_for('artists_page') }}">Tüm Sanatçılara Dön</a></p>
+{% endblock %}

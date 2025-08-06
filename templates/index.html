@@ -1,0 +1,313 @@
+{% extends "layout.html" %}
+
+{% block title %}Ana Sayfa - Art of Museum{% endblock %}
+
+{% block content %}
+    {# --- Hero Section --- #}
+    <section class="hero-section">
+        <div class="hero-background">
+            <div class="hero-pattern"></div>
+        <div class="hero-overlay"></div>
+        </div>
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1 class="hero-title">
+                    <span class="title-line">Sanatın</span>
+                    <span class="title-line">Zamansız</span>
+                    <span class="title-line">Dünyasına</span>
+                    <span class="title-accent">Hoş Geldiniz</span>
+                </h1>
+                <p class="hero-subtitle">Rönesans'tan modern sanata, klasikten çağdaşa kadar sanat tarihinin en değerli hazinelerini keşfedin. Uzman yazarlarımızın rehberliğinde sanatın derinliklerinde bir yolculuğa çıkın.</p>
+                <div class="hero-buttons">
+                    <a href="{{ url_for('blog_list_page') }}" class="btn btn-primary btn-hero">
+                        <span class="btn-text">Yazıları Keşfet</span>
+                        <span class="btn-icon">→</span>
+                    </a>
+                    <a href="{{ url_for('artists_page') }}" class="btn btn-secondary btn-hero">
+                        <span class="btn-text">Sanatçıları İncele</span>
+                        <span class="btn-icon">🎨</span>
+                    </a>
+                </div>
+            </div>
+            <div class="hero-stats">
+                <div class="stat-card">
+                    <div class="stat-icon">📚</div>
+                    <div class="stat-content">
+                    <span class="stat-number">{{ total_posts or 0 }}</span>
+                    <span class="stat-label">Blog Yazısı</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">👨‍🎨</div>
+                    <div class="stat-content">
+                    <span class="stat-number">{{ total_artists or 0 }}</span>
+                    <span class="stat-label">Sanatçı</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">💬</div>
+                    <div class="stat-content">
+                    <span class="stat-number">{{ total_comments or 0 }}</span>
+                    <span class="stat-label">Yorum</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    </section>
+
+    {# --- Öne Çıkan Özellikler --- #}
+    <section class="features-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Neler Sunuyoruz?</h2>
+                <p class="section-subtitle">Sanat tarihinin farklı yönlerini keşfetmeniz için hazırladığımız özel içerikler</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <div class="icon-circle">
+                            <span class="icon">🎭</span>
+                        </div>
+                    </div>
+                    <div class="feature-content">
+                    <h3>Sanat Akımları</h3>
+                        <p>Rönesans'tan modern sanata, Barok'tan Empresyonizm'e kadar tüm sanat akımlarını derinlemesine inceleyin. Her akımın tarihsel bağlamını, önemli temsilcilerini ve karakteristik özelliklerini öğrenin.</p>
+                        <a href="{{ url_for('movements_page') }}" class="feature-link">Keşfet →</a>
+                    </div>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <div class="icon-circle">
+                            <span class="icon">👨‍🎨</span>
+                        </div>
+                    </div>
+                    <div class="feature-content">
+                    <h3>Sanatçı Profilleri</h3>
+                        <p>Leonardo da Vinci'den Van Gogh'a, Michelangelo'dan Picasso'ya kadar ünlü sanatçıların hayat hikayelerini, eserlerini ve sanat dünyasına katkılarını detaylı biçimde inceleyin.</p>
+                        <a href="{{ url_for('artists_page') }}" class="feature-link">Keşfet →</a>
+                    </div>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <div class="icon-circle">
+                            <span class="icon">🏛️</span>
+                        </div>
+                    </div>
+                    <div class="feature-content">
+                        <h3>Sanal Müzeler</h3>
+                        <p>Dünyanın en ünlü müzelerini sanal olarak ziyaret edin. Louvre, Uffizi, British Museum gibi prestijli kurumların koleksiyonlarını keşfedin.</p>
+                        <a href="{{ url_for('museums_page') }}" class="feature-link">Keşfet →</a>
+                    </div>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <div class="icon-circle">
+                            <span class="icon">📖</span>
+                        </div>
+                    </div>
+                    <div class="feature-content">
+                        <h3>Uzman Yazıları</h3>
+                        <p>Sanat tarihi uzmanları ve akademisyenler tarafından hazırlanan kaliteli içeriklerle sanat bilginizi geliştirin ve yeni perspektifler kazanın.</p>
+                        <a href="{{ url_for('blog_list_page') }}" class="feature-link">Keşfet →</a>
+                    </div>
+                </div>
+            </div>
+            <div style="background:#fffbe7; border-radius:16px; box-shadow:0 2px 12px #e6e2c3; padding:1.5rem 2rem; max-width:400px; margin:2rem auto;">
+  <ul style="list-style:none; margin:0; padding:0; font-size:1.13rem; color:#4a3c1a; font-family:'Georgia',serif;">
+    <li style="margin-bottom:1rem;"><a href="/movements">Sanat Akımları</a></li>
+    <li style="margin-bottom:1rem;"><a href="/museums">Müzeler</a></li>
+    <li style="margin-bottom:1rem;"><a href="/explore">Veri Tabanına Göz At</a></li>
+    <li><a href="/maya">Maya AI</a></li>
+  </ul>
+</div>
+            <div class="explore-menu" style="background:#fff;border-radius:18px;box-shadow:0 2px 12px #ececec;padding:1.5rem 1.2rem;max-width:260px;margin:2rem auto 2.5rem auto;">
+      <div style="font-weight:700;color:#b23a48;font-size:1.13rem;margin-bottom:1.1rem;">Keşfet</div>
+      <ul style="list-style:none;padding:0;margin:0;">
+        <li style="margin-bottom:1rem;"><span style="color:#b23a48;"><i class="fa-solid fa-house"></i></span> <a href="{{ url_for('home') }}" style="color:#b23a48;font-weight:700;text-decoration:none;">Ana Sayfa</a></li>
+        <li style="margin-bottom:1rem;"><span style="color:#1abc9c;"><i class="fa-solid fa-landmark"></i></span> <a href="{{ url_for('museums_page') }}">Müzeler</a></li>
+        <li style="margin-bottom:1rem;"><span style="color:#8e44ad;"><i class="fa-solid fa-palette"></i></span> <a href="{{ url_for('artists_page') }}">Sanatçılar</a></li>
+        <li style="margin-bottom:1rem;"><span style="color:#2980b9;"><i class="fa-solid fa-book"></i></span> <a href="{{ url_for('blog_list_page') }}">Blog</a></li>
+        <li style="margin-bottom:1rem;"><span style="color:#27ae60;"><i class="fa-solid fa-layer-group"></i></span> <a href="{{ url_for('movements_page') }}">Sanat Akımları</a></li>
+        <li style="margin-bottom:1rem;"><span style="color:#e67e22;"><i class="fa-solid fa-search"></i></span> <a href="{{ url_for('explore_page') }}">Veri Tabanını Keşfet</a></li>
+        <li style="margin-bottom:1rem;"><span style="color:#e84393;"><i class="fa-solid fa-robot"></i></span> <a href="{{ url_for('maya_chat') }}">Maya AI Asistan</a></li>
+        <li><span style="color:#0984e3;"><i class="fa-solid fa-map"></i></span> <a href="{{ url_for('cultural_map') }}">Kültürel Harita</a></li>
+      </ul>
+    </div>
+        </div>
+    </section>
+
+    {# --- Son Yazılar Bölümü --- #}
+    <section class="latest-posts-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Son Yazılar</h2>
+                <p class="section-subtitle">Sanat dünyasından en güncel içerikler ve derinlemesine analizler</p>
+                <a href="{{ url_for('blog_list_page') }}" class="view-all-btn">Tüm Yazıları Gör</a>
+            </div>
+            <div class="posts-grid">
+                {% if latest_posts %}
+                    {% for post in latest_posts %}
+                        <article class="post-card">
+                            <a href="{{ url_for('blog_post_detail_page', post_id=post.id) }}" class="post-link">
+                                <div class="post-image">
+                                {% set image_url = url_for('static', filename='uploads/' + post.image_file) %}
+                                    <img src="{{ image_url }}" alt="{{ post.title }}" loading="lazy">
+                                    <div class="post-overlay">
+                                        <div class="post-meta-overlay">
+                                            <span class="post-date">
+                                                <i class="icon">📅</i>
+                                                {{ post.date_posted.strftime('%d %B %Y') }}
+                                            </span>
+                                        <span class="read-time">
+                                                <i class="icon">⏱️</i>
+                                            {{ (post.content|length / 200)|round|int }} dk okuma
+                                        </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="post-content">
+                                    <div class="post-header">
+                                        <h3 class="post-title">{{ post.title }}</h3>
+                                        <p class="post-author">Yazar: {{ post.author.username }}</p>
+                                    </div>
+                                    <p class="post-summary">{{ post.summary }}</p>
+                                    <div class="post-footer">
+                                        <span class="read-more">Devamını Oku</span>
+                                        <div class="post-stats">
+                                            <span class="comment-count">
+                                                <i class="icon">💬</i>
+                                                {{ post.comments.count() }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </article>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        <div class="empty-icon">📝</div>
+                        <h3>Henüz Blog Yazısı Yok</h3>
+                        <p>İlk blog yazısının yayınlanmasını bekleyin veya siz de katkıda bulunun!</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+
+    {# --- Öne Çıkan Sanatçılar Bölümü --- #}
+    <section class="featured-artists-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Öne Çıkan Sanatçılar</h2>
+                <p class="section-subtitle">Sanat tarihinin en etkili ve önemli sanatçıları</p>
+                <a href="{{ url_for('artists_page') }}" class="view-all-btn">Tüm Sanatçıları Gör</a>
+            </div>
+            <div class="artists-grid">
+                {% if featured_artists %}
+                    {% for artist in featured_artists %}
+                        <div class="artist-card">
+                            <a href="{{ url_for('artist_detail_page', artist_id=artist.id) }}" class="artist-link">
+                                <div class="artist-image">
+                                    {% set image_url = url_for('static', filename='uploads/' + artist.image_file) %}
+                                    <img src="{{ image_url }}" alt="{{ artist.name }}" loading="lazy">
+                                    <div class="artist-overlay">
+                                        <span class="view-profile">Profili Görüntüle</span>
+                                    </div>
+                                </div>
+                                <div class="artist-info">
+                                    <h3 class="artist-name">{{ artist.name }}</h3>
+                                    {% if artist.birth_year and artist.death_year %}
+                                        <span class="artist-years">({{ artist.birth_year }} - {{ artist.death_year }})</span>
+                                    {% elif artist.birth_year %}
+                                        <span class="artist-years">({{ artist.birth_year }} - )</span>
+                                    {% endif %}
+                                    {% if artist.movement %}
+                                        <span class="artist-movement">{{ artist.movement.name }}</span>
+                                    {% endif %}
+                                    {% if artist.bio %}
+                                        <p class="artist-bio">{{ artist.bio[:120] }}{% if artist.bio|length > 120 %}...{% endif %}</p>
+                                    {% endif %}
+                                </div>
+                            </a>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        <div class="empty-icon">👨‍🎨</div>
+                        <h3>Henüz Sanatçı Profili Yok</h3>
+                        <p>Sanatçı profillerinin eklenmesini bekleyin!</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+
+    {# --- Günün Sözü --- #}
+    <section class="quote-section">
+        <div class="container">
+            <div class="quote-card">
+                <div class="quote-decoration">
+                    <span class="quote-mark">"</span>
+                </div>
+                <blockquote class="quote-text">
+                    <p>"Sanat, doğanın yaratamadığını yaratma sanatıdır. Sanatçı, doğanın eksik bıraktığını tamamlar ve onu daha mükemmel hale getirir."</p>
+                    <cite class="quote-author">- Edmund Burke</cite>
+                </blockquote>
+            </div>
+        </div>
+    </section>
+
+    {# --- Newsletter Kayıt Bölümü --- #}
+    <section class="newsletter-section">
+        <div class="container">
+            <div class="newsletter-content">
+                <div class="newsletter-text">
+                    <h2>Sanat Dünyasından Haberdar Olun</h2>
+                    <p>Yeni blog yazıları, sanatçı profilleri, sanat akımları ve özel içeriklerden ilk siz haberdar olun. Sanat tarihinin en güncel gelişmelerini kaçırmayın.</p>
+                </div>
+                <form class="newsletter-form" method="POST" action="{{ url_for('newsletter_subscribe') }}">
+                    <div class="form-group">
+                        <input type="email" name="email" placeholder="E-posta adresinizi girin" required>
+                        <button type="submit" class="btn btn-primary">
+                            <span class="btn-text">Abone Ol</span>
+                            <span class="btn-icon">📧</span>
+                        </button>
+                    </div>
+                    <small class="newsletter-note">Spam göndermiyoruz, istediğiniz zaman abonelikten çıkabilirsiniz.</small>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    {# --- Sosyal Medya Bağlantıları --- #}
+    <section class="social-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Bizi Takip Edin</h2>
+                <p class="section-subtitle">Sanat dünyasından güncel haberler ve özel içerikler için sosyal medyada bizi takip edin</p>
+            </div>
+            <div class="social-links">
+                <a href="#" class="social-link facebook">
+                    <div class="social-icon">📘</div>
+                    <span class="social-name">Facebook</span>
+                </a>
+                <a href="#" class="social-link twitter">
+                    <div class="social-icon">🐦</div>
+                    <span class="social-name">Twitter</span>
+                </a>
+                <a href="#" class="social-link instagram">
+                    <div class="social-icon">📷</div>
+                    <span class="social-name">Instagram</span>
+                </a>
+                <a href="#" class="social-link youtube">
+                    <div class="social-icon">📺</div>
+                    <span class="social-name">YouTube</span>
+                </a>
+            </div>
+        </div>
+    </section>
+{% endblock %}

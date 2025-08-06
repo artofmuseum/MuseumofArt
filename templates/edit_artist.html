@@ -1,0 +1,61 @@
+{% extends "layout.html" %}
+
+{% block title %}Sanatçıyı Düzenle: {{ artist_to_edit.name }} - Art of Museum{% endblock %}
+
+{% block content %}
+    <div class="form-container">
+        <h2>Sanatçıyı Düzenle</h2>
+        {# action="" ile formun aynı URL'e gönderilmesini sağlıyoruz #}
+        <form method="POST" action="">
+            {{ form.hidden_tag() }} <!-- CSRF koruması -->
+            
+            <div class="form-group">
+                {{ form.name.label(class="form-label") }}
+                {% if form.name.errors %}
+                    {{ form.name(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.name.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.name(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                {{ form.period.label(class="form-label") }}
+                {% if form.period.errors %}
+                    {{ form.period(class="form-control is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.period.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.period(class="form-control") }}
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                {{ form.bio.label(class="form-label") }}
+                {% if form.bio.errors %}
+                    {{ form.bio(class="form-control is-invalid", rows="5") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.bio.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.bio(class="form-control", rows="5") }}
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                {{ form.submit(class="btn btn-primary") }}
+            </div>
+        </form>
+        <hr>
+        <p><a href="{{ url_for('artists_page') }}">Sanatçı Listesine Geri Dön</a></p>
+    </div>
+{% endblock %}

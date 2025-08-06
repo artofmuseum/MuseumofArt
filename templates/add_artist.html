@@ -1,0 +1,108 @@
+{% extends "layout_tailwind.html" %}
+
+{% block title %}Yeni Sanatçı Ekle - Art of Museum{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto p-6">
+    <div class="bg-gradient-to-r from-amber-100 to-rose-50 rounded-3xl shadow-xl p-8 border border-amber-200">
+        <h1 class="text-4xl font-bold text-rose-900 mb-6 text-center">Yeni Sanatçı Ekle</h1>
+        
+        <form method="POST" enctype="multipart/form-data" class="space-y-6">
+            {{ form.hidden_tag() }}
+            
+            <!-- İsim -->
+            <div class="form-group">
+                <label for="{{ form.name.id }}" class="block text-lg font-semibold text-rose-800 mb-2">İsim</label>
+                {{ form.name(class="w-full px-4 py-3 rounded-xl border-2 border-amber-200 focus:border-rose-400 focus:ring-2 focus:ring-rose-200 transition-all text-lg") }}
+                {% if form.name.errors %}
+                    <div class="text-red-600 text-sm mt-1">
+                        {% for error in form.name.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Doğum Tarihi -->
+            <div class="form-group">
+                <label for="{{ form.birth_date.id }}" class="block text-lg font-semibold text-rose-800 mb-2">Doğum Tarihi</label>
+                {{ form.birth_date(class="w-full px-4 py-3 rounded-xl border-2 border-amber-200 focus:border-rose-400 focus:ring-2 focus:ring-rose-200 transition-all") }}
+                {% if form.birth_date.errors %}
+                    <div class="text-red-600 text-sm mt-1">
+                        {% for error in form.birth_date.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Ölüm Tarihi -->
+            <div class="form-group">
+                <label for="{{ form.death_date.id }}" class="block text-lg font-semibold text-rose-800 mb-2">Ölüm Tarihi (Opsiyonel)</label>
+                {{ form.death_date(class="w-full px-4 py-3 rounded-xl border-2 border-amber-200 focus:border-rose-400 focus:ring-2 focus:ring-rose-200 transition-all") }}
+                {% if form.death_date.errors %}
+                    <div class="text-red-600 text-sm mt-1">
+                        {% for error in form.death_date.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Biyografi -->
+            <div class="form-group">
+                <label for="{{ form.biography.id }}" class="block text-lg font-semibold text-rose-800 mb-2">Biyografi</label>
+                {{ form.biography(class="w-full px-4 py-3 rounded-xl border-2 border-amber-200 focus:border-rose-400 focus:ring-2 focus:ring-rose-200 transition-all", rows=8) }}
+                {% if form.biography.errors %}
+                    <div class="text-red-600 text-sm mt-1">
+                        {% for error in form.biography.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Sanat Akımı -->
+            <div class="form-group">
+                <label for="{{ form.movement.id }}" class="block text-lg font-semibold text-rose-800 mb-2">Sanat Akımı</label>
+                {{ form.movement(class="w-full px-4 py-3 rounded-xl border-2 border-amber-200 focus:border-rose-400 focus:ring-2 focus:ring-rose-200 transition-all") }}
+                {% if form.movement.errors %}
+                    <div class="text-red-600 text-sm mt-1">
+                        {% for error in form.movement.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Fotoğraf -->
+            <div class="form-group">
+                <label for="{{ form.image.id }}" class="block text-lg font-semibold text-rose-800 mb-2">Fotoğraf</label>
+                {{ form.image(class="w-full px-4 py-3 rounded-xl border-2 border-amber-200 focus:border-rose-400 focus:ring-2 focus:ring-rose-200 transition-all") }}
+                {% if form.image.errors %}
+                    <div class="text-red-600 text-sm mt-1">
+                        {% for error in form.image.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Gönder Butonu -->
+            <div class="text-center pt-6">
+                <button type="submit" class="px-8 py-4 bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white font-bold text-lg rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:scale-105">
+                    <i class="fas fa-user-plus mr-2"></i>
+                    Sanatçıyı Ekle
+                </button>
+            </div>
+        </form>
+        
+        <div class="text-center mt-8">
+            <a href="{{ url_for('admin_panel_page') }}" class="text-rose-600 hover:text-rose-800 font-semibold transition-colors">
+                <i class="fas fa-arrow-left mr-2"></i>
+                Admin Paneline Geri Dön
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

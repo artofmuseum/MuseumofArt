@@ -1,0 +1,95 @@
+{% extends "layout.html" %}
+
+{% block title %}Düzenle: {{ post.title }}{% endblock %}
+
+{% block content %}
+    <div class="form-container">
+        <h2>Yazıyı Düzenle</h2>
+        
+        <form method="POST" action="" enctype="multipart/form-data">
+            {{ form.hidden_tag() }} <!-- CSRF koruması -->
+            
+            <div class="form-group">
+                {{ form.title.label(class="form-label") }}
+                {{ form.title(class="form-control") }}
+                {% if form.title.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.title.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                {{ form.artists.label(class="form-label") }}
+                {# "size=8" ile kutunun yüksekliğini artırarak daha kullanışlı hale getirebiliriz #}
+                {{ form.artists(class="form-control", size=8) }}
+                {% if form.artists.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.artists.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                {{ form.summary.label(class="form-label") }}
+                {{ form.summary(class="form-control", rows="3") }}
+                {% if form.summary.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.summary.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                {{ form.content.label(class="form-label") }}
+                {{ form.content(class="form-control", rows="10") }}
+                {% if form.content.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.content.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <p>Mevcut Resim:</p>
+                <img src="{{ url_for('static', filename='uploads/' + post.image_file) }}" alt="{{ post.title }}" style="width: 100px; height: 100px; object-fit: cover; border-radius: 5px; margin-bottom: 10px;">
+                <br>
+                {{ form.picture.label(class="form-label", text="Resmi Değiştir (Opsiyonel)") }}
+                {{ form.picture(class="form-control-file") }}
+                {% if form.picture.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.picture.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                {{ form.ek_gorseller.label(class="form-label") }}
+                {{ form.ek_gorseller(class="form-control-file", multiple=true) }}
+                {% if form.ek_gorseller.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.ek_gorseller.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                {{ form.submit(class="btn btn-primary") }}
+            </div>
+        </form>
+        <hr>
+        <p><a href="{{ url_for('admin_panel_page') }}">Admin Paneline Geri Dön</a></p>
+    </div>
+{% endblock %}

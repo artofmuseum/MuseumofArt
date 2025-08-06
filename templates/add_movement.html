@@ -1,0 +1,82 @@
+{% extends "layout_tailwind.html" %}
+
+{% block title %}Yeni Sanat Akımı Ekle - Art of Museum{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto p-6">
+    <div class="bg-gradient-to-r from-amber-100 to-rose-50 rounded-3xl shadow-xl p-8 border border-amber-200">
+        <h1 class="text-4xl font-bold text-rose-900 mb-6 text-center">Yeni Sanat Akımı Ekle</h1>
+        
+        <form method="POST" enctype="multipart/form-data" class="space-y-6">
+            {{ form.hidden_tag() }}
+            
+            <!-- İsim -->
+            <div class="form-group">
+                <label for="{{ form.name.id }}" class="block text-lg font-semibold text-rose-800 mb-2">Akım Adı</label>
+                {{ form.name(class="w-full px-4 py-3 rounded-xl border-2 border-amber-200 focus:border-rose-400 focus:ring-2 focus:ring-rose-200 transition-all text-lg") }}
+                {% if form.name.errors %}
+                    <div class="text-red-600 text-sm mt-1">
+                        {% for error in form.name.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Dönem -->
+            <div class="form-group">
+                <label for="{{ form.period.id }}" class="block text-lg font-semibold text-rose-800 mb-2">Dönem</label>
+                {{ form.period(class="w-full px-4 py-3 rounded-xl border-2 border-amber-200 focus:border-rose-400 focus:ring-2 focus:ring-rose-200 transition-all") }}
+                {% if form.period.errors %}
+                    <div class="text-red-600 text-sm mt-1">
+                        {% for error in form.period.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Açıklama -->
+            <div class="form-group">
+                <label for="{{ form.description.id }}" class="block text-lg font-semibold text-rose-800 mb-2">Açıklama</label>
+                {{ form.description(class="w-full px-4 py-3 rounded-xl border-2 border-amber-200 focus:border-rose-400 focus:ring-2 focus:ring-rose-200 transition-all", rows=8) }}
+                {% if form.description.errors %}
+                    <div class="text-red-600 text-sm mt-1">
+                        {% for error in form.description.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Fotoğraf -->
+            <div class="form-group">
+                <label for="{{ form.image.id }}" class="block text-lg font-semibold text-rose-800 mb-2">Fotoğraf</label>
+                {{ form.image(class="w-full px-4 py-3 rounded-xl border-2 border-amber-200 focus:border-rose-400 focus:ring-2 focus:ring-rose-200 transition-all") }}
+                {% if form.image.errors %}
+                    <div class="text-red-600 text-sm mt-1">
+                        {% for error in form.image.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Gönder Butonu -->
+            <div class="text-center pt-6">
+                <button type="submit" class="px-8 py-4 bg-gradient-to-r from-rose-600 to-rose-700 hover:from-rose-700 hover:to-rose-800 text-white font-bold text-lg rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:scale-105">
+                    <i class="fas fa-layer-group mr-2"></i>
+                    Sanat Akımını Ekle
+                </button>
+            </div>
+        </form>
+        
+        <div class="text-center mt-8">
+            <a href="{{ url_for('admin_panel_page') }}" class="text-rose-600 hover:text-rose-800 font-semibold transition-colors">
+                <i class="fas fa-arrow-left mr-2"></i>
+                Admin Paneline Geri Dön
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

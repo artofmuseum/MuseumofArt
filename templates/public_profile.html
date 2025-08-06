@@ -1,0 +1,68 @@
+{% extends "layout.html" %}
+{% block title %}{{ user.username }} - Profil - Art of Museum{% endblock %}
+{% block content %}
+<div class="profile-container">
+    <h2>{{ user.username }}
+        {% if current_user.is_authenticated and user.id == current_user.id %}
+            <span style="font-size:0.7em;color:#b6a179;">(Sen)</span>
+        {% endif %}
+    </h2>
+    <div style="text-align:center;margin-bottom:24px;">
+        <img src="{{ url_for('static', filename='uploads/' + (user.profile_image or 'default_artist.jpg')) }}" alt="Profil Resmi" style="width:120px;height:120px;object-fit:cover;border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,0.08);border:3px solid #b6a179;">
+    </div>
+    <div class="profile-details">
+        <p><strong>Kullanıcı Adı:</strong> {{ user.username }}</p>
+        <p><strong>Rol:</strong> {{ user.role|capitalize }}</p>
+        <p><strong>Takipçi:</strong> <span id="follower-count">{{ follower_count }}</span></p>
+        <p><strong>Takip Edilen:</strong> {{ following_count }}</p>
+        {% if user.following.count() > 0 %}
+            <div style="margin-top:18px;text-align:left;">
+                <strong>Takip Edilenler:</strong>
+                <ul style="margin:8px 0 0 0;padding:0;list-style:none;">
+                    {% for follow in user.following %}
+                        <li style="margin-bottom:4px;"><a href="{{ url_for('public_profile', user_id=follow.followed.id) }}">{{ follow.followed.username }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+        {% if user.followers.count() > 0 %}
+            <div style="margin-top:18px;text-align:left;">
+                <strong>Takipçiler:</strong>
+                <ul style="margin:8px 0 0 0;padding:0;list-style:none;">
+                    {% for follow in user.followers %}
+                        <li style="margin-bottom:4px;"><a href="{{ url_for('public_profile', user_id=follow.follower.id) }}">{{ follow.follower.username }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+    </div>
+    {% if current_user.is_authenticated and user.id != current_user.id %}
+        <div style="margin:18px 0;">
+            <button id="follow-btn" class="btn btn-primary" onclick="toggleFollow({{ user.id }})">
+                {{ 'Takibi Bırak' if is_following else 'Takip Et' }}
+            </button>
+        </div>
+    {% endif %}
+    <hr>
+    <p><a href="{{ url_for('home') }}">Ana Sayfaya Dön</a></p>
+</div>
+<script>
+function toggleFollow(userId) {
+    const btn = document.getElementById('follow-btn');
+    const followerCount = document.getElementById('follower-count');
+    const isFollowing = btn.textContent.trim() === 'Takibi Bırak';
+    fetch((isFollowing ? '/unfollow/' : '/follow/') + userId, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+        credentials: 'same-origin'
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            btn.textContent = data.following ? 'Takibi Bırak' : 'Takip Et';
+            followerCount.textContent = data.follower_count;
+        }
+    });
+}
+</script>
+{% endblock %} 

@@ -1,0 +1,16 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {"name": "Europe & Turkey"},
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": [
+          [[[13.0, 45.0], [40.0, 45.0], [40.0, 60.0], [13.0, 60.0], [13.0, 45.0]]],
+          [[[25.0, 35.0], [45.0, 35.0], [45.0, 43.0], [25.0, 43.0], [25.0, 35.0]]]
+        ]
+      }
+    }
+  ]
+} 

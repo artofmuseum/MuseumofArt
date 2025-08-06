@@ -1,0 +1,159 @@
+{% extends "layout_tailwind.html" %}
+
+{% block title %}Kültür Noktası Yönetimi - Admin{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto p-6">
+    <div class="bg-gradient-to-r from-amber-100 to-rose-50 rounded-3xl shadow-xl p-8 border border-amber-200">
+        <h1 class="text-4xl font-bold text-rose-900 mb-6 text-center">Kültür Noktası Yönetimi</h1>
+        
+        <!-- Yeni Kültür Noktası Ekleme Formu -->
+        <div class="bg-white rounded-2xl p-6 mb-8 shadow-lg">
+            <h2 class="text-2xl font-semibold text-rose-800 mb-4">Yeni Kültür Noktası Ekle</h2>
+            <form method="POST" enctype="multipart/form-data" class="space-y-4">
+                {{ form.hidden_tag() }}
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="form-group">
+                        <label for="{{ form.name.id }}" class="block text-lg font-semibold text-rose-800 mb-2">İsim</label>
+                        {{ form.name(class="w-full px-4 py-3 rounded-xl border-2 border-amber-200 focus:border-rose-400 focus:ring-2 focus:ring-rose-200 transition-all") }}
+                        {% if form.name.errors %}
+                            <div class="text-red-600 text-sm mt-1">
+                                {% for error in form.name.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.category.id }}" class="block text-lg font-semibold text-rose-800 mb-2">Kategori</label>
+                        {{ form.category(class="w-full px-4 py-3 rounded-xl border-2 border-amber-200 focus:border-rose-400 focus:ring-2 focus:ring-rose-200 transition-all") }}
+                        {% if form.category.errors %}
+                            <div class="text-red-600 text-sm mt-1">
+                                {% for error in form.category.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.description.id }}" class="block text-lg font-semibold text-rose-800 mb-2">Açıklama</label>
+                    {{ form.description(class="w-full px-4 py-3 rounded-xl border-2 border-amber-200 focus:border-rose-400 focus:ring-2 focus:ring-rose-200 transition-all", rows=4) }}
+                    {% if form.description.errors %}
+                        <div class="text-red-600 text-sm mt-1">
+                            {% for error in form.description.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="form-group">
+                        <label for="{{ form.latitude.id }}" class="block text-lg font-semibold text-rose-800 mb-2">Enlem</label>
+                        {{ form.latitude(class="w-full px-4 py-3 rounded-xl border-2 border-amber-200 focus:border-rose-400 focus:ring-2 focus:ring-rose-200 transition-all") }}
+                        {% if form.latitude.errors %}
+                            <div class="text-red-600 text-sm mt-1">
+                                {% for error in form.latitude.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.longitude.id }}" class="block text-lg font-semibold text-rose-800 mb-2">Boylam</label>
+                        {{ form.longitude(class="w-full px-4 py-3 rounded-xl border-2 border-amber-200 focus:border-rose-400 focus:ring-2 focus:ring-rose-200 transition-all") }}
+                        {% if form.longitude.errors %}
+                            <div class="text-red-600 text-sm mt-1">
+                                {% for error in form.longitude.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="form-group">
+                        <label for="{{ form.image.id }}" class="block text-lg font-semibold text-rose-800 mb-2">Ana Fotoğraf</label>
+                        {{ form.image(class="w-full px-4 py-3 rounded-xl border-2 border-amber-200 focus:border-rose-400 focus:ring-2 focus:ring-rose-200 transition-all") }}
+                        {% if form.image.errors %}
+                            <div class="text-red-600 text-sm mt-1">
+                                {% for error in form.image.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.images.id }}" class="block text-lg font-semibold text-rose-800 mb-2">Ek Fotoğraflar</label>
+                        {{ form.images(class="w-full px-4 py-3 rounded-xl border-2 border-amber-200 focus:border-rose-400 focus:ring-2 focus:ring-rose-200 transition-all", multiple=true) }}
+                        {% if form.images.errors %}
+                            <div class="text-red-600 text-sm mt-1">
+                                {% for error in form.images.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="text-center pt-4">
+                    <button type="submit" class="px-8 py-4 bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 text-white font-bold text-lg rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:scale-105">
+                        <i class="fas fa-plus mr-2"></i>
+                        Kültür Noktasını Ekle
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Önerilen Kültür Noktaları -->
+        <div class="bg-white rounded-2xl p-6 shadow-lg">
+            <h2 class="text-2xl font-semibold text-rose-800 mb-4">Önerilen Kültür Noktaları (Kullanıcıdan)</h2>
+            {% if suggestions and suggestions|length > 0 %}
+                <div class="overflow-x-auto">
+                    <table class="min-w-full bg-white rounded-xl shadow text-sm">
+                        <thead class="bg-amber-100 text-rose-900">
+                            <tr>
+                                <th class="py-3 px-4 text-left">İsim</th>
+                                <th class="py-3 px-4 text-left">Kategori</th>
+                                <th class="py-3 px-4 text-left">Açıklama</th>
+                                <th class="py-3 px-4 text-left">Konum</th>
+                                <th class="py-3 px-4 text-left">İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for suggestion in suggestions %}
+                                <tr class="border-b last:border-0">
+                                    <td class="py-2 px-4 font-semibold">{{ suggestion.name }}</td>
+                                    <td class="py-2 px-4">{{ suggestion.category }}</td>
+                                    <td class="py-2 px-4">{{ suggestion.description[:100] }}...</td>
+                                    <td class="py-2 px-4">{{ suggestion.latitude }}, {{ suggestion.longitude }}</td>
+                                    <td class="py-2 px-4 flex flex-wrap gap-2">
+                                        <button class="px-3 py-1 rounded bg-emerald-500 hover:bg-emerald-600 text-white font-semibold text-xs cursor-pointer transition">Onayla</button>
+                                        <button class="px-3 py-1 rounded bg-red-500 hover:bg-red-600 text-white font-semibold text-xs cursor-pointer transition">Reddet</button>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-gray-500 italic text-center py-8">Henüz önerilen kültür noktası bulunmuyor.</p>
+            {% endif %}
+        </div>
+        
+        <div class="text-center mt-8">
+            <a href="{{ url_for('admin_panel_page') }}" class="text-rose-600 hover:text-rose-800 font-semibold transition-colors">
+                <i class="fas fa-arrow-left mr-2"></i>
+                Admin Paneline Geri Dön
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %} 

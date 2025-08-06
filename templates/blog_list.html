@@ -1,0 +1,152 @@
+{% extends "layout_tailwind.html" %}
+
+{% block title %}Blog - Art of Museum{% endblock %}
+
+{% block content %}
+    <h1 class="text-3xl font-bold text-rose-800 mb-8 text-center">Blog - Art of Museum</h1>
+    {% if posts.items %}
+        <div class="w-full flex justify-center">
+          <div class="grid w-full max-w-6xl grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">
+            {% for post in posts.items %}
+                <div class="glass-effect rounded-2xl shadow-lg p-6 flex flex-col card-hover border border-white/50 w-full max-w-md min-h-[380px]">
+                    <img src="{{ url_for('static', filename='uploads/' + post.image_file) }}" alt="{{ post.title }}" class="w-full h-48 object-cover rounded-xl mb-4 shadow-md">
+                    
+                    <!-- Post Type Badge -->
+                    <div class="flex items-center gap-2 mb-3">
+                        {% if post.post_type == 'makale' %}
+                            <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full font-medium">📄 Makale</span>
+                        {% elif post.post_type == 'arastirma' %}
+                            <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-medium">🔬 Araştırma</span>
+                        {% elif post.post_type == 'inceleme' %}
+                            <span class="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded-full font-medium">📖 İnceleme</span>
+                        {% elif post.post_type == 'haber' %}
+                            <span class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full font-medium">📰 Haber</span>
+                        {% elif post.post_type == 'roportaj' %}
+                            <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded-full font-medium">🎤 Röportaj</span>
+                        {% elif post.post_type == 'kitap_tanitimi' %}
+                            <span class="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full font-medium">📚 Kitap Tanıtımı</span>
+                        {% elif post.post_type == 'sergi_haberi' %}
+                            <span class="bg-pink-100 text-pink-800 text-xs px-2 py-1 rounded-full font-medium">🎨 Sergi Haberi</span>
+                        {% else %}
+                            <span class="bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded-full font-medium">📝 Blog</span>
+                        {% endif %}
+                        
+                        {% if post.category %}
+                            <span class="bg-rose-100 text-rose-800 text-xs px-2 py-1 rounded-full font-medium">{{ post.category.name }}</span>
+                        {% endif %}
+                    </div>
+                    
+                    <h2 class="text-xl font-bold text-rose-900 mb-2">{{ post.title }}</h2>
+                    <p class="text-gray-600 mb-2">{{ post.summary }}</p>
+                    
+                    <!-- Action Buttons -->
+                    <div class="flex items-center gap-2 mb-3">
+                        <button onclick="toggleLike({{ post.id }})" id="likeBtn{{ post.id }}" class="flex items-center gap-1 px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-sm hover:bg-blue-100 transition-colors">
+                            <i class="fa-regular fa-thumbs-up text-xs"></i>
+                            <span id="likeText{{ post.id }}">Beğen</span>
+                        </button>
+                        <button onclick="toggleFavorite({{ post.id }})" id="favoriteBtn{{ post.id }}" class="flex items-center gap-1 px-3 py-1 bg-red-50 text-red-600 rounded-full text-sm hover:bg-red-100 transition-colors">
+                            <i class="fa-regular fa-heart text-xs"></i>
+                            <span id="favoriteText{{ post.id }}">Favorile</span>
+                        </button>
+                    </div>
+                    
+                    <a href="{{ url_for('blog_post_detail_page', post_id=post.id) }}" class="inline-block bg-gradient-to-r from-rose-600 to-rose-700 text-white px-6 py-2 rounded-full font-semibold hover:from-rose-700 hover:to-rose-800 transition-all shadow-md hover:shadow-lg">Yazıyı Oku</a>
+                </div>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="flex justify-center mt-8">
+            {% if posts.has_prev %}
+                <a href="{{ url_for('blog_list_page', page=posts.prev_num) }}" class="px-4 py-2 rounded-l bg-gray-200 text-gray-700 hover:bg-rose-100">&laquo; Önceki</a>
+            {% endif %}
+            <span class="px-4 py-2 bg-white text-gray-700">{{ posts.page }} / {{ posts.pages }}</span>
+            {% if posts.has_next %}
+                <a href="{{ url_for('blog_list_page', page=posts.next_num) }}" class="px-4 py-2 rounded-r bg-gray-200 text-gray-700 hover:bg-rose-100">Sonraki &raquo;</a>
+            {% endif %}
+        </div>
+    {% else %}
+        <div class="text-center text-gray-500 mt-16">
+            <i class="fa-solid fa-newspaper text-4xl mb-4"></i>
+            <div class="text-lg">Gösterilecek blog yazısı bulunamadı.</div>
+        </div>
+    {% endif %}
+
+<script>
+// Like and Favorite functionality for blog posts
+function toggleLike(postId) {
+    fetch(`/content/blog_post/${postId}/like`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        updateLikeButton(postId, data.status === 'liked');
+        showToast(data.message);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showToast('Bir hata oluştu!');
+    });
+}
+
+function toggleFavorite(postId) {
+    fetch(`/content/blog_post/${postId}/favorite`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        updateFavoriteButton(postId, data.status === 'favorited');
+        showToast(data.message);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showToast('Bir hata oluştu!');
+    });
+}
+
+function updateLikeButton(postId, isLiked) {
+    const btn = document.getElementById(`likeBtn${postId}`);
+    const icon = btn.querySelector('i');
+    const text = document.getElementById(`likeText${postId}`);
+    
+    if (isLiked) {
+        icon.className = 'fa-solid fa-thumbs-up text-xs text-blue-500';
+        text.textContent = 'Beğenildi';
+    } else {
+        icon.className = 'fa-regular fa-thumbs-up text-xs';
+        text.textContent = 'Beğen';
+    }
+}
+
+function updateFavoriteButton(postId, isFavorited) {
+    const btn = document.getElementById(`favoriteBtn${postId}`);
+    const icon = btn.querySelector('i');
+    const text = document.getElementById(`favoriteText${postId}`);
+    
+    if (isFavorited) {
+        icon.className = 'fa-solid fa-heart text-xs text-red-500';
+        text.textContent = 'Favorilendi';
+    } else {
+        icon.className = 'fa-regular fa-heart text-xs';
+        text.textContent = 'Favorile';
+    }
+}
+
+function showToast(message) {
+    const toast = document.createElement('div');
+    toast.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.remove();
+    }, 3000);
+}
+</script>
+{% endblock %}

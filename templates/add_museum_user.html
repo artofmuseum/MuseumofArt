@@ -1,0 +1,96 @@
+{% extends "layout_tailwind.html" %}
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-teal-50 via-white to-cyan-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-8">
+    <div class="max-w-4xl mx-auto px-4">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold gradient-text mb-4">Müze Ekle</h1>
+            <p class="text-gray-600 dark:text-gray-300 text-lg">Yeni bir müze ekleyerek topluluğumuza katkıda bulunun</p>
+        </div>
+        
+        <!-- Form Card -->
+        <div class="glass-effect rounded-3xl shadow-xl p-8 border border-white/50">
+            <form method="POST" enctype="multipart/form-data" class="space-y-6">
+                <!-- Müze Adı -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <i class="fa-solid fa-landmark mr-2 text-teal-500"></i>Müze Adı *
+                    </label>
+                    <input type="text" name="name" required class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-teal-500 focus:border-transparent">
+                </div>
+                
+                <!-- Konum -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <i class="fa-solid fa-location-dot mr-2 text-green-500"></i>Konum *
+                    </label>
+                    <input type="text" name="location" required class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-green-500 focus:border-transparent" placeholder="Şehir, Ülke">
+                </div>
+                
+                <!-- Website -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <i class="fa-solid fa-globe mr-2 text-blue-500"></i>Website
+                    </label>
+                    <input type="url" name="website" class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="https://www.example.com">
+                </div>
+                
+                <!-- Açıklama -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <i class="fa-solid fa-align-left mr-2 text-indigo-500"></i>Açıklama *
+                    </label>
+                    <textarea name="description" rows="6" required class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none" placeholder="Müzenin koleksiyonu, tarihi ve öne çıkan özellikleri hakkında bilgi verin..."></textarea>
+                </div>
+                
+                <!-- Müze Resmi -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <i class="fa-solid fa-image mr-2 text-cyan-500"></i>Müze Resmi (Opsiyonel)
+                    </label>
+                    <input type="file" name="picture" accept="image/*" class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-cyan-500 focus:border-transparent file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-cyan-50 file:text-cyan-700 hover:file:bg-cyan-100">
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Desteklenen formatlar: JPG, PNG, JPEG, WEBP</p>
+                </div>
+                
+                <!-- Ek Müze Fotoğrafları -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <i class="fa-solid fa-images mr-2 text-purple-500"></i>Ek Müze Fotoğrafları (Opsiyonel)
+                    </label>
+                    <input type="file" name="additional_photos" accept="image/*" multiple class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100">
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Birden fazla fotoğraf seçebilirsiniz. Desteklenen formatlar: JPG, PNG, JPEG, WEBP</p>
+                </div>
+                
+                <!-- Butonlar -->
+                <div class="flex gap-4 pt-6">
+                    <button type="submit" class="flex-1 bg-gradient-to-r from-teal-500 to-teal-600 text-white py-3 rounded-xl font-semibold hover:from-teal-600 hover:to-teal-700 transition-all shadow-lg hover:shadow-xl">
+                        <i class="fa-solid fa-plus mr-2"></i>Müzeyi Ekle
+                    </button>
+                    <button type="button" onclick="window.location.href='/museums'" class="px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-all">
+                        <i class="fa-solid fa-times mr-2"></i>İptal
+                    </button>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Bilgi Kartı -->
+        <div class="mt-8 glass-effect rounded-2xl p-6 border border-white/50">
+            <div class="flex items-start gap-4">
+                <div class="w-12 h-12 bg-gradient-to-r from-teal-500 to-teal-600 rounded-full flex items-center justify-center flex-shrink-0">
+                    <i class="fa-solid fa-lightbulb text-white"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-gray-900 dark:text-white mb-2">İpuçları</h3>
+                    <ul class="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                        <li>• Müze adı ve konum bilgisi zorunludur</li>
+                        <li>• Açıklama alanında müzenin koleksiyonunu ve özelliklerini detaylandırın</li>
+                        <li>• Website alanına müzenin resmi web sitesini ekleyebilirsiniz</li>
+                        <li>• Konum bilgisinde şehir ve ülke belirtmeyi unutmayın</li>
+                        <li>• Eklediğiniz müzeler topluluk tarafından incelenecektir</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

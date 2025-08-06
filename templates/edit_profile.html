@@ -1,0 +1,181 @@
+{% extends "layout_tailwind.html" %}
+
+{% block title %}Profilimi Düzenle - Art of Museum{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto p-6">
+    <!-- Header Section -->
+    <div class="mb-8">
+        <h1 class="text-4xl font-bold text-gray-800 mb-2">Profilimi Düzenle</h1>
+        <p class="text-lg text-gray-600">Profil bilgilerinizi güncelleyin ve kişiselleştirin</p>
+    </div>
+
+    <!-- Main Form Container -->
+    <div class="bg-white rounded-3xl shadow-xl overflow-hidden">
+        <!-- Form Header -->
+        <div class="bg-gradient-to-r from-rose-500 via-purple-500 to-teal-500 p-8 text-white relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16"></div>
+            <div class="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full translate-y-12 -translate-x-12"></div>
+            <div class="relative z-10">
+                <h2 class="text-2xl font-bold mb-2">Profil Bilgileri</h2>
+                <p class="text-white/90">Kişisel bilgilerinizi güncelleyin</p>
+            </div>
+        </div>
+
+        <!-- Form Content -->
+        <div class="p-8">
+            <form method="POST" enctype="multipart/form-data" class="space-y-6">
+                {{ form.hidden_tag() }}
+                
+                <!-- Profile Picture Section -->
+                <div class="mb-8">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">Profil Fotoğrafı</h3>
+                    <div class="flex items-center gap-6">
+                        <div class="relative">
+                            <img src="{{ url_for('static', filename='uploads/' + (current_user.profile_image or 'default_artist.jpg')) }}" 
+                                 alt="Mevcut Profil Resmi" 
+                                 class="w-24 h-24 rounded-full object-cover border-4 border-gray-200 shadow-lg">
+                            <div class="absolute -bottom-2 -right-2 bg-rose-500 text-white rounded-full p-2">
+                                <i class="fa-solid fa-camera text-sm"></i>
+                            </div>
+                        </div>
+                        <div class="flex-1">
+                            <label for="{{ form.profile_image.id }}" class="block text-sm font-medium text-gray-700 mb-2">
+                                Yeni Profil Fotoğrafı Seç
+                            </label>
+                            <div class="flex items-center gap-3">
+                                {{ form.profile_image(class="hidden", id="profile-image-input") }}
+                                <button type="button" onclick="document.getElementById('profile-image-input').click()" 
+                                        class="px-4 py-2 bg-gradient-to-r from-rose-500 to-purple-500 text-white rounded-lg hover:from-rose-600 hover:to-purple-600 transition-all font-medium">
+                                    <i class="fa-solid fa-upload mr-2"></i>Dosya Seç
+                                </button>
+                                <span id="file-name" class="text-sm text-gray-500">Dosya seçilmedi</span>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-1">JPG, PNG, JPEG, WEBP formatları desteklenir</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Personal Information -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="form-group">
+                        <label for="{{ form.first_name.id }}" class="block text-lg font-semibold text-gray-800 mb-2">
+                            <i class="fa-solid fa-user mr-2 text-rose-500"></i>Ad
+                        </label>
+                        {{ form.first_name(class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-rose-400 focus:ring-2 focus:ring-rose-200 transition-all text-gray-700", placeholder="Adınızı girin") }}
+                        {% if form.first_name.errors %}
+                            <div class="text-red-600 text-sm mt-1">
+                                {% for error in form.first_name.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.last_name.id }}" class="block text-lg font-semibold text-gray-800 mb-2">
+                            <i class="fa-solid fa-user mr-2 text-purple-500"></i>Soyad
+                        </label>
+                        {{ form.last_name(class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-400 focus:ring-2 focus:ring-purple-200 transition-all text-gray-700", placeholder="Soyadınızı girin") }}
+                        {% if form.last_name.errors %}
+                            <div class="text-red-600 text-sm mt-1">
+                                {% for error in form.last_name.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.username.id }}" class="block text-lg font-semibold text-gray-800 mb-2">
+                            <i class="fa-solid fa-at mr-2 text-teal-500"></i>Kullanıcı Adı
+                        </label>
+                        {{ form.username(class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-teal-400 focus:ring-2 focus:ring-teal-200 transition-all text-gray-700", placeholder="Kullanıcı adınızı girin") }}
+                        {% if form.username.errors %}
+                            <div class="text-red-600 text-sm mt-1">
+                                {% for error in form.username.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.email.id }}" class="block text-lg font-semibold text-gray-800 mb-2">
+                            <i class="fa-solid fa-envelope mr-2 text-amber-500"></i>E-posta
+                        </label>
+                        {{ form.email(class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-amber-400 focus:ring-2 focus:ring-amber-200 transition-all text-gray-700", placeholder="E-posta adresinizi girin") }}
+                        {% if form.email.errors %}
+                            <div class="text-red-600 text-sm mt-1">
+                                {% for error in form.email.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-col sm:flex-row gap-4 pt-6 border-t border-gray-200">
+                    {{ form.submit(class="flex-1 px-6 py-3 bg-gradient-to-r from-rose-500 to-purple-500 text-white font-semibold rounded-xl hover:from-rose-600 hover:to-purple-600 transition-all shadow-lg hover:shadow-xl transform hover:scale-105") }}
+                    <a href="{{ url_for('profile_page') }}" 
+                       class="flex-1 px-6 py-3 bg-gray-100 text-gray-700 font-semibold rounded-xl hover:bg-gray-200 transition-all text-center">
+                        Vazgeç
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Tips Section -->
+    <div class="mt-8 bg-gradient-to-r from-amber-50 to-rose-50 rounded-2xl p-6 border border-amber-200">
+        <h3 class="text-lg font-semibold text-amber-800 mb-3 flex items-center gap-2">
+            <i class="fa-solid fa-lightbulb text-amber-500"></i>
+            Profil Güncelleme İpuçları
+        </h3>
+        <ul class="space-y-2 text-sm text-amber-700">
+            <li class="flex items-start gap-2">
+                <i class="fa-solid fa-check text-green-500 mt-1"></i>
+                Profil fotoğrafınız için yüksek kaliteli, kare formatında resimler kullanın
+            </li>
+            <li class="flex items-start gap-2">
+                <i class="fa-solid fa-check text-green-500 mt-1"></i>
+                Kullanıcı adınız benzersiz ve hatırlanabilir olmalı
+            </li>
+            <li class="flex items-start gap-2">
+                <i class="fa-solid fa-check text-green-500 mt-1"></i>
+                E-posta adresinizin güncel olduğundan emin olun
+            </li>
+        </ul>
+    </div>
+</div>
+
+<script>
+// File input handling
+document.getElementById('profile-image-input').addEventListener('change', function(e) {
+    const fileName = e.target.files[0]?.name || 'Dosya seçilmedi';
+    document.getElementById('file-name').textContent = fileName;
+});
+
+// Form validation
+document.querySelector('form').addEventListener('submit', function(e) {
+    const requiredFields = ['first_name', 'last_name', 'username', 'email'];
+    let isValid = true;
+    
+    requiredFields.forEach(fieldName => {
+        const field = document.querySelector(`[name="${fieldName}"]`);
+        if (!field.value.trim()) {
+            field.classList.add('border-red-500');
+            isValid = false;
+        } else {
+            field.classList.remove('border-red-500');
+        }
+    });
+    
+    if (!isValid) {
+        e.preventDefault();
+        alert('Lütfen tüm gerekli alanları doldurun.');
+    }
+});
+</script>
+{% endblock %} 

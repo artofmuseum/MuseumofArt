@@ -1,0 +1,304 @@
+{% extends "layout_tailwind.html" %}
+{% block title %}Veri Tabanına Göz At{% endblock %}
+{% block content %}
+<!-- Hero Header -->
+<div class="w-full bg-gradient-to-b from-rose-50 to-white dark:from-gray-900 dark:to-gray-900 pb-8">
+    <div class="max-w-[1600px] mx-auto px-4 pt-8 md:px-6">
+        <div class="flex flex-col items-center text-center mb-12">
+            <div class="mb-4">
+                <span class="bg-gradient-to-r from-rose-500 to-rose-600 text-white px-4 py-2 rounded-full text-sm font-bold shadow-md">
+                    <i class="fa-solid fa-database mr-2"></i>Veri Tabanı
+                </span>
+            </div>
+            <h1 class="text-4xl md:text-5xl font-extrabold gradient-text mb-4">Sanat Dünyasının Verileri</h1>
+            <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl">
+                Art of Museum'un kapsamlı sanat veri tabanında arama yapın, sanat eserlerini, sanatçıları ve akımları keşfedin.
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="flex w-full max-w-[1600px] mx-auto mt-6 gap-6 px-2 md:px-6">
+    <!-- Sol Menü -->
+    <aside class="flex flex-col w-56 glass-effect rounded-2xl shadow-lg p-4 gap-2 h-fit sticky top-28 border border-white/50">
+        <h3 class="text-lg font-bold gradient-text mb-3 px-3">Filtreler</h3>
+        
+        <!-- Sanat Eserleri Dropdown -->
+        <div class="relative" x-data="{ open: false }">
+            <button @click="open = !open" class="w-full flex items-center justify-between gap-3 px-3 py-3 rounded-xl hover:bg-rose-50 transition-all">
+                <div class="flex items-center gap-3">
+                    <i class="fa-solid fa-palette text-rose-600"></i>
+                    <span class="text-gray-700">Sanat Eserleri</span>
+                </div>
+                <i class="fa-solid fa-chevron-down text-gray-400 transition-transform" :class="{ 'transform rotate-180': open }"></i>
+            </button>
+            <div x-show="open" 
+                 x-cloak
+                 x-transition:enter="dropdown-enter-active"
+                 x-transition:enter-start="dropdown-enter-from"
+                 x-transition:enter-end="opacity-100 transform translate-y-0"
+                 x-transition:leave="dropdown-leave-active"
+                 x-transition:leave-start="opacity-100 transform translate-y-0"
+                 x-transition:leave-end="dropdown-leave-to"
+                 class="pl-8 mt-1 space-y-1 bg-white/50 backdrop-blur-sm rounded-lg py-2">
+                <a href="#" class="block py-2 px-3 text-sm text-gray-600 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all">Arkeoloji</a>
+                <a href="#" class="block py-2 px-3 text-sm text-gray-600 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all">Sanat Tarihi</a>
+                <a href="#" class="block py-2 px-3 text-sm text-gray-600 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all">Antropoloji</a>
+                <a href="#" class="block py-2 px-3 text-sm text-gray-600 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all">Tarih</a>
+            </div>
+        </div>
+
+        <!-- Sanatçılar Dropdown -->
+        <div class="relative" x-data="{ open: false }">
+            <button @click="open = !open" class="w-full flex items-center justify-between gap-3 px-3 py-3 rounded-xl hover:bg-purple-50 transition-all">
+                <div class="flex items-center gap-3">
+                    <i class="fa-solid fa-user-group text-purple-600"></i>
+                    <span class="text-gray-700">Sanatçılar</span>
+                </div>
+                <i class="fa-solid fa-chevron-down text-gray-400 transition-transform" :class="{ 'transform rotate-180': open }"></i>
+            </button>
+            <div x-show="open"
+                 x-transition:enter="transition ease-out duration-200"
+                 x-transition:enter-start="opacity-0 transform -translate-y-2"
+                 x-transition:enter-end="opacity-100 transform translate-y-0"
+                 x-transition:leave="transition ease-in duration-150"
+                 x-transition:leave-start="opacity-100 transform translate-y-0"
+                 x-transition:leave-end="opacity-0 transform -translate-y-2"
+                 class="pl-8 mt-1 space-y-1">
+                <a href="#" class="block py-2 px-3 text-sm text-gray-600 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-all">Ressamlar</a>
+                <a href="#" class="block py-2 px-3 text-sm text-gray-600 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-all">Heykeltıraşlar</a>
+                <a href="#" class="block py-2 px-3 text-sm text-gray-600 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-all">Mimarlar</a>
+            </div>
+        </div>
+
+        <!-- Sanat Akımları Dropdown -->
+        <div class="relative" x-data="{ open: false }">
+            <button @click="open = !open" class="w-full flex items-center justify-between gap-3 px-3 py-3 rounded-xl hover:bg-blue-50 transition-all">
+                <div class="flex items-center gap-3">
+                    <i class="fa-solid fa-wave-square text-blue-600"></i>
+                    <span class="text-gray-700">Sanat Akımları</span>
+                </div>
+                <i class="fa-solid fa-chevron-down text-gray-400 transition-transform" :class="{ 'transform rotate-180': open }"></i>
+            </button>
+            <div x-show="open"
+                 x-transition:enter="transition ease-out duration-200"
+                 x-transition:enter-start="opacity-0 transform -translate-y-2"
+                 x-transition:enter-end="opacity-100 transform translate-y-0"
+                 x-transition:leave="transition ease-in duration-150"
+                 x-transition:leave-start="opacity-100 transform translate-y-0"
+                 x-transition:leave-end="opacity-0 transform -translate-y-2"
+                 class="pl-8 mt-1 space-y-1">
+                <a href="#" class="block py-2 px-3 text-sm text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all">Rönesans</a>
+                <a href="#" class="block py-2 px-3 text-sm text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all">Barok</a>
+                <a href="#" class="block py-2 px-3 text-sm text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all">Modern Sanat</a>
+                <a href="#" class="block py-2 px-3 text-sm text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all">Empresyonizm</a>
+            </div>
+        </div>
+
+        <!-- Müzeler Dropdown -->
+        <div class="relative" x-data="{ open: false }">
+            <button @click="open = !open" class="w-full flex items-center justify-between gap-3 px-3 py-3 rounded-xl hover:bg-teal-50 transition-all">
+                <div class="flex items-center gap-3">
+                    <i class="fa-solid fa-landmark text-teal-600"></i>
+                    <span class="text-gray-700">Müzeler</span>
+                </div>
+                <i class="fa-solid fa-chevron-down text-gray-400 transition-transform" :class="{ 'transform rotate-180': open }"></i>
+            </button>
+            <div x-show="open"
+                 x-transition:enter="transition ease-out duration-200"
+                 x-transition:enter-start="opacity-0 transform -translate-y-2"
+                 x-transition:enter-end="opacity-100 transform translate-y-0"
+                 x-transition:leave="transition ease-in duration-150"
+                 x-transition:leave-start="opacity-100 transform translate-y-0"
+                 x-transition:leave-end="opacity-0 transform -translate-y-2"
+                 class="pl-8 mt-1 space-y-1">
+                <a href="#" class="block py-2 px-3 text-sm text-gray-600 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-all">Arkeoloji Müzeleri</a>
+                <a href="#" class="block py-2 px-3 text-sm text-gray-600 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-all">Sanat Müzeleri</a>
+                <a href="#" class="block py-2 px-3 text-sm text-gray-600 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-all">Tarih Müzeleri</a>
+                <a href="#" class="block py-2 px-3 text-sm text-gray-600 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-all">Etnografya Müzeleri</a>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Orta Alan -->
+    <div class="flex-1">
+        <!-- Arama Formu -->
+        <div class="glass-effect rounded-2xl p-8 shadow-2xl border-2 border-rose-200 mb-8 bg-white/80 backdrop-blur-md mt-4">
+            <h2 class="text-2xl font-semibold mb-2">Veri Tabanına Göz At</h2>
+            <p class="text-gray-600 mb-6">Sanat dünyasının en kapsamlı veritabanında arama yapın.</p>
+            
+            <form method="get" class="flex items-center gap-4">
+                <div class="relative flex-1">
+                    <i class="fa-solid fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                    <input type="text" 
+                           name="q" 
+                           placeholder="Anahtar kelime girin..." 
+                           value="{{ query }}" 
+                           class="w-full pl-12 pr-4 py-4 rounded-xl border border-gray-200 focus:border-rose-400 focus:ring-4 focus:ring-rose-100 outline-none transition-all shadow-lg bg-white"
+                           autofocus 
+                           required>
+                </div>
+                <button type="submit" 
+                        class="px-8 py-4 bg-gradient-to-r from-rose-600 to-rose-700 text-white rounded-xl hover:from-rose-700 hover:to-rose-800 transition-all shadow-xl hover:shadow-2xl font-medium">
+                    Ara
+                </button>
+            </form>
+        </div>
+
+        <!-- Sonuç Bulunamadı Mesajı -->
+        {% if query and images|length == 0 %}
+        <div class="glass-effect rounded-2xl p-8 shadow-lg border border-white/50 text-center">
+            <div class="flex flex-col items-center text-gray-500">
+                <i class="fa-solid fa-search text-5xl mb-4 text-gray-400"></i>
+                <h3 class="text-xl font-semibold mb-2">Sonuç Bulunamadı</h3>
+                <p class="text-gray-500">Farklı anahtar kelimeler deneyerek tekrar arama yapabilirsiniz.</p>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Sonuçlar Grid -->
+        {% if images %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for img in images %}
+            <div class="glass-effect rounded-2xl overflow-hidden group hover:shadow-lg transition-all border border-white/50">
+                <div class="aspect-w-16 aspect-h-9 overflow-hidden">
+                    <img src="{{ img.url }}" 
+                         alt="{{ img.title }}"
+                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                </div>
+                <div class="p-4">
+                    <h3 class="font-semibold text-gray-800 group-hover:text-rose-600 transition-colors">{{ img.title }}</h3>
+                    <p class="text-sm text-gray-500 mt-1">Wikipedia'dan alındı</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <!-- Kullanıcı İstatistikleri -->
+                <div class="glass-effect rounded-xl p-4 text-center hover:shadow-lg transition-all border border-rose-100/20">
+                    <i class="fa-solid fa-users text-3xl text-rose-500 mb-2"></i>
+                    <div class="text-2xl font-bold text-gray-800 dark:text-white">{{ total_users }}</div>
+                    <div class="text-sm text-gray-600 dark:text-gray-300">Toplam Kullanıcı</div>
+                </div>
+                
+                <!-- Blog İstatistikleri -->
+                <div class="glass-effect rounded-xl p-4 text-center hover:shadow-lg transition-all border border-rose-100/20">
+                    <i class="fa-solid fa-blog text-3xl text-rose-600 mb-2"></i>
+                    <div class="text-2xl font-bold text-gray-800 dark:text-white">{{ total_posts }}</div>
+                    <div class="text-sm text-gray-600 dark:text-gray-300">Blog Yazısı</div>
+                </div>
+                
+                <!-- Sanatçı İstatistikleri -->
+                <div class="glass-effect rounded-xl p-4 text-center hover:shadow-lg transition-all border border-rose-100/20">
+                    <i class="fa-solid fa-palette text-3xl text-rose-500 mb-2"></i>
+                    <div class="text-2xl font-bold text-gray-800 dark:text-white">{{ total_artists }}</div>
+                    <div class="text-sm text-gray-600 dark:text-gray-300">Sanatçı</div>
+                </div>
+                
+                <!-- Sanat Akımları -->
+                <div class="glass-effect rounded-xl p-4 text-center hover:shadow-lg transition-all border border-rose-100/20">
+                    <i class="fa-solid fa-wave-square text-3xl text-rose-600 mb-2"></i>
+                    <div class="text-2xl font-bold text-gray-800 dark:text-white">{{ total_movements }}</div>
+                    <div class="text-sm text-gray-600 dark:text-gray-300">Sanat Akımı</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Detaylı İstatistikler -->
+        <div class="grid md:grid-cols-2 gap-8">
+            <!-- Kullanıcı Detayları -->
+            <div class="glass-effect rounded-xl p-6 hover:shadow-lg transition-all border border-rose-100/20">
+                <h3 class="text-xl font-semibold mb-4 text-gray-800 dark:text-white">
+                    <i class="fa-solid fa-user-group text-rose-500 mr-2"></i>
+                    Kullanıcı Dağılımı
+                </h3>
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600 dark:text-gray-300">Admin</span>
+                        <span class="text-rose-500 font-semibold">{{ admin_count }}</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600 dark:text-gray-300">Akademisyen</span>
+                        <span class="text-rose-500 font-semibold">{{ akademisyen_count }}</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600 dark:text-gray-300">Araştırmacı</span>
+                        <span class="text-rose-500 font-semibold">{{ arastirmaci_count }}</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600 dark:text-gray-300">Kullanıcı</span>
+                        <span class="text-rose-500 font-semibold">{{ kullanici_count }}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Blog ve Yorum İstatistikleri -->
+            <div class="glass-effect rounded-xl p-6 hover:shadow-lg transition-all border border-rose-100/20">
+                <h3 class="text-xl font-semibold mb-4 text-gray-800 dark:text-white">
+                    <i class="fa-solid fa-chart-bar text-rose-600 mr-2"></i>
+                    Blog İstatistikleri
+                </h3>
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600 dark:text-gray-300">Yayınlanan Yazılar</span>
+                        <span class="text-rose-600 font-semibold">{{ published_posts }}</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600 dark:text-gray-300">Bekleyen Yazılar</span>
+                        <span class="text-rose-600 font-semibold">{{ pending_posts }}</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600 dark:text-gray-300">Toplam Yorum</span>
+                        <span class="text-rose-600 font-semibold">{{ total_comments }}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sanatçı ve Akım İstatistikleri -->
+            <div class="glass-effect rounded-xl p-6 hover:shadow-lg transition-all border border-rose-100/20">
+                <h3 class="text-xl font-semibold mb-4 text-gray-800 dark:text-white">
+                    <i class="fa-solid fa-palette text-rose-500 mr-2"></i>
+                    Sanat İstatistikleri
+                </h3>
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600 dark:text-gray-300">Toplam Sanatçı</span>
+                        <span class="text-rose-500 font-semibold">{{ total_artists }}</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600 dark:text-gray-300">Akımlara Bağlı Sanatçılar</span>
+                        <span class="text-rose-500 font-semibold">{{ artists_with_movement }}</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600 dark:text-gray-300">Sanat Akımları</span>
+                        <span class="text-rose-500 font-semibold">{{ total_movements }}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Kültür Yerleri ve Müze İstatistikleri -->
+            <div class="glass-effect rounded-xl p-6 hover:shadow-lg transition-all border border-rose-100/20">
+                <h3 class="text-xl font-semibold mb-4 text-gray-800 dark:text-white">
+                    <i class="fa-solid fa-landmark text-rose-600 mr-2"></i>
+                    Kültür ve Müze İstatistikleri
+                </h3>
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600 dark:text-gray-300">Kültür Yerleri</span>
+                        <span class="text-rose-600 font-semibold">{{ total_cultural_places }}</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600 dark:text-gray-300">Onaylı Yerler</span>
+                        <span class="text-rose-600 font-semibold">{{ approved_cultural_places }}</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600 dark:text-gray-300">Bekleyen Öneriler</span>
+                        <span class="text-rose-600 font-semibold">{{ pending_suggestions }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

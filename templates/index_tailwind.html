@@ -1,0 +1,1377 @@
+{% extends "layout_tailwind.html" %}
+
+{% block content %}
+<style>
+.line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+</style>
+<div class="flex w-full max-w-[1600px] mx-auto mt-6 gap-6 px-2 md:px-6">
+    <!-- Sol Menü -->
+    <aside class="flex flex-col w-56 glass-effect rounded-2xl shadow-lg p-4 gap-2 h-fit sticky top-28 border border-white/50">
+        <h3 class="text-lg font-bold gradient-text mb-3 px-3">Keşfet</h3>
+        <a href="/" class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-rose-50 font-semibold text-rose-800 transition-all hover:translate-x-1">
+            <i class="fa-solid fa-compass text-rose-600"></i> Ana Sayfa
+        </a>
+        <a href="/cultural-map" class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-teal-50 transition-all hover:translate-x-1">
+            <i class="fa-solid fa-map-location-dot text-teal-500"></i> Kültür Haritası
+        </a>
+        <a href="/museums" class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-rose-50 transition-all hover:translate-x-1">
+            <i class="fa-solid fa-landmark text-teal-600"></i> Müzeler
+        </a>
+        <a href="/movements" class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-purple-50 transition-all hover:translate-x-1">
+            <i class="fa-solid fa-wave-square text-purple-500"></i> Sanat Akımları
+        </a>
+        <a href="/artists" class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-rose-50 transition-all hover:translate-x-1">
+            <i class="fa-solid fa-palette text-purple-600"></i> Sanatçılar
+        </a>
+        <a href="/blog" class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-rose-50 transition-all hover:translate-x-1">
+            <i class="fa-solid fa-book-open text-blue-600"></i> Blog
+        </a>
+        
+        <!-- Kategoriler Dropdown -->
+        <div x-data="{ open: false }" class="relative">
+            <button @click="open = !open" class="w-full flex items-center justify-between gap-3 px-3 py-3 rounded-xl hover:bg-green-50 transition-all hover:translate-x-1 text-left">
+                <div class="flex items-center gap-3">
+                    <i class="fa-solid fa-layer-group text-green-600"></i> 
+                    <span>Kategoriler</span>
+                </div>
+                <i class="fa-solid fa-chevron-down text-xs transition-transform" :class="{ 'rotate-180': open }"></i>
+            </button>
+            
+            <!-- Dropdown Menu -->
+            <div x-show="open" 
+                 x-transition:enter="transition ease-out duration-200"
+                 x-transition:enter-start="opacity-0 transform scale-95"
+                 x-transition:enter-end="opacity-100 transform scale-100"
+                 x-transition:leave="transition ease-in duration-150"
+                 x-transition:leave-start="opacity-100 transform scale-100"
+                 x-transition:leave-end="opacity-0 transform scale-95"
+                 @click.away="open = false"
+                 class="absolute left-0 right-0 top-full mt-1 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 z-50 overflow-hidden">
+                
+                <!-- Arkeoloji -->
+                <a href="/blog/kategori/1" class="flex items-center gap-3 px-4 py-3 hover:bg-green-50 dark:hover:bg-green-900/20 transition-all">
+                    <i class="fa-solid fa-shovel text-green-600"></i>
+                    <span class="text-sm">Arkeoloji</span>
+                </a>
+                
+                <!-- Sanat Tarihi -->
+                <a href="/blog/kategori/2" class="flex items-center gap-3 px-4 py-3 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all">
+                    <i class="fa-solid fa-palette text-red-600"></i>
+                    <span class="text-sm">Sanat Tarihi</span>
+                </a>
+                
+                <!-- Antropoloji -->
+                <a href="/blog/kategori/3" class="flex items-center gap-3 px-4 py-3 hover:bg-yellow-50 dark:hover:bg-yellow-900/20 transition-all">
+                    <i class="fa-solid fa-users text-yellow-600"></i>
+                    <span class="text-sm">Antropoloji</span>
+                </a>
+                
+                <!-- Tarih -->
+                <a href="/blog/kategori/4" class="flex items-center gap-3 px-4 py-3 hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-all">
+                    <i class="fa-solid fa-landmark text-orange-600"></i>
+                    <span class="text-sm">Tarih</span>
+                </a>
+                
+                <!-- Müze Bilimi -->
+                <a href="/blog/kategori/5" class="flex items-center gap-3 px-4 py-3 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all">
+                    <i class="fa-solid fa-building-columns text-blue-600"></i>
+                    <span class="text-sm">Müze Bilimi</span>
+                </a>
+                
+                <!-- Kültür Mirası -->
+                <a href="/blog/kategori/6" class="flex items-center gap-3 px-4 py-3 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-all">
+                    <i class="fa-solid fa-crown text-purple-600"></i>
+                    <span class="text-sm">Kültür Mirası</span>
+                </a>
+            </div>
+        </div>
+        <a href="/random-artwork" class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-rose-50 transition-all hover:translate-x-1">
+            <i class="fa-solid fa-random text-orange-600"></i> Rastgele Eser
+        </a>
+        <a href="/dictionary" class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-rose-50 transition-all hover:translate-x-1">
+            <i class="fa-solid fa-quote-left text-pink-600"></i> Sözlük
+        </a>
+        <a href="/maya_chat" class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-blue-50 transition-all hover:translate-x-1">
+            <i class="fa-solid fa-robot text-blue-500"></i> Maya AI
+        </a>
+        
+        <!-- İçerik Ekleme Bölümü -->
+        {% if current_user.is_authenticated %}
+        <div class="border-t border-gray-200 dark:border-gray-700 pt-4 mt-4">
+            <h4 class="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-3 px-3">İçerik Ekle</h4>
+            <a href="{{ url_for('add_artwork_user') }}" class="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-amber-50 transition-all hover:translate-x-1">
+                <i class="fa-solid fa-palette text-amber-600"></i> Sanat Eseri
+            </a>
+            <a href="{{ url_for('add_artist_user') }}" class="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-purple-50 transition-all hover:translate-x-1">
+                <i class="fa-solid fa-user text-purple-600"></i> Sanatçı
+            </a>
+            <a href="{{ url_for('add_museum_user') }}" class="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-teal-50 transition-all hover:translate-x-1">
+                <i class="fa-solid fa-landmark text-teal-600"></i> Müze
+            </a>
+            <a href="{{ url_for('create_blog_post') }}" class="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-blue-50 transition-all hover:translate-x-1">
+                <i class="fa-solid fa-pen-to-square text-blue-600"></i> Blog Yazısı
+            </a>
+        </div>
+        {% endif %}
+        
+        <a href="/veri_tabani" class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-gray-50 transition-all hover:translate-x-1">
+            <i class="fa-solid fa-database text-gray-500"></i> Veri Tabanı
+        </a>
+        <a href="/quiz" class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-rose-50 transition-all hover:translate-x-1">
+            <i class="fa-solid fa-question text-indigo-600"></i> Quiz
+        </a>
+    </aside>
+
+    <!-- Orta Alan (Kartlar) -->
+    <section class="flex-1 flex flex-col gap-10">
+        <!-- Hero Bölümü -->
+        <div class="glass-effect rounded-3xl shadow-xl p-10 border border-white/50 overflow-hidden relative bg-gradient-to-br from-white via-rose-50 to-teal-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-rose-200 to-transparent rounded-full opacity-50"></div>
+            <div class="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-teal-200 to-transparent rounded-full opacity-50"></div>
+            <div class="flex flex-col md:flex-row gap-10 items-center relative z-10">
+                <img src="/static/uploads/wikipedia_1.jpg" alt="Etkinlik" class="w-56 h-56 object-cover rounded-3xl shadow-2xl animate-float border-4 border-rose-100 dark:border-gray-700">
+                <div class="flex-1">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="inline-block bg-gradient-to-r from-rose-500 to-rose-600 text-white px-4 py-2 rounded-full text-sm font-bold shadow-md">
+                            <i class="fa-solid fa-star mr-1"></i>Öne Çıkan Etkinlik
+                        </span>
+                        <span class="inline-block bg-gradient-to-r from-teal-500 to-teal-600 text-white px-3 py-1 rounded-full text-xs shadow">
+                            YENİ
+                        </span>
+                    </div>
+                    <h2 class="text-4xl font-extrabold gradient-text mb-4 drop-shadow-lg">Sanat ve Bilim Buluşuyor: Dijital Müzecilik Atölyesi</h2>
+                    <p class="text-gray-700 dark:text-gray-200 mb-4 text-lg leading-relaxed font-light">21 Temmuz 2025, İstanbul Modern. Dijitalleşen müzecilikte yeni trendler, sanat ve teknolojinin buluştuğu interaktif atölye. Katılım ücretsizdir.</p>
+                    <div class="flex gap-4 items-center text-sm text-gray-600 dark:text-gray-300 mb-6">
+                        <span class="flex items-center gap-1">
+                            <i class="fa-solid fa-calendar-days text-rose-500"></i> 21 Temmuz 2025
+                        </span>
+                        <span class="flex items-center gap-1">
+                            <i class="fa-solid fa-location-dot text-teal-500"></i> İstanbul Modern
+                        </span>
+                        <span class="flex items-center gap-1">
+                            <i class="fa-solid fa-users text-purple-500"></i> 150+ Katılımcı
+                        </span>
+                    </div>
+                    <a href="#" class="inline-block bg-gradient-to-r from-rose-600 to-rose-700 text-white px-8 py-3 rounded-full font-semibold hover:from-rose-700 hover:to-rose-800 transition-all shadow-lg hover:shadow-xl hover:scale-105">
+                        <i class="fa-solid fa-arrow-right mr-2"></i>Etkinliğe Katıl
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- İçerik Oluşturma Alanı (Evrim Ağacı Tarzı) -->
+        <div class="glass-effect rounded-3xl shadow-xl border border-white/50 overflow-hidden relative bg-gradient-to-br from-white via-amber-50 to-rose-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 mb-8">
+            <div class="absolute top-0 right-0 w-40 h-40 bg-gradient-to-bl from-amber-200 to-transparent rounded-full opacity-40"></div>
+            <div class="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-rose-200 to-transparent rounded-full opacity-40"></div>
+            
+            <div class="p-8 relative z-10">
+                <div class="text-center mb-6">
+                    <h2 class="text-3xl font-bold text-gray-800 dark:text-white mb-2">Bugün sanat dünyasına neler katacaksın?</h2>
+                    <p class="text-gray-600 dark:text-gray-300">Bilgi ve deneyimlerini paylaş, topluluğumuzu zenginleştir</p>
+                </div>
+                
+                <!-- İçerik Oluşturma Butonları -->
+                <div class="flex flex-wrap justify-center gap-4 mb-6">
+                    <button onclick="window.location.href='/blog/create'" class="flex items-center gap-3 bg-gradient-to-r from-amber-500 to-amber-600 text-white px-6 py-3 rounded-full font-semibold hover:from-amber-600 hover:to-amber-700 transition-all shadow-lg hover:shadow-xl hover:scale-105">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                        Yaz
+                    </button>
+                    <button onclick="openAddContentModal()" class="flex items-center gap-3 bg-gradient-to-r from-rose-500 to-rose-600 text-white px-6 py-3 rounded-full font-semibold hover:from-rose-600 hover:to-rose-700 transition-all shadow-lg hover:shadow-xl hover:scale-105">
+                        <i class="fa-solid fa-plus"></i>
+                        Ekle
+                    </button>
+                    <button onclick="openAskQuestionModal()" class="flex items-center gap-3 bg-gradient-to-r from-teal-500 to-teal-600 text-white px-6 py-3 rounded-full font-semibold hover:from-teal-600 hover:to-teal-700 transition-all shadow-lg hover:shadow-xl hover:scale-105">
+                        <i class="fa-solid fa-question"></i>
+                        Soru Sor
+                    </button>
+                </div>
+                
+                <!-- Sekmeler -->
+                <div class="flex justify-center">
+                    <div class="flex bg-white/80 dark:bg-gray-800/80 rounded-full p-1 shadow-lg backdrop-blur-sm">
+                        <button class="px-6 py-2 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 text-white font-semibold text-sm transition-all">
+                            Size Özel
+                        </button>
+                        <button class="px-6 py-2 rounded-full text-gray-600 dark:text-gray-300 font-semibold text-sm hover:text-gray-800 dark:hover:text-white transition-all">
+                            Makaleler
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- İstatistik Kartları -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-7 mb-12">
+            <div class="glass-effect rounded-2xl p-6 text-center card-hover border border-white/50 shadow-lg">
+                <i class="fa-solid fa-palette text-4xl text-rose-600 mb-2"></i>
+                <div class="text-3xl font-bold text-gray-800 dark:text-white">2,547</div>
+                <div class="text-base text-gray-600 dark:text-gray-300">Sanat Eseri</div>
+            </div>
+            <div class="glass-effect rounded-2xl p-6 text-center card-hover border border-white/50 shadow-lg">
+                <i class="fa-solid fa-landmark text-4xl text-teal-600 mb-2"></i>
+                <div class="text-3xl font-bold text-gray-800 dark:text-white">128</div>
+                <div class="text-base text-gray-600 dark:text-gray-300">Müze</div>
+            </div>
+            <div class="glass-effect rounded-2xl p-6 text-center card-hover border border-white/50 shadow-lg">
+                <i class="fa-solid fa-users text-4xl text-purple-600 mb-2"></i>
+                <div class="text-3xl font-bold text-gray-800 dark:text-white">45K+</div>
+                <div class="text-base text-gray-600 dark:text-gray-300">Üye</div>
+            </div>
+            <div class="glass-effect rounded-2xl p-6 text-center card-hover border border-white/50 shadow-lg">
+                <i class="fa-solid fa-heart text-4xl text-pink-600 mb-2"></i>
+                <div class="text-3xl font-bold text-gray-800 dark:text-white">892K</div>
+                <div class="text-base text-gray-600 dark:text-gray-300">Beğeni</div>
+            </div>
+        </div>
+
+        <!-- Örnek Kart + Dinamik Gönderiler -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
+            <!-- Statik örnek kart -->
+            <div class="glass-effect rounded-2xl shadow-lg border border-white/50 overflow-hidden group">
+                <div class="flex items-center gap-3 p-4 border-b border-gray-100">
+                    <img src="/static/uploads/authors/profile1.jpg" alt="Author" class="w-10 h-10 rounded-full object-cover border-2 border-rose-100">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2">
+                            <h3 class="font-medium text-gray-900 dark:text-white">Zeynep Yılmaz</h3>
+                            <span class="bg-rose-100 text-rose-600 text-xs px-2 py-0.5 rounded-full">Editör</span>
+                        </div>
+                        <div class="text-sm text-gray-500 flex items-center gap-2">
+                            <span>5 saat önce</span>
+                            <span>•</span>
+                            <span>8 dk okuma</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="text-xs text-rose-700 font-bold bg-rose-100 px-3 py-1 rounded-full">Makale</span>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-3 group-hover:text-rose-700 transition-colors">Osman Hamdi Bey ve Türk Resminde Modernleşme</h3>
+                    <p class="text-gray-600 dark:text-gray-300 mb-4 line-clamp-3">Osman Hamdi Bey'in sanata ve müzeciliğe katkıları, modern Türk resminin doğuşu ve etkileri...</p>
+                </div>
+                <div class="px-4 py-3 border-t border-gray-100 bg-gray-50/50 flex items-center justify-between">
+                    <div class="flex gap-4">
+                        <button onclick="handleLike('static-1')" class="flex items-center gap-1 text-gray-500 hover:text-rose-600 transition-colors like-btn" data-post-id="static-1">
+                            <i class="fa-solid fa-heart"></i>
+                            <span class="text-sm like-count" data-post-id="static-1">247</span>
+                        </button>
+                        <button onclick="handleComment('static-1')" class="flex items-center gap-1 text-gray-500 hover:text-blue-600 transition-colors comment-btn" data-post-id="static-1">
+                            <i class="fa-solid fa-comment"></i>
+                            <span class="text-sm comment-count" data-post-id="static-1">23</span>
+                        </button>
+                    </div>
+                    <button class="text-gray-400 hover:text-blue-600 transition-colors"><i class="fa-solid fa-bookmark"></i></button>
+                </div>
+            </div>
+            
+            <!-- İkinci dinamik gönderi -->
+            {% if latest_posts|length > 0 %}
+            <a href="{{ url_for('blog_post_detail_page', post_id=latest_posts[0].id) }}" class="glass-effect rounded-2xl shadow-lg border border-white/50 overflow-hidden group block hover:shadow-xl transition-all">
+                <div class="flex items-center gap-3 p-4 border-b border-gray-100">
+                    <img src="{{ url_for('static', filename='uploads/' + (latest_posts[0].author.profile_image or 'default_artist.jpg')) }}" alt="Author" class="w-10 h-10 rounded-full object-cover border-2 border-rose-100">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2">
+                            <h3 class="font-medium text-gray-900 dark:text-white">{{ latest_posts[0].author.username }}</h3>
+                            {% if latest_posts[0].author.role %}
+                            <span class="bg-rose-100 text-rose-600 text-xs px-2 py-0.5 rounded-full">{{ latest_posts[0].author.role|capitalize }}</span>
+                            {% endif %}
+                        </div>
+                        <div class="text-sm text-gray-500 flex items-center gap-2">
+                            <span>{{ latest_posts[0].date_posted.strftime('%d.%m.%Y') }}</span>
+                            <span>•</span>
+                            <span>{{ (latest_posts[0].content|length // 600) + 1 }} dk okuma</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <div class="flex items-center gap-2 mb-3">
+                        {% if latest_posts[0].post_type == 'makale' %}
+                            <span class="text-xs text-blue-700 font-bold bg-blue-100 px-3 py-1 rounded-full">📄 Makale</span>
+                        {% elif latest_posts[0].post_type == 'arastirma' %}
+                            <span class="text-xs text-green-700 font-bold bg-green-100 px-3 py-1 rounded-full">🔬 Araştırma</span>
+                        {% elif latest_posts[0].post_type == 'inceleme' %}
+                            <span class="text-xs text-purple-700 font-bold bg-purple-100 px-3 py-1 rounded-full">📖 İnceleme</span>
+                        {% elif latest_posts[0].post_type == 'haber' %}
+                            <span class="text-xs text-red-700 font-bold bg-red-100 px-3 py-1 rounded-full">📰 Haber</span>
+                        {% elif latest_posts[0].post_type == 'roportaj' %}
+                            <span class="text-xs text-orange-700 font-bold bg-orange-100 px-3 py-1 rounded-full">🎤 Röportaj</span>
+                        {% elif latest_posts[0].post_type == 'kitap_tanitimi' %}
+                            <span class="text-xs text-yellow-700 font-bold bg-yellow-100 px-3 py-1 rounded-full">📚 Kitap Tanıtımı</span>
+                        {% elif latest_posts[0].post_type == 'sergi_haberi' %}
+                            <span class="text-xs text-pink-700 font-bold bg-pink-100 px-3 py-1 rounded-full">🎨 Sergi Haberi</span>
+                        {% else %}
+                            <span class="text-xs text-gray-700 font-bold bg-gray-100 px-3 py-1 rounded-full">📝 Blog</span>
+                        {% endif %}
+                        
+                        {% if latest_posts[0].category %}
+                            <span class="text-xs text-rose-700 font-bold bg-rose-100 px-3 py-1 rounded-full">{{ latest_posts[0].category.name }}</span>
+                        {% endif %}
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-3 group-hover:text-rose-700 transition-colors">{{ latest_posts[0].title }}</h3>
+                    <p class="text-gray-600 dark:text-gray-300 mb-4 line-clamp-3">
+                        {% if latest_posts[0].summary %}
+                            {{ latest_posts[0].summary }}
+                        {% elif latest_posts[0].content|length > 180 %}
+                            {{ latest_posts[0].content[:180] }}...
+                        {% else %}
+                            {{ latest_posts[0].content }}
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="px-4 py-3 border-t border-gray-100 bg-gray-50/50 flex items-center justify-between">
+                    <div class="flex gap-4">
+                                                 <button onclick="handleLike({{ latest_posts[0].id }})" class="flex items-center gap-1 text-gray-500 hover:text-rose-600 transition-colors like-btn" data-post-id="{{ latest_posts[0].id }}">
+                             <i class="fa-solid fa-heart"></i>
+                             <span class="text-sm like-count" data-post-id="{{ latest_posts[0].id }}">0</span>
+                         </button>
+                         <button onclick="handleComment({{ latest_posts[0].id }})" class="flex items-center gap-1 text-gray-500 hover:text-blue-600 transition-colors comment-btn" data-post-id="{{ latest_posts[0].id }}">
+                             <i class="fa-solid fa-comment"></i>
+                             <span class="text-sm comment-count" data-post-id="{{ latest_posts[0].id }}">{{ latest_posts[0].comments.count() }}</span>
+                         </button>
+                    </div>
+                    <button class="text-gray-400 hover:text-blue-600 transition-colors"><i class="fa-solid fa-bookmark"></i></button>
+                </div>
+            </a>
+            {% endif %}
+            
+            <!-- Üçüncü dinamik gönderi -->
+            {% if latest_posts|length > 1 %}
+            <a href="{{ url_for('blog_post_detail_page', post_id=latest_posts[1].id) }}" class="glass-effect rounded-2xl shadow-lg border border-white/50 overflow-hidden group block hover:shadow-xl transition-all">
+                <div class="flex items-center gap-3 p-4 border-b border-gray-100">
+                    <img src="{{ url_for('static', filename='uploads/' + (latest_posts[1].author.profile_image or 'default_artist.jpg')) }}" alt="Author" class="w-10 h-10 rounded-full object-cover border-2 border-rose-100">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2">
+                            <h3 class="font-medium text-gray-900 dark:text-white">{{ latest_posts[1].author.username }}</h3>
+                            {% if latest_posts[1].author.role %}
+                            <span class="bg-rose-100 text-rose-600 text-xs px-2 py-0.5 rounded-full">{{ latest_posts[1].author.role|capitalize }}</span>
+                            {% endif %}
+                        </div>
+                        <div class="text-sm text-gray-500 flex items-center gap-2">
+                            <span>{{ latest_posts[1].date_posted.strftime('%d.%m.%Y') }}</span>
+                            <span>•</span>
+                            <span>{{ (latest_posts[1].content|length // 600) + 1 }} dk okuma</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <div class="flex items-center gap-2 mb-3">
+                        {% if latest_posts[1].post_type == 'makale' %}
+                            <span class="text-xs text-blue-700 font-bold bg-blue-100 px-3 py-1 rounded-full">📄 Makale</span>
+                        {% elif latest_posts[1].post_type == 'arastirma' %}
+                            <span class="text-xs text-green-700 font-bold bg-green-100 px-3 py-1 rounded-full">🔬 Araştırma</span>
+                        {% elif latest_posts[1].post_type == 'inceleme' %}
+                            <span class="text-xs text-purple-700 font-bold bg-purple-100 px-3 py-1 rounded-full">📖 İnceleme</span>
+                        {% elif latest_posts[1].post_type == 'haber' %}
+                            <span class="text-xs text-red-700 font-bold bg-red-100 px-3 py-1 rounded-full">📰 Haber</span>
+                        {% elif latest_posts[1].post_type == 'roportaj' %}
+                            <span class="text-xs text-orange-700 font-bold bg-orange-100 px-3 py-1 rounded-full">🎤 Röportaj</span>
+                        {% elif latest_posts[1].post_type == 'kitap_tanitimi' %}
+                            <span class="text-xs text-yellow-700 font-bold bg-yellow-100 px-3 py-1 rounded-full">📚 Kitap Tanıtımı</span>
+                        {% elif latest_posts[1].post_type == 'sergi_haberi' %}
+                            <span class="text-xs text-pink-700 font-bold bg-pink-100 px-3 py-1 rounded-full">🎨 Sergi Haberi</span>
+                        {% else %}
+                            <span class="text-xs text-gray-700 font-bold bg-gray-100 px-3 py-1 rounded-full">📝 Blog</span>
+                        {% endif %}
+                        
+                        {% if latest_posts[1].category %}
+                            <span class="text-xs text-rose-700 font-bold bg-rose-100 px-3 py-1 rounded-full">{{ latest_posts[1].category.name }}</span>
+                        {% endif %}
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-3 group-hover:text-rose-700 transition-colors">{{ latest_posts[1].title }}</h3>
+                    <p class="text-gray-600 dark:text-gray-300 mb-4 line-clamp-3">
+                        {% if latest_posts[1].summary %}
+                            {{ latest_posts[1].summary }}
+                        {% elif latest_posts[1].content|length > 180 %}
+                            {{ latest_posts[1].content[:180] }}...
+                        {% else %}
+                            {{ latest_posts[1].content }}
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="px-4 py-3 border-t border-gray-100 bg-gray-50/50 flex items-center justify-between">
+                    <div class="flex gap-4">
+                                                 <button onclick="handleLike({{ latest_posts[1].id }})" class="flex items-center gap-1 text-gray-500 hover:text-rose-600 transition-colors like-btn" data-post-id="{{ latest_posts[1].id }}">
+                             <i class="fa-solid fa-heart"></i>
+                             <span class="text-sm like-count" data-post-id="{{ latest_posts[1].id }}">0</span>
+                         </button>
+                         <button onclick="handleComment({{ latest_posts[1].id }})" class="flex items-center gap-1 text-gray-500 hover:text-blue-600 transition-colors comment-btn" data-post-id="{{ latest_posts[1].id }}">
+                             <i class="fa-solid fa-comment"></i>
+                             <span class="text-sm comment-count" data-post-id="{{ latest_posts[1].id }}">{{ latest_posts[1].comments.count() }}</span>
+                         </button>
+                    </div>
+                    <button class="text-gray-400 hover:text-blue-600 transition-colors"><i class="fa-solid fa-bookmark"></i></button>
+                </div>
+            </a>
+            {% endif %}
+        </div>
+
+        <!-- Evrim Ağacı Tarzı Kullanıcı Gönderileri -->
+        <div class="mt-8 mb-8">
+            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-3">
+                <i class="fa-solid fa-users text-rose-600"></i>
+                Topluluk Gönderileri
+            </h3>
+            
+            <!-- Kullanıcı gönderileri grid şeklinde -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {% for post in latest_posts[2:] %}
+            <a href="{{ url_for('blog_post_detail_page', post_id=post.id) }}" class="group block">
+                <article class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+                    <!-- Header with Author Info -->
+                    <div class="bg-gradient-to-r from-rose-50 to-amber-50 p-4 border-b border-gray-100">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <img src="{{ url_for('static', filename='uploads/' + (post.author.profile_image or 'default_artist.jpg')) }}" 
+                                     alt="{{ post.author.username }}" 
+                                     class="w-10 h-10 rounded-full object-cover ring-2 ring-rose-200">
+                                <div>
+                                    <h4 class="font-semibold text-gray-900">{{ post.author.username }}</h4>
+                                    <p class="text-sm text-gray-600">{{ post.date_posted.strftime('%d.%m.%Y') }}</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="bg-gradient-to-r from-rose-500 to-amber-500 text-white text-xs px-3 py-1 rounded-full font-semibold">
+                                    Topluluk
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Image -->
+                    <div class="aspect-video overflow-hidden">
+                        <img src="{{ url_for('static', filename='uploads/' + post.image_file) }}" 
+                             alt="{{ post.title }}" 
+                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                    </div>
+
+                    <!-- Content -->
+                    <div class="p-6">
+                        <!-- Tags -->
+                        <div class="flex items-center gap-2 mb-4 flex-wrap">
+                            {% if post.post_type == 'makale' %}
+                                <span class="bg-blue-100 text-blue-700 text-xs px-3 py-1 rounded-full font-semibold">📄 Makale</span>
+                            {% elif post.post_type == 'arastirma' %}
+                                <span class="bg-green-100 text-green-700 text-xs px-3 py-1 rounded-full font-semibold">🔬 Araştırma</span>
+                            {% elif post.post_type == 'inceleme' %}
+                                <span class="bg-purple-100 text-purple-700 text-xs px-3 py-1 rounded-full font-semibold">📖 İnceleme</span>
+                            {% elif post.post_type == 'haber' %}
+                                <span class="bg-red-100 text-red-700 text-xs px-3 py-1 rounded-full font-semibold">📰 Haber</span>
+                            {% elif post.post_type == 'roportaj' %}
+                                <span class="bg-orange-100 text-orange-700 text-xs px-3 py-1 rounded-full font-semibold">🎤 Röportaj</span>
+                            {% elif post.post_type == 'kitap_tanitimi' %}
+                                <span class="bg-yellow-100 text-yellow-700 text-xs px-3 py-1 rounded-full font-semibold">📚 Kitap</span>
+                            {% elif post.post_type == 'sergi_haberi' %}
+                                <span class="bg-pink-100 text-pink-700 text-xs px-3 py-1 rounded-full font-semibold">🎨 Sergi</span>
+                            {% else %}
+                                <span class="bg-gray-100 text-gray-700 text-xs px-3 py-1 rounded-full font-semibold">📝 Blog</span>
+                            {% endif %}
+                            
+                            {% if post.category %}
+                                <span class="bg-amber-100 text-amber-700 text-xs px-3 py-1 rounded-full font-semibold">{{ post.category.name }}</span>
+                            {% endif %}
+                            
+                            <span class="text-gray-400 text-xs">{{ (post.content|length // 600) + 1 }} dk</span>
+                        </div>
+                        
+                        <!-- Title -->
+                        <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-3 group-hover:text-rose-600 transition-colors line-clamp-2">
+                            {{ post.title }}
+                        </h2>
+                        
+                        <!-- Summary -->
+                        <p class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed mb-4 line-clamp-3">
+                            {% if post.summary %}
+                                {{ post.summary }}
+                            {% elif post.content|length > 150 %}
+                                {{ post.content[:150] }}...
+                            {% else %}
+                                {{ post.content }}
+                            {% endif %}
+                        </p>
+                        
+                        <!-- Footer -->
+                        <div class="flex items-center justify-between pt-4 border-t border-gray-100">
+                            <!-- Engagement -->
+                            <div class="flex items-center gap-4 text-sm text-gray-500">
+                                <button onclick="handleLike({{ post.id }})" class="flex items-center gap-1 hover:text-rose-600 transition-colors">
+                                    <i class="fa-regular fa-heart"></i>
+                                    <span class="like-count" data-post-id="{{ post.id }}">0</span>
+                                </button>
+                                <button onclick="handleComment({{ post.id }})" class="flex items-center gap-1 hover:text-blue-600 transition-colors">
+                                    <i class="fa-regular fa-comment"></i>
+                                    <span>{{ post.comments.count() }}</span>
+                                </button>
+                                <div class="flex items-center gap-1">
+                                    <i class="fa-regular fa-eye"></i>
+                                    <span>{{ post.id * 47 + 123 }}</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Read More -->
+                            <div class="text-sm">
+                                <span class="text-rose-600 font-semibold group-hover:text-rose-700 transition-colors">
+                                    Devamını oku →
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </a>
+            {% endfor %}
+            </div>
+        </div>
+
+        <!-- Duyuru Kartı -->
+        <div class="bg-gradient-to-r from-rose-500 via-purple-500 to-teal-500 rounded-2xl shadow-xl p-6 text-white relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16"></div>
+            <div class="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full translate-y-12 -translate-x-12"></div>
+            <div class="flex items-center gap-4 relative z-10">
+                <div class="bg-white/20 rounded-full p-3">
+                    <i class="fa-solid fa-mobile-alt text-2xl"></i>
+                </div>
+                <div class="flex-1">
+                    <h4 class="text-xl font-bold mb-1">Art of Museum Mobil Uygulaması!</h4>
+                    <p class="text-white/90">Sanat dünyasını cebinizde taşıyın. Çok yakında iOS ve Android'de!</p>
+                </div>
+                <button class="bg-white text-gray-800 px-6 py-3 rounded-full font-semibold hover:bg-gray-100 transition-all">
+                    Haberdar Et
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sağ Panel -->
+    <aside class="hidden lg:flex flex-col w-80 gap-6">
+        <!-- Son Eklenenler -->
+        <div class="glass-effect rounded-2xl shadow-lg p-6 border border-white/50">
+            <h4 class="text-xl font-bold gradient-text mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-sparkles"></i>Son Eklenenler
+            </h4>
+            <div class="flex flex-col gap-4">
+                <div class="flex items-center gap-4 p-3 rounded-xl hover:bg-rose-50 transition-all cursor-pointer">
+                    <img src="/static/uploads/wikipedia_13.jpg" alt="Eser" class="w-16 h-16 rounded-xl object-cover shadow-md">
+                    <div class="flex-1">
+                        <div class="font-semibold text-gray-900">Kaplumbağa Terbiyecisi</div>
+                        <div class="text-sm text-gray-600">Osman Hamdi Bey</div>
+                        <div class="text-xs text-gray-400 mt-1">2 saat önce eklendi</div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4 p-3 rounded-xl hover:bg-rose-50 transition-all cursor-pointer">
+                    <img src="/static/uploads/wikipedia_16.jpg" alt="Eser" class="w-16 h-16 rounded-xl object-cover shadow-md">
+                    <div class="flex-1">
+                        <div class="font-semibold text-gray-900">Guernica</div>
+                        <div class="text-sm text-gray-600">Pablo Picasso</div>
+                        <div class="text-xs text-gray-400 mt-1">5 saat önce eklendi</div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4 p-3 rounded-xl hover:bg-rose-50 transition-all cursor-pointer">
+                    <img src="/static/uploads/wikipedia_18.jpg" alt="Eser" class="w-16 h-16 rounded-xl object-cover shadow-md">
+                    <div class="flex-1">
+                        <div class="font-semibold text-gray-900">Belleğin Azmi</div>
+                        <div class="text-sm text-gray-600">Salvador Dalí</div>
+                        <div class="text-xs text-gray-400 mt-1">1 gün önce eklendi</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Popüler Sanatçılar -->
+        <div class="glass-effect rounded-2xl shadow-lg p-6 border border-white/50">
+            <h4 class="text-xl font-bold gradient-text mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-fire"></i>Popüler Sanatçılar
+            </h4>
+            <div class="flex flex-col gap-3">
+                <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-rose-50 transition-all cursor-pointer">
+                    <img src="/static/uploads/wikipedia_22.jpg" alt="Sanatçı" class="w-12 h-12 rounded-full object-cover border-2 border-rose-200">
+                    <div class="flex-1">
+                        <span class="font-medium text-gray-800">Leonardo da Vinci</span>
+                        <div class="text-xs text-gray-500">127 eser</div>
+                    </div>
+                    <div class="text-xs text-rose-600 font-semibold">+2.4K</div>
+                </div>
+                <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-rose-50 transition-all cursor-pointer">
+                    <img src="/static/uploads/wikipedia_23.jpg" alt="Sanatçı" class="w-12 h-12 rounded-full object-cover border-2 border-teal-200">
+                    <div class="flex-1">
+                        <span class="font-medium text-gray-800">Georgia O'Keeffe</span>
+                        <div class="text-xs text-gray-500">89 eser</div>
+                    </div>
+                    <div class="text-xs text-teal-600 font-semibold">+1.8K</div>
+                </div>
+                <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-rose-50 transition-all cursor-pointer">
+                    <img src="/static/uploads/wikipedia_26.jpg" alt="Sanatçı" class="w-12 h-12 rounded-full object-cover border-2 border-purple-200">
+                    <div class="flex-1">
+                        <span class="font-medium text-gray-800">İbrahim Çallı</span>
+                        <div class="text-xs text-gray-500">64 eser</div>
+                    </div>
+                    <div class="text-xs text-purple-600 font-semibold">+1.2K</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bugünkü Quiz -->
+        <div class="glass-effect rounded-2xl shadow-lg p-6 border border-white/50 bg-gradient-to-br from-purple-50 to-pink-50">
+            <h4 class="text-xl font-bold gradient-text mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-question-circle"></i>Günün Quizi
+            </h4>
+            <div class="text-center">
+                <div class="text-lg font-semibold text-gray-800 mb-2">Bu tabloyu kim çizdi?</div>
+                <img src="/static/uploads/wikipedia_1.jpg" alt="Quiz" class="w-full h-32 object-cover rounded-lg mb-4">
+                <button class="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 rounded-lg font-semibold hover:from-purple-600 hover:to-pink-600 transition-all">
+                    Quiz'e Başla
+                </button>
+            </div>
+        </div>
+
+        <!-- Gündem -->
+        <div class="glass-effect rounded-2xl shadow-lg p-6 border border-white/50">
+            <h4 class="text-xl font-bold gradient-text mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-trending-up"></i>Gündem
+            </h4>
+            <div class="flex flex-col gap-3">
+                <div class="flex items-center justify-between p-2 rounded-lg hover:bg-rose-50 transition-all cursor-pointer">
+                    <span class="font-medium text-gray-800">Sanat Tarihi</span>
+                    <span class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">1.2K</span>
+                </div>
+                <div class="flex items-center justify-between p-2 rounded-lg hover:bg-rose-50 transition-all cursor-pointer">
+                    <span class="font-medium text-gray-800">Arkeoloji</span>
+                    <span class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">856</span>
+                </div>
+                <div class="flex items-center justify-between p-2 rounded-lg hover:bg-rose-50 transition-all cursor-pointer">
+                    <span class="font-medium text-gray-800">Müze Bilimi</span>
+                    <span class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">432</span>
+                </div>
+                <div class="flex items-center justify-between p-2 rounded-lg hover:bg-rose-50 transition-all cursor-pointer">
+                    <span class="font-medium text-gray-800">Kültür Mirası</span>
+                    <span class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">298</span>
+                </div>
+                <div class="flex items-center justify-between p-2 rounded-lg hover:bg-rose-50 transition-all cursor-pointer">
+                    <span class="font-medium text-gray-800">Antropoloji</span>
+                    <span class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">187</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Popüler Yazılar -->
+        <div class="glass-effect rounded-2xl shadow-lg p-6 border border-white/50">
+            <h4 class="text-xl font-bold gradient-text mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-newspaper"></i>Popüler Yazılar
+            </h4>
+            <div class="flex flex-col gap-4">
+                <div class="flex items-start gap-3 p-2 rounded-lg hover:bg-rose-50 transition-all cursor-pointer">
+                    <img src="/static/uploads/wikipedia_2.jpg" alt="Yazı" class="w-12 h-12 rounded-lg object-cover">
+                    <div class="flex-1">
+                        <div class="font-medium text-gray-800 text-sm line-clamp-2">Osmanlı Dönemi Sanatının Gelişimi</div>
+                        <div class="text-xs text-gray-500 mt-1">2 gün önce • 5 dk okuma</div>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3 p-2 rounded-lg hover:bg-rose-50 transition-all cursor-pointer">
+                    <img src="/static/uploads/wikipedia_3.jpg" alt="Yazı" class="w-12 h-12 rounded-lg object-cover">
+                    <div class="flex-1">
+                        <div class="font-medium text-gray-800 text-sm line-clamp-2">Rönesans'ın Türk Sanatına Etkisi</div>
+                        <div class="text-xs text-gray-500 mt-1">3 gün önce • 8 dk okuma</div>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3 p-2 rounded-lg hover:bg-rose-50 transition-all cursor-pointer">
+                    <img src="/static/uploads/wikipedia_4.jpg" alt="Yazı" class="w-12 h-12 rounded-lg object-cover">
+                    <div class="flex-1">
+                        <div class="font-medium text-gray-800 text-sm line-clamp-2">Modern Müzecilik Anlayışı</div>
+                        <div class="text-xs text-gray-500 mt-1">1 hafta önce • 6 dk okuma</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Etkinlikler -->
+        <div class="glass-effect rounded-2xl shadow-lg p-6 border border-white/50">
+            <h4 class="text-xl font-bold gradient-text mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-calendar-alt"></i>Yaklaşan Etkinlikler
+            </h4>
+            <div class="flex flex-col gap-4">
+                <div class="p-3 rounded-lg bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200">
+                    <div class="font-semibold text-gray-800 text-sm">İstanbul Modern Sergi Turu</div>
+                    <div class="text-xs text-gray-600 mt-1">15 Ağustos 2025 • İstanbul</div>
+                    <div class="text-xs text-amber-600 font-medium mt-2">Ücretsiz</div>
+                </div>
+                <div class="p-3 rounded-lg bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200">
+                    <div class="font-semibold text-gray-800 text-sm">Arkeoloji Semineri</div>
+                    <div class="text-xs text-gray-600 mt-1">22 Ağustos 2025 • Ankara</div>
+                    <div class="text-xs text-purple-600 font-medium mt-2">₺150</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- İstatistikler -->
+        <div class="glass-effect rounded-2xl shadow-lg p-6 border border-white/50">
+            <h4 class="text-xl font-bold gradient-text mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-chart-bar"></i>Topluluk İstatistikleri
+            </h4>
+            <div class="grid grid-cols-2 gap-4">
+                <div class="text-center p-3 rounded-lg bg-gradient-to-r from-rose-50 to-pink-50">
+                    <div class="text-2xl font-bold text-rose-600">2.4K</div>
+                    <div class="text-xs text-gray-600">Toplam Üye</div>
+                </div>
+                <div class="text-center p-3 rounded-lg bg-gradient-to-r from-blue-50 to-cyan-50">
+                    <div class="text-2xl font-bold text-blue-600">1.8K</div>
+                    <div class="text-xs text-gray-600">Toplam Yazı</div>
+                </div>
+                <div class="text-center p-3 rounded-lg bg-gradient-to-r from-green-50 to-emerald-50">
+                    <div class="text-2xl font-bold text-green-600">856</div>
+                    <div class="text-xs text-gray-600">Sanatçı</div>
+                </div>
+                <div class="text-center p-3 rounded-lg bg-gradient-to-r from-purple-50 to-violet-50">
+                    <div class="text-2xl font-bold text-purple-600">432</div>
+                    <div class="text-xs text-gray-600">Müze</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Maya AI -->
+        <div class="glass-effect rounded-2xl shadow-lg p-6 border border-white/50 bg-gradient-to-br from-teal-50 to-cyan-50">
+            <h4 class="text-xl font-bold gradient-text mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-robot"></i>Maya AI
+            </h4>
+            <div class="text-center">
+                <div class="text-sm text-gray-700 mb-3">Sanat eserlerini analiz etmek için AI asistanımızı deneyin</div>
+                <button class="w-full bg-gradient-to-r from-teal-500 to-cyan-500 text-white py-3 rounded-lg font-semibold hover:from-teal-600 hover:to-cyan-600 transition-all">
+                    Maya ile Sohbet Et
+                </button>
+            </div>
+        </div>
+    </aside>
+</div>
+
+<!-- İçerik Ekleme Modal -->
+<div id="addContentModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl max-w-md w-full p-6 relative">
+            <button onclick="closeAddContentModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                <i class="fa-solid fa-times text-xl"></i>
+            </button>
+            
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-gradient-to-r from-rose-500 to-rose-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fa-solid fa-plus text-white text-2xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">İçerik Ekle</h3>
+                <p class="text-gray-600 dark:text-gray-300">Ne tür bir içerik eklemek istiyorsun?</p>
+            </div>
+            
+            <div class="space-y-3">
+                <button onclick="addContent('artwork')" class="w-full flex items-center gap-3 p-4 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-all text-left">
+                    <div class="w-10 h-10 bg-gradient-to-r from-amber-500 to-amber-600 rounded-lg flex items-center justify-center">
+                        <i class="fa-solid fa-palette text-white"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-gray-900 dark:text-white">Sanat Eseri</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Yeni bir sanat eseri ekle</p>
+                    </div>
+                </button>
+                
+                <button onclick="addContent('artist')" class="w-full flex items-center gap-3 p-4 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-all text-left">
+                    <div class="w-10 h-10 bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg flex items-center justify-center">
+                        <i class="fa-solid fa-user text-white"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-gray-900 dark:text-white">Sanatçı</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Yeni bir sanatçı profili ekle</p>
+                    </div>
+                </button>
+                
+                <button onclick="addContent('museum')" class="w-full flex items-center gap-3 p-4 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-all text-left">
+                    <div class="w-10 h-10 bg-gradient-to-r from-teal-500 to-teal-600 rounded-lg flex items-center justify-center">
+                        <i class="fa-solid fa-landmark text-white"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-gray-900 dark:text-white">Müze</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Yeni bir müze ekle</p>
+                    </div>
+                </button>
+                
+                <button onclick="addContent('article')" class="w-full flex items-center gap-3 p-4 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-all text-left">
+                    <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
+                        <i class="fa-solid fa-pen-to-square text-white"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-gray-900 dark:text-white">Makale</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Yeni bir makale yaz</p>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Soru Sorma Modal -->
+<div id="askQuestionModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl max-w-lg w-full p-6 relative">
+            <button onclick="closeAskQuestionModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                <i class="fa-solid fa-times text-xl"></i>
+            </button>
+            
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-gradient-to-r from-teal-500 to-teal-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fa-solid fa-question text-white text-2xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Soru Sor</h3>
+                <p class="text-gray-600 dark:text-gray-300">Sanat dünyası hakkında merak ettiğin soruları sor</p>
+            </div>
+            
+            <form onsubmit="submitQuestion(event)" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Soru Başlığı</label>
+                    <input type="text" id="questionTitle" required class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-teal-500 focus:border-transparent">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Soru Detayı</label>
+                    <textarea id="questionDetail" rows="4" required class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-teal-500 focus:border-transparent resize-none"></textarea>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Kategori</label>
+                    <select id="questionCategory" required class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-teal-500 focus:border-transparent">
+                        <option value="">Kategori seçin</option>
+                        <option value="sanat-tarihi">Sanat Tarihi</option>
+                        <option value="arkeoloji">Arkeoloji</option>
+                        <option value="antropoloji">Antropoloji</option>
+                        <option value="tarih">Tarih</option>
+                        <option value="muzecilik">Müzecilik</option>
+                        <option value="genel">Genel</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="w-full bg-gradient-to-r from-teal-500 to-teal-600 text-white py-3 rounded-xl font-semibold hover:from-teal-600 hover:to-teal-700 transition-all">
+                    <i class="fa-solid fa-paper-plane mr-2"></i>Soruyu Gönder
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript for Interactive Features -->
+<script>
+    // Like functionality
+    function handleLike(postId) {
+        const likeBtn = document.querySelector(`.like-btn[data-post-id="${postId}"]`);
+        const likeCount = document.querySelector(`.like-count[data-post-id="${postId}"]`);
+        const icon = likeBtn.querySelector('i');
+        
+        // Toggle like state
+        if (likeBtn.classList.contains('liked')) {
+            likeBtn.classList.remove('liked');
+            icon.classList.remove('text-rose-600');
+            icon.classList.add('text-gray-500');
+            likeCount.textContent = parseInt(likeCount.textContent) - 1;
+        } else {
+            likeBtn.classList.add('liked');
+            icon.classList.remove('text-gray-500');
+            icon.classList.add('text-rose-600');
+            likeCount.textContent = parseInt(likeCount.textContent) + 1;
+        }
+        
+        // Add animation
+        icon.style.transform = 'scale(1.3)';
+        setTimeout(() => {
+            icon.style.transform = 'scale(1)';
+        }, 200);
+        
+        // Send to server (you can implement this later)
+        console.log(`Post ${postId} liked/unliked`);
+    }
+    
+    // Comment functionality
+    function handleComment(postId) {
+        // For now, just show an alert. You can implement a modal later
+        alert(`Yorum yapmak için gönderi sayfasına gidin: /blog/post/${postId}`);
+        
+        // Add animation
+        const commentBtn = document.querySelector(`.comment-btn[data-post-id="${postId}"]`);
+        const icon = commentBtn.querySelector('i');
+        icon.style.transform = 'scale(1.3)';
+        setTimeout(() => {
+            icon.style.transform = 'scale(1)';
+        }, 200);
+    }
+    
+    // Share functionality
+    function handleShare(postId, title) {
+        // Create and show the share modal
+        showShareModal(postId, title);
+        
+        // Add animation
+        const shareBtn = document.querySelector(`.share-btn[data-post-id="${postId}"]`);
+        const icon = shareBtn.querySelector('i');
+        icon.style.transform = 'scale(1.3)';
+        setTimeout(() => {
+            icon.style.transform = 'scale(1)';
+        }, 200);
+    }
+    
+    // Show share modal
+    function showShareModal(postId, title) {
+        const url = `${window.location.origin}/blog/post/${postId}`;
+        const text = `${title} - Art of Museum'da okuyun!`;
+        
+        // Remove existing modal if any
+        const existingModal = document.getElementById('shareModal');
+        if (existingModal) {
+            existingModal.remove();
+        }
+        
+        // Create modal HTML
+        const modalHTML = `
+            <div id="shareModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-md w-full transform transition-all duration-300 scale-95 opacity-0" id="shareModalContent">
+                    <!-- Header -->
+                    <div class="bg-gradient-to-r from-[#fee9e0] via-[#fee9e0] to-[#fee9e0] p-6 rounded-t-2xl text-gray-800 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-20 h-20 bg-white/20 rounded-full -translate-y-10 translate-x-10"></div>
+                        <div class="absolute bottom-0 left-0 w-16 h-16 bg-white/20 rounded-full translate-y-8 -translate-x-8"></div>
+                        <div class="flex items-center justify-between relative z-10">
+                            <div class="flex items-center gap-3">
+                                <div class="bg-white/30 backdrop-blur-sm rounded-full p-2">
+                                    <i class="fa-solid fa-share text-xl text-gray-700"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-lg text-gray-800">Paylaş</h3>
+                                    <p class="text-gray-600 text-sm">Bu gönderiyi paylaşın</p>
+                                </div>
+                            </div>
+                            <button onclick="closeShareModal()" class="text-gray-600 hover:text-gray-800 transition-colors">
+                                <i class="fa-solid fa-times text-xl"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Content -->
+                    <div class="p-6">
+                        <div class="mb-6">
+                            <h4 class="font-semibold text-gray-900 dark:text-white mb-2">Sosyal Medya</h4>
+                            <div class="grid grid-cols-2 gap-3">
+                                                                    <button onclick="shareToSocial('whatsapp', '${url}', '${text}')" class="flex items-center gap-3 p-3 rounded-xl bg-green-50 hover:bg-green-100 transition-all group">
+                                        <div class="bg-gradient-to-r from-green-500 to-emerald-500 text-white p-2 rounded-lg">
+                                            <i class="fa-brands fa-whatsapp text-lg"></i>
+                                        </div>
+                                        <span class="font-medium text-gray-700 group-hover:text-green-700">WhatsApp</span>
+                                    </button>
+                                    
+                                                                        <button onclick="shareToSocial('facebook', '${url}', '${text}')" class="flex items-center gap-3 p-3 rounded-xl bg-blue-50 hover:bg-blue-100 transition-all group">
+                                        <div class="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-2 rounded-lg">
+                                            <i class="fa-brands fa-facebook text-lg"></i>
+                                        </div>
+                                        <span class="font-medium text-gray-700 group-hover:text-blue-700">Facebook</span>
+                                    </button>
+                                    
+                                    <button onclick="shareToSocial('twitter', '${url}', '${text}')" class="flex items-center gap-3 p-3 rounded-xl bg-sky-50 hover:bg-sky-100 transition-all group">
+                                        <div class="bg-gradient-to-r from-sky-400 to-blue-500 text-white p-2 rounded-lg">
+                                            <i class="fa-brands fa-twitter text-lg"></i>
+                                        </div>
+                                        <span class="font-medium text-gray-700 group-hover:text-sky-700">Twitter</span>
+                                    </button>
+                                    
+                                    <button onclick="shareToSocial('instagram', '${url}', '${text}')" class="flex items-center gap-3 p-3 rounded-xl bg-pink-50 hover:bg-pink-100 transition-all group">
+                                        <div class="bg-gradient-to-r from-pink-500 to-purple-600 text-white p-2 rounded-lg">
+                                            <i class="fa-brands fa-instagram text-lg"></i>
+                                        </div>
+                                        <span class="font-medium text-gray-700 group-hover:text-pink-700">Instagram</span>
+                                    </button>
+                                    
+                                    <button onclick="shareToSocial('linkedin', '${url}', '${text}')" class="flex items-center gap-3 p-3 rounded-xl bg-blue-50 hover:bg-blue-100 transition-all group">
+                                        <div class="bg-gradient-to-r from-blue-700 to-blue-800 text-white p-2 rounded-lg">
+                                            <i class="fa-brands fa-linkedin text-lg"></i>
+                                        </div>
+                                        <span class="font-medium text-gray-700 group-hover:text-blue-700">LinkedIn</span>
+                                    </button>
+                                    
+                                    <button onclick="shareToSocial('email', '${url}', '${text}')" class="flex items-center gap-3 p-3 rounded-xl bg-gray-50 hover:bg-gray-100 transition-all group">
+                                        <div class="bg-gradient-to-r from-gray-500 to-gray-600 text-white p-2 rounded-lg">
+                                            <i class="fa-solid fa-envelope text-lg"></i>
+                                        </div>
+                                        <span class="font-medium text-gray-700 group-hover:text-gray-700">E-posta</span>
+                                    </button>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <h4 class="font-semibold text-gray-900 dark:text-white mb-2">Link Kopyala</h4>
+                            <div class="flex gap-2">
+                                <input type="text" value="${url}" readonly class="flex-1 px-3 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-600 text-sm">
+                                <button onclick="copyToClipboard('${url}')" class="px-4 py-2 bg-rose-500 hover:bg-rose-600 text-white rounded-lg transition-colors">
+                                    <i class="fa-solid fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="flex gap-3">
+                            <button onclick="closeShareModal()" class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+                                İptal
+                            </button>
+                            <button onclick="shareToSocial('native', '${url}', '${text}')" class="flex-1 px-4 py-2 bg-gradient-to-r from-[#fee9e0] to-[#f5d4c0] text-gray-800 rounded-lg hover:from-[#f5d4c0] hover:to-[#ecc4a8] transition-all">
+                                <i class="fa-solid fa-share mr-2"></i>Paylaş
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Add modal to page
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+        
+        // Animate modal in
+        setTimeout(() => {
+            const modalContent = document.getElementById('shareModalContent');
+            modalContent.classList.remove('scale-95', 'opacity-0');
+            modalContent.classList.add('scale-100', 'opacity-100');
+        }, 10);
+        
+        // Close modal when clicking outside
+        document.getElementById('shareModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeShareModal();
+            }
+        });
+    }
+    
+    // Close share modal
+    function closeShareModal() {
+        const modal = document.getElementById('shareModal');
+        if (modal) {
+            const modalContent = document.getElementById('shareModalContent');
+            modalContent.classList.add('scale-95', 'opacity-0');
+            modalContent.classList.remove('scale-100', 'opacity-100');
+            
+            setTimeout(() => {
+                modal.remove();
+            }, 200);
+        }
+    }
+    
+    // Share to specific social media
+    function shareToSocial(platform, url, text) {
+        let shareUrl = '';
+        
+        switch(platform) {
+            case 'whatsapp':
+                shareUrl = `https://wa.me/?text=${encodeURIComponent(text + '\n' + url)}`;
+                break;
+            case 'facebook':
+                shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+                break;
+            case 'twitter':
+                shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
+                break;
+                                        case 'instagram':
+                                // Instagram doesn't have a direct share URL, so we'll copy the link
+                                copyToClipboard(url);
+                                showToast('Instagram için link kopyalandı!', 'success');
+                                return;
+                                break;
+            case 'linkedin':
+                shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`;
+                break;
+            case 'email':
+                shareUrl = `mailto:?subject=${encodeURIComponent('Art of Museum - ' + text.split(' - ')[0])}&body=${encodeURIComponent(text + '\n\n' + url)}`;
+                break;
+            case 'native':
+                if (navigator.share) {
+                    navigator.share({
+                        title: text.split(' - ')[0],
+                        text: text,
+                        url: url
+                    });
+                    closeShareModal();
+                    return;
+                } else {
+                    copyToClipboard(url);
+                    return;
+                }
+        }
+        
+        if (shareUrl) {
+            window.open(shareUrl, '_blank', 'width=600,height=400');
+            closeShareModal();
+        }
+    }
+    
+    // Copy to clipboard
+    function copyToClipboard(text) {
+        navigator.clipboard.writeText(text).then(() => {
+            // Show success message
+            showToast('Link kopyalandı!', 'success');
+        }).catch(() => {
+            // Fallback for older browsers
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            showToast('Link kopyalandı!', 'success');
+        });
+    }
+    
+    // Show toast notification
+    function showToast(message, type = 'info') {
+        const toast = document.createElement('div');
+        toast.className = `fixed top-4 right-4 z-50 px-6 py-3 rounded-lg text-white font-medium transform transition-all duration-300 translate-x-full`;
+        
+        if (type === 'success') {
+            toast.classList.add('bg-green-500');
+        } else {
+            toast.classList.add('bg-blue-500');
+        }
+        
+        toast.innerHTML = `
+            <div class="flex items-center gap-2">
+                <i class="fa-solid ${type === 'success' ? 'fa-check' : 'fa-info'}"></i>
+                <span>${message}</span>
+            </div>
+        `;
+        
+        document.body.appendChild(toast);
+        
+        // Animate in
+        setTimeout(() => {
+            toast.classList.remove('translate-x-full');
+        }, 10);
+        
+        // Remove after 3 seconds
+        setTimeout(() => {
+            toast.classList.add('translate-x-full');
+            setTimeout(() => {
+                document.body.removeChild(toast);
+            }, 300);
+        }, 3000);
+    }
+    
+    // İçerik Ekleme Modal Fonksiyonları
+    function openAddContentModal(type = '') {
+        const modalHTML = `
+            <div id="addContentModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                    <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-2xl font-bold text-gray-900 dark:text-white">İçerik Oluştur</h3>
+                            <button onclick="closeAddContentModal()" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+                                <i class="fa-solid fa-times text-xl"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="p-6">
+                        <form id="contentForm" class="space-y-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Başlık</label>
+                                <input type="text" name="title" required class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">İçerik Türü</label>
+                                <select name="post_type" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white">
+                                    <option value="makale" ${type === 'makale' ? 'selected' : ''}>📄 Makale</option>
+                                    <option value="arastirma" ${type === 'arastirma' ? 'selected' : ''}>🔬 Araştırma</option>
+                                    <option value="inceleme" ${type === 'inceleme' ? 'selected' : ''}>📖 İnceleme</option>
+                                    <option value="haber" ${type === 'haber' ? 'selected' : ''}>📰 Haber</option>
+                                    <option value="roportaj" ${type === 'roportaj' ? 'selected' : ''}>🎤 Röportaj</option>
+                                    <option value="kitap_tanitimi" ${type === 'kitap_tanitimi' ? 'selected' : ''}>📚 Kitap Tanıtımı</option>
+                                    <option value="sergi_haberi" ${type === 'sergi_haberi' ? 'selected' : ''}>🎨 Sergi Haberi</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">İçerik</label>
+                                <textarea name="content" rows="8" required class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white resize-none" placeholder="İçeriğinizi buraya yazın..."></textarea>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Kapak Görseli</label>
+                                <input type="file" name="image" accept="image/*" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white">
+                            </div>
+                            
+                            <div class="flex gap-4">
+                                <button type="button" onclick="closeAddContentModal()" class="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+                                    İptal
+                                </button>
+                                <button type="submit" class="flex-1 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all">
+                                    <i class="fa-solid fa-paper-plane mr-2"></i>Yayınla
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+        
+        // Form submit handler
+        document.getElementById('contentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            addContent(this);
+        });
+    }
+    
+    function closeAddContentModal() {
+        const modal = document.getElementById('addContentModal');
+        if (modal) {
+            modal.remove();
+        }
+    }
+    
+    function addContent(form) {
+        const formData = new FormData(form);
+        
+        // Show loading state
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Yayınlanıyor...';
+        submitBtn.disabled = true;
+        
+        fetch('/blog/create', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showToast('İçerik başarıyla yayınlandı!', 'success');
+                closeAddContentModal();
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1500);
+            } else {
+                showToast(data.message || 'Bir hata oluştu.', 'error');
+            }
+        })
+        .catch(error => {
+            showToast('Bir hata oluştu.', 'error');
+        })
+        .finally(() => {
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        });
+    }
+    
+    // İçerik Ekleme Modal Fonksiyonları
+    function openAddContentModal(type = '') {
+        document.getElementById('addContentModal').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+    
+    function closeAddContentModal() {
+        document.getElementById('addContentModal').classList.add('hidden');
+        document.body.style.overflow = 'auto';
+    }
+    
+    // Soru Sorma Modal Fonksiyonları
+    function openAskQuestionModal() {
+        document.getElementById('askQuestionModal').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+    
+    function closeAskQuestionModal() {
+        document.getElementById('askQuestionModal').classList.add('hidden');
+        document.body.style.overflow = 'auto';
+    }
+    
+    function submitQuestion(event) {
+        event.preventDefault();
+        
+        const title = document.getElementById('questionTitle').value;
+        const detail = document.getElementById('questionDetail').value;
+        const category = document.getElementById('questionCategory').value;
+        
+        // Burada soru gönderme işlemi yapılacak
+        console.log('Soru gönderiliyor:', { title, detail, category });
+        
+        // Başarı mesajı göster
+        showToast('Sorunuz başarıyla gönderildi!', 'success');
+        
+        // Modal'ı kapat
+        closeAskQuestionModal();
+        
+        // Form'u temizle
+        document.getElementById('questionTitle').value = '';
+        document.getElementById('questionDetail').value = '';
+        document.getElementById('questionCategory').value = '';
+    }
+    
+    // İçerik ekleme fonksiyonu
+    function addContent(type) {
+        const isAdmin = {{ 'true' if current_user.is_authenticated and current_user.role == 'admin' else 'false' }};
+        
+        let url = '';
+        switch(type) {
+            case 'artwork':
+                url = isAdmin ? '/admin/add_artwork' : '/add_artwork';
+                break;
+            case 'artist':
+                url = isAdmin ? '/admin/add_artist' : '/add_artist';
+                break;
+            case 'museum':
+                url = isAdmin ? '/admin/add_museum' : '/add_museum';
+                break;
+            case 'article':
+                url = '/blog/create';
+                break;
+        }
+        
+        if (url) {
+            window.location.href = url;
+            closeAddContentModal();
+        }
+    }
+    
+    // Modal dışına tıklandığında kapatma
+    document.addEventListener('click', function(event) {
+        const addModal = document.getElementById('addContentModal');
+        const askModal = document.getElementById('askQuestionModal');
+        
+        if (event.target === addModal) {
+            closeAddContentModal();
+        }
+        
+        if (event.target === askModal) {
+            closeAskQuestionModal();
+        }
+    });
+
+    // Toast notification function
+    function showToast(message, type = 'info') {
+        const toast = document.createElement('div');
+        toast.className = `fixed top-4 right-4 z-50 px-6 py-3 rounded-lg text-white font-medium transform translate-x-full transition-transform duration-300 ${
+            type === 'success' ? 'bg-green-500' : 
+            type === 'error' ? 'bg-red-500' : 
+            'bg-blue-500'
+        }`;
+        toast.textContent = message;
+        
+        document.body.appendChild(toast);
+        
+        // Show toast
+        setTimeout(() => {
+            toast.classList.remove('translate-x-full');
+        }, 100);
+        
+        // Hide toast
+        setTimeout(() => {
+            toast.classList.add('translate-x-full');
+            setTimeout(() => {
+                document.body.removeChild(toast);
+            }, 300);
+        }, 3000);
+    }
+</script>
+{% endblock %}

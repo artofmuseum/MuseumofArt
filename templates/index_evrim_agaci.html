@@ -1,0 +1,340 @@
+{% extends "layout.html" %}
+
+{% block title %}Ana Sayfa - Art of Museum{% endblock %}
+
+{% block content %}
+<!-- Evrim Ağacı Tarzı Ana Sayfa -->
+<div class="evrim-agaci-layout">
+    <!-- Sol Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-section">
+                <img src="{{ url_for('static', filename='uploads/logo2.png') }}" alt="Logo" class="sidebar-logo">
+                <span class="logo-text">Art of Museum</span>
+            </div>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <ul class="nav-list">
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-palette"></i>
+                        <span class="nav-text">Tema</span>
+                        <span class="dropdown-arrow">▼</span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">Açık Mod</a></li>
+                    </ul>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-compass"></i>
+                        <span class="nav-text">Keşfet</span>
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-download"></i>
+                        <span class="nav-text">Uygulamayı İndir</span>
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fab fa-youtube"></i>
+                        <span class="nav-text">Youtube Videoları</span>
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="{{ url_for('blog_list_page') }}" class="nav-link">
+                        <i class="fas fa-newspaper"></i>
+                        <span class="nav-text">Güncel Makaleler</span>
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-flask"></i>
+                        <span class="nav-text">Bilimdeki Son Gelişmeler</span>
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-graduation-cap"></i>
+                        <span class="nav-text">Art Akademi</span>
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-th-large"></i>
+                        <span class="nav-text">Kategoriler</span>
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-random"></i>
+                        <span class="nav-text">Rastgele Makale</span>
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-book"></i>
+                        <span class="nav-text">Sanat Sözlüğü</span>
+                    </a>
+                </li>
+                
+                <li class="nav-item active">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-star"></i>
+                        <span class="nav-text">Size Özel</span>
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-users"></i>
+                        <span class="nav-text">Art Sosyal & Gönderiler</span>
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-question-circle"></i>
+                        <span class="nav-text">Soru & Cevap</span>
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-podcast"></i>
+                        <span class="nav-text">Podcast</span>
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-clipboard"></i>
+                        <span class="nav-text">Pano</span>
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-paint-brush"></i>
+                        <span class="nav-text">Eser</span>
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-quote-left"></i>
+                        <span class="nav-text">Söz</span>
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-question"></i>
+                        <span class="nav-text">Quiz</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <div class="download-app">
+                <h4>Art of Museum Uygulamasını İndir</h4>
+                <button class="download-btn">İndir</button>
+                <button class="close-btn">✕</button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Ana İçerik -->
+    <main class="main-content">
+        <!-- Üst Banner -->
+        <div class="top-banner">
+            <div class="banner-content">
+                <span class="banner-text">Bugün Türkiye'de sanata ve sanat okuryazarlığına neler katacaksın?</span>
+                <div class="banner-actions">
+                    <button class="banner-btn">Yaz</button>
+                    <button class="banner-btn">Ekle</button>
+                    <button class="banner-btn">Soru Sor</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- İçerik Filtreleme -->
+        <div class="content-filter">
+            <div class="filter-tabs">
+                <button class="filter-tab active" data-filter="featured">
+                    <span class="tab-text">Size Özel</span>
+                </button>
+                <button class="filter-tab" data-filter="articles">
+                    <span class="tab-text">Makaleler</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Ana İçerik Grid -->
+        <div class="content-grid">
+            <!-- Sol Ana İçerik -->
+            <div class="main-content-area">
+                <!-- Öne Çıkan Makale -->
+                <article class="featured-article">
+                    <div class="article-header">
+                        <h2 class="article-category">Tavsiye Makale</h2>
+                        <span class="article-tag">Sanat Tarihi</span>
+                    </div>
+                    
+                    <div class="article-content">
+                        <div class="article-image">
+                            <img src="{{ url_for('static', filename='uploads/wikipedia_1.jpg') }}" alt="Sanat Tarihi">
+                        </div>
+                        
+                        <div class="article-info">
+                            <div class="article-meta">
+                                <div class="author-info">
+                                    <img src="{{ url_for('static', filename='uploads/logo.png') }}" alt="Yazar" class="author-avatar">
+                                    <span class="author-name">Art of Museum</span>
+                                </div>
+                                <div class="article-stats">
+                                    <span class="upvotes">29K UP</span>
+                                    <span class="reading-time">4 dk.</span>
+                                </div>
+                            </div>
+                            
+                            <h3 class="article-title">
+                                Sanat Tarihinin En Büyük Ustaları: Leonardo da Vinci'nin Mona Lisa'sı Hakkında Bilinmeyenler
+                            </h3>
+                            
+                            <p class="article-subtitle">
+                                Rönesans döneminin en gizemli eseri olan Mona Lisa'nın arkasındaki hikayeler ve sanat tarihindeki yeri
+                            </p>
+                            
+                            <div class="article-footer">
+                                <span class="article-date">24 Nisan 2024</span>
+                                <a href="{{ url_for('blog_list_page') }}" class="read-more">Devamını Oku →</a>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </div>
+
+            <!-- Sağ Sidebar -->
+            <aside class="right-sidebar">
+                <!-- Gündem -->
+                <div class="sidebar-section">
+                    <h3 class="section-title">Gündem</h3>
+                    <ul class="trending-list">
+                        <li class="trending-item">
+                            <span class="trending-category">Güncel Sanat Haberleri</span>
+                            <span class="trending-count">2356 gönderi</span>
+                        </li>
+                        <li class="trending-item">
+                            <span class="trending-category">Sanat Tarihinde Bugün</span>
+                            <span class="trending-count">548 gönderi</span>
+                        </li>
+                        <li class="trending-item">
+                            <span class="trending-category">Keşif Kulübü</span>
+                            <span class="trending-count">27 gönderi</span>
+                        </li>
+                        <li class="trending-item">
+                            <span class="trending-category">Art of Museum Sitesi İçin Ö...</span>
+                            <span class="trending-count">28 gönderi</span>
+                        </li>
+                        <li class="trending-item">
+                            <span class="trending-category">Kapan Susam Kapan</span>
+                            <span class="trending-count">1 gönderi</span>
+                        </li>
+                        <li class="trending-item">
+                            <span class="trending-category">Deprem</span>
+                            <span class="trending-count">1505 gönderi</span>
+                        </li>
+                        <li class="trending-item">
+                            <span class="trending-category">Adalet Üzerine</span>
+                            <span class="trending-count">2 gönderi</span>
+                        </li>
+                        <li class="trending-item">
+                            <span class="trending-category">Art of Museum Geliştirme v...</span>
+                            <span class="trending-count">11 gönderi</span>
+                        </li>
+                        <li class="trending-item">
+                            <span class="trending-category">Art of Museum İstanbul To...</span>
+                            <span class="trending-count">23 gönderi</span>
+                        </li>
+                        <li class="trending-item">
+                            <span class="trending-category">Bunu Biliyor Muydunuz?</span>
+                            <span class="trending-count">275 gönderi</span>
+                        </li>
+                    </ul>
+                    <a href="#" class="show-more">Daha fazla göster</a>
+                </div>
+
+                <!-- Popüler Yazılar -->
+                <div class="sidebar-section">
+                    <h3 class="section-title">Popüler Yazılar</h3>
+                    <div class="time-filters">
+                        <button class="time-filter active">30 gün</button>
+                        <button class="time-filter">90 gün</button>
+                        <button class="time-filter">1 yıl</button>
+                    </div>
+                    
+                    <ul class="popular-posts">
+                        <li class="popular-post">
+                            <img src="{{ url_for('static', filename='uploads/logo.png') }}" alt="Yazar" class="post-author-avatar">
+                            <div class="post-info">
+                                <h4 class="post-title">Dövme Kansere Sebebiyet Verir mi? Güncel Araştırmala...</h4>
+                                <div class="post-meta">
+                                    <span class="post-date">25/06/2025</span>
+                                    <span class="post-reading-time">~ 6 dakika</span>
+                                </div>
+                            </div>
+                        </li>
+                        
+                        <li class="popular-post">
+                            <img src="{{ url_for('static', filename='uploads/logo.png') }}" alt="Yazar" class="post-author-avatar">
+                            <div class="post-info">
+                                <h4 class="post-title">Umman'da İslam Öncesine Ait 2400 Yıllık Zufar Yazısı Deşifr...</h4>
+                                <div class="post-meta">
+                                    <span class="post-date">12/07/2025</span>
+                                    <span class="post-reading-time">~ 5 dakika</span>
+                                </div>
+                            </div>
+                        </li>
+                        
+                        <li class="popular-post">
+                            <img src="{{ url_for('static', filename='uploads/logo.png') }}" alt="Yazar" class="post-author-avatar">
+                            <div class="post-info">
+                                <h4 class="post-title">ODTÜ ve Hacettepe Ekibi, Çatalhöyük'te Aile Yapılarının...</h4>
+                                <div class="post-meta">
+                                    <span class="post-date">27/06/2025</span>
+                                    <span class="post-reading-time">~ 7 dakika</span>
+                                </div>
+                            </div>
+                        </li>
+                        
+                        <li class="popular-post">
+                            <img src="{{ url_for('static', filename='uploads/logo.png') }}" alt="Yazar" class="post-author-avatar">
+                            <div class="post-info">
+                                <h4 class="post-title">Yeni Ketamin Çalışması, Depresyon İçin Uzun Süreli...</h4>
+                                <div class="post-meta">
+                                    <span class="post-date">30/06/2025</span>
+                                    <span class="post-reading-time">~ 3 dakika</span>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </aside>
+        </div>
+    </main>
+</div>
+{% endblock %} 

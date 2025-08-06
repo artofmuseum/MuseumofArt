@@ -1,0 +1,49 @@
+{% extends "layout.html" %}
+
+{% block title %}Akımı Düzenle: {{ movement_to_edit.name }}{% endblock %}
+
+{% block content %}
+    <div class="form-container">
+        <h2>Sanat Akımını Düzenle</h2>
+        <form method="POST" action="" enctype="multipart/form-data">
+            {{ form.hidden_tag() }} 
+            
+            <div class="form-group">
+                {{ form.name.label(class="form-label") }}
+                {{ form.name(class="form-control form-control-lg") }}
+            </div>
+
+            <div class="form-group">
+                {{ form.period.label(class="form-label") }}
+                {{ form.period(class="form-control") }}
+            </div>
+
+            <div class="form-group">
+                {{ form.description.label(class="form-label") }}
+                {{ form.description(class="form-control", rows="8") }}
+            </div>
+
+            <div class="form-group">
+                <p>Mevcut Resim:</p>
+                <img src="{{ url_for('static', filename='uploads/' + movement_to_edit.image_file) }}" alt="{{ movement_to_edit.name }}" style="width: 100px; height: 100px; object-fit: cover; border-radius: 5px; margin-bottom: 10px;">
+                <br>
+                {{ form.picture.label(class="form-label", text="Resmi Değiştir (Opsiyonel)") }}
+                {{ form.picture(class="form-control-file") }}
+            </div>
+            
+            <div class="form-group">
+                {{ form.submit(class="btn btn-primary") }}
+            </div>
+        </form>
+        <hr>
+        
+        {# Silme butonu için yeni bir bölüm #}
+        <div class="delete-action" style="background-color: #fff3f3; padding: 15px; border: 1px solid #f2c7c7; border-radius: 5px; text-align: center;">
+            <p><strong>Bu sanat akımını kalıcı olarak silmek isterseniz:</strong></p>
+            <a href="{{ url_for('delete_movement_confirm_page', movement_id=movement_to_edit.id) }}" class="btn btn-danger">Bu Akımı Sil</a>
+        </div>
+        <hr>
+
+        <p><a href="{{ url_for('admin_panel_page') }}">Admin Paneline Geri Dön</a></p>
+    </div>
+{% endblock %}

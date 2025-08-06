@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Giriş Yap / Kayıt Ol - Art of Museum</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style_pro.css') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <style>
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+      background: #181512;
+      font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+    }
+    .blur-overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      z-index: 10;
+      background: url('{{ bg_url }}') center center/cover no-repeat;
+      backdrop-filter: blur(14px) brightness(0.6);
+      background-color: rgba(24,21,18,0.5);
+      pointer-events: none;
+    }
+    .login-modal-center {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      pointer-events: none;
+    }
+    .login-container {
+      background: rgba(24, 21, 18, 0.97);
+      border-radius: 28px;
+      box-shadow: 0 16px 48px 0 rgba(34, 34, 34, 0.45);
+      padding: 2.8rem 2.2rem 2.2rem 2.2rem;
+      max-width: 430px;
+      width: 100%;
+      color: #fff;
+      position: relative;
+      z-index: 1001;
+      pointer-events: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 0;
+      transition: box-shadow 0.2s, background 0.2s;
+    }
+    .close-btn {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 1.7rem;
+      opacity: 0.7;
+      cursor: pointer;
+      z-index: 1100;
+      transition: opacity 0.2s;
+    }
+    .close-btn:hover { opacity: 1; }
+    .form-group {
+      position: relative;
+      margin-bottom: 1.6rem;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      width: 100%;
+    }
+    .form-group .input-icon {
+      position: absolute;
+      left: 1.1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #bdbdbd;
+      font-size: 1.18rem;
+      pointer-events: none;
+      z-index: 2;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 1rem 1rem 1rem 2.8rem;
+      font-size: 1.08rem;
+      border-radius: 9px;
+      border: 1.5px solid #333;
+      background: #23201d;
+      color: #fff;
+      outline: none;
+      transition: border 0.2s;
+      box-sizing: border-box;
+    }
+    .form-group input:focus {
+      border: 1.5px solid #722f37;
+    }
+    .show-password {
+      position: absolute;
+      right: 1.1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: #bdbdbd;
+      font-size: 1.18rem;
+      z-index: 2;
+    }
+    .login-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      margin-bottom: 1.2rem;
+      width: 100%;
+    }
+    .login-btn {
+      width: 100%;
+      background: linear-gradient(90deg, #b23a48 60%, #722f37 100%);
+      color: #fff;
+      border: none;
+      border-radius: 14px;
+      padding: 1.2rem 0;
+      font-size: 1.18rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-bottom: 1.1rem;
+      box-shadow: 0 2px 12px rgba(114,47,55,0.10);
+      transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+    }
+    .login-btn:hover {
+      background: linear-gradient(90deg, #722f37 60%, #b23a48 100%);
+      box-shadow: 0 4px 18px rgba(114,47,55,0.18);
+      transform: translateY(-2px) scale(1.03);
+    }
+    .google-btn {
+      width: 100%;
+      background: #fff;
+      color: #222;
+      border: none;
+      border-radius: 9px;
+      padding: 1rem 0;
+      font-size: 1.12rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.7rem;
+      margin-bottom: 0.9rem;
+      box-shadow: 0 2px 8px rgba(34,34,34,0.08);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .google-btn .fa-google {
+      color: #ea4335;
+      font-size: 1.3rem;
+    }
+    .login-links {
+      display: flex;
+      justify-content: space-between;
+      font-size: 1.01rem;
+      margin-top: 0.7rem;
+      width: 100%;
+    }
+    .login-links a {
+      color: #b23a48;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .login-links a:hover {
+      color: #722f37;
+    }
+    @media (max-width: 600px) {
+      .login-container {
+        max-width: 98vw;
+        padding: 1.2rem 0.5rem 1.5rem 0.5rem;
+      }
+      .form-group input {
+        font-size: 1rem;
+        padding: 0.8rem 0.8rem 0.8rem 2.2rem;
+      }
+    }
+    .login-desc {
+      font-family: 'Georgia', serif;
+      font-size: 1.18rem;
+      color: #d4af37;
+      font-style: italic;
+      text-shadow: 0 2px 8px rgba(34,34,34,0.12);
+      margin-bottom: 1.3rem;
+      letter-spacing: 0.5px;
+      font-weight: 500;
+    }
+    .tabs {
+      display: flex;
+      margin-bottom: 1.5rem;
+      border-radius: 14px;
+      overflow: hidden;
+      background: #23201d;
+      box-shadow: 0 2px 8px rgba(34,34,34,0.08);
+    }
+    .tabs button {
+      flex: 1;
+      min-width: 160px;
+      padding: 1.25rem 0;
+      background: none;
+      border: none;
+      color: #bdbdbd;
+      font-size: 1.22rem;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s, font-weight 0.2s;
+      font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+      font-weight: 500;
+      border-radius: 0;
+      letter-spacing: 0.5px;
+    }
+    .tabs button.active {
+      background: linear-gradient(90deg, #b23a48 60%, #722f37 100%);
+      color: #fff;
+      font-weight: 700;
+      box-shadow: 0 2px 8px rgba(114,47,55,0.10);
+      border-radius: 0 0 14px 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="blur-overlay"></div>
+  <div class="login-modal-center">
+    <div class="login-container">
+      <button class="close-btn" onclick="window.location.href='/'" title="Siteye Dön"><i class="fa-solid fa-xmark"></i></button>
+      <div class="login-header">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div style="width:100%;margin-bottom:1rem;">
+              {% for category, message in messages %}
+                <div class="alert alert-{{ category }}" style="background:#fff3f3;color:#b23a48;padding:0.8rem 1.2rem;border-radius:8px;margin-bottom:0.5rem;font-weight:600;">{{ message }}</div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+        <img src="{{ url_for('static', filename='uploads/logo.png') }}" alt="Art of Museum Logo" style="width:100%; max-width:360px; margin-bottom:1.2rem;">
+        <div class="login-desc">Sanat ve kültürün buluşma noktası</div>
+      </div>
+      <div class="tabs">
+        <button id="loginTab" class="active" onclick="showTab('login')">Giriş Yap</button>
+        <button id="registerTab" onclick="showTab('register')">Kayıt Ol</button>
+      </div>
+      <form id="loginForm" method="POST" action="{{ url_for('login_page') }}" autocomplete="on">
+        {{ login_form.hidden_tag() }}
+        <div class="form-group">
+          <label for="email">E-Posta</label>
+          <div class="input-wrapper">
+            <span class="input-icon"><i class="fa-solid fa-envelope"></i></span>
+            {{ login_form.email(class_="form-control", id="email", placeholder="E-posta adresiniz") }}
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="password">Şifre</label>
+          <div class="input-wrapper">
+            <span class="input-icon"><i class="fa-solid fa-lock"></i></span>
+            {{ login_form.password(class_="form-control", id="password", placeholder="Şifreniz") }}
+            <span class="show-password" onclick="togglePassword('password')"><i class="fa-solid fa-eye"></i></span>
+          </div>
+        </div>
+        <div class="login-actions">
+          <label><input type="checkbox" name="remember"> Beni Hatırla</label>
+        </div>
+        <button type="submit" class="login-btn">Giriş Yap</button>
+        <button type="button" class="google-btn" onclick="window.location.href='{{ url_for('google.login') }}'">
+          <i class="fa-brands fa-google"></i> Google ile Giriş
+        </button>
+        <div class="login-links">
+          <a href="#">Şifremi unuttum</a>
+          <a href="#">Üyelik Aktivasyonu</a>
+        </div>
+      </form>
+      <form id="registerForm" method="POST" action="{{ url_for('login_page') }}" style="display:none;" autocomplete="on">
+        {{ register_form.hidden_tag() }}
+        <div class="form-group">
+          <label for="first_name">Ad</label>
+          <div class="input-wrapper">
+            <span class="input-icon"><i class="fa-solid fa-user"></i></span>
+            {{ register_form.first_name(class_="form-control", id="first_name", placeholder="Adınız") }}
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="last_name">Soyad</label>
+          <div class="input-wrapper">
+            <span class="input-icon"><i class="fa-solid fa-user"></i></span>
+            {{ register_form.last_name(class_="form-control", id="last_name", placeholder="Soyadınız") }}
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="username">Kullanıcı Adı</label>
+          <div class="input-wrapper">
+            <span class="input-icon"><i class="fa-solid fa-user-tag"></i></span>
+            {{ register_form.username(class_="form-control", id="username", placeholder="Kullanıcı adınız") }}
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="email_reg">E-Posta</label>
+          <div class="input-wrapper">
+            <span class="input-icon"><i class="fa-solid fa-envelope"></i></span>
+            {{ register_form.email(class_="form-control", id="email_reg", placeholder="E-posta adresiniz") }}
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="password_reg">Şifre</label>
+          <div class="input-wrapper">
+            <span class="input-icon"><i class="fa-solid fa-lock"></i></span>
+            {{ register_form.password(class_="form-control", id="password_reg", placeholder="Şifreniz") }}
+            <span class="show-password" onclick="togglePassword('password_reg')"><i class="fa-solid fa-eye"></i></span>
+          </div>
+        </div>
+        <button type="submit" class="login-btn">Kayıt Ol</button>
+      </form>
+    </div>
+  </div>
+  <script>
+  function showTab(tab) {
+    document.getElementById('loginTab').classList.remove('active');
+    document.getElementById('registerTab').classList.remove('active');
+    document.getElementById('loginForm').style.display = 'none';
+    document.getElementById('registerForm').style.display = 'none';
+    if(tab === 'login') {
+      document.getElementById('loginTab').classList.add('active');
+      document.getElementById('loginForm').style.display = '';
+    } else {
+      document.getElementById('registerTab').classList.add('active');
+      document.getElementById('registerForm').style.display = '';
+    }
+  }
+  function togglePassword(id) {
+    var input = document.getElementById(id);
+    var icon = input.parentElement.querySelector('.show-password i');
+    if(input.type === 'password') {
+      input.type = 'text';
+      if(icon) icon.classList.remove('fa-eye');
+      if(icon) icon.classList.add('fa-eye-slash');
+    } else {
+      input.type = 'password';
+      if(icon) icon.classList.remove('fa-eye-slash');
+      if(icon) icon.classList.add('fa-eye');
+    }
+  }
+  </script>
+</body>
+</html>
+    

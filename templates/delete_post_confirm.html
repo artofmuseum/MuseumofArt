@@ -1,0 +1,18 @@
+    {% extends "layout.html" %}
+
+    {% block title %}Silme Onayı - Art of Museum{% endblock %}
+
+    {% block content %}
+        <div class="form-container">
+            <h2>Silme Onayı</h2>
+            <p><strong>"{{ post_to_delete.title }}"</strong> başlıklı yazıyı kalıcı olarak silmek istediğinizden emin misiniz?</p>
+            <p>Bu işlem geri alınamaz.</p>
+            
+            <form method="POST" action="{{ url_for('delete_post_page', post_id=post_to_delete.id) }}" style="display: inline;">
+                <input type="submit" value="Evet, Sil" class="btn btn-danger">
+            </form>
+
+            <a href="{{ url_for('blog_post_detail_page', post_id=post_to_delete.id) }}" class="btn btn-secondary" style="display: inline; margin-left: 10px;">Vazgeç</a>
+        </div>
+    {% endblock %}
+    

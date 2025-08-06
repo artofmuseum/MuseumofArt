@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ movement.name }} - Sanat Akımları{% endblock %}
+
+{% block content %}
+    {% set image_url = url_for('static', filename='uploads/' + movement.image_file) %}
+    <img src="{{ image_url }}" alt="{{ movement.name }}" class="post-image-large">
+
+    <h1>{{ movement.name }}</h1>
+    <p class="post-meta"><small>Dönem: {{ movement.period }}</small></p>
+
+    <div class="post-content">
+        {{ movement.description | safe }}
+    </div>
+
+    <hr>
+
+    <h2>Bu Akıma Bağlı Sanatçılar</h2>
+    {% if movement.artists %}
+        <ul style="list-style-type: none; padding: 0;">
+            {% for artist in movement.artists %}
+                <li class="artist-list-item">
+                    {% set artist_image_url = url_for('static', filename='uploads/' + artist.image_file) %}
+                    <img src="{{ artist_image_url }}" alt="{{ artist.name }}" class="artist-image-list">
+                    <div class="artist-info">
+                        <a href="{{ url_for('artist_detail_page', artist_id=artist.id) }}" style="text-decoration: none; color: #333;">
+                            <h3>{{ artist.name }}</h3>
+                        </a> 
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Bu akıma bağlı kayıtlı sanatçı bulunamadı.</p>
+    {% endif %}
+
+{% endblock %}

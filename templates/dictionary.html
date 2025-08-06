@@ -1,0 +1,742 @@
+{% extends "layout_tailwind.html" %}
+
+{% block title %}Sanat Sözlüğü - Art of Museum{% endblock %}
+
+{% block content %}
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+  .gradient-bg {
+    background: linear-gradient(135deg, #fee9e0 0%, #f3e8ff 50%, #e0f2fe 100%);
+  }
+  .art-card {
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+  }
+  .art-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  }
+  .search-glow:focus {
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  }
+  .category-tag {
+    transition: all 0.2s ease;
+  }
+  .category-tag:hover {
+    transform: scale(1.05);
+  }
+  .definition-enter {
+    animation: slideDown 0.3s ease-out;
+  }
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+
+<!-- Header -->
+<header class="gradient-bg text-gray-800 py-12 mb-8">
+  <div class="max-w-4xl mx-auto px-6 text-center">
+    <h1 class="text-5xl font-bold mb-4">🎨 Sanat Terimleri Sözlüğü</h1>
+    <p class="text-lg text-gray-600">Sanat dünyasını keşfedin, terimlerle tanışın</p>
+  </div>
+</header>
+
+<div class="max-w-4xl mx-auto px-6">
+  <!-- Search and Filter Section -->
+  <div class="bg-white rounded-2xl shadow-lg p-6 mb-8">
+    <div class="flex flex-col md:flex-row gap-4 mb-6">
+      <div class="flex-1">
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="🔍 Bir terim ara... (örn: barok, empresyonizm)"
+          class="w-full p-4 border-2 border-gray-200 rounded-xl focus:border-indigo-500 focus:outline-none search-glow text-lg"
+          oninput="filterTerms()"
+        />
+      </div>
+      <select id="categoryFilter" class="p-4 border-2 border-gray-200 rounded-xl focus:border-indigo-500 focus:outline-none" onchange="filterByCategory()">
+        <option value="">Tüm Kategoriler</option>
+        <option value="akım">Sanat Akımları</option>
+        <option value="teknik">Teknikler</option>
+        <option value="dönem">Dönemler</option>
+        <option value="kavram">Kavramlar</option>
+      </select>
+    </div>
+    
+    <!-- Quick Category Buttons -->
+    <div class="flex flex-wrap gap-2 mb-4">
+      <button onclick="quickFilter('')" class="category-tag px-4 py-2 bg-indigo-100 text-indigo-700 rounded-full text-sm font-medium hover:bg-indigo-200">
+        Tümü
+      </button>
+      <button onclick="quickFilter('akım')" class="category-tag px-4 py-2 bg-purple-100 text-purple-700 rounded-full text-sm font-medium hover:bg-purple-200">
+        Akımlar
+      </button>
+      <button onclick="quickFilter('teknik')" class="category-tag px-4 py-2 bg-green-100 text-green-700 rounded-full text-sm font-medium hover:bg-green-200">
+        Teknikler
+      </button>
+      <button onclick="quickFilter('dönem')" class="category-tag px-4 py-2 bg-orange-100 text-orange-700 rounded-full text-sm font-medium hover:bg-orange-200">
+        Dönemler
+      </button>
+    </div>
+
+    <!-- Statistics -->
+    <div class="text-sm text-gray-600 mb-2">
+      <span id="resultCount">0</span> terim gösteriliyor
+    </div>
+  </div>
+
+  <!-- Terms List -->
+  <div id="termsList" class="space-y-4">
+    <!-- Terms will be populated by JavaScript -->
+  </div>
+
+  <!-- No Results Message -->
+  <div id="noResults" class="hidden text-center py-12">
+    <div class="text-6xl mb-4">🔍</div>
+    <h3 class="text-xl font-semibold text-gray-700 mb-2">Aradığınız terim bulunamadı</h3>
+    <p class="text-gray-500">Farklı bir arama terimi deneyin veya kategorileri kontrol edin</p>
+  </div>
+</div>
+
+<script>
+  // Comprehensive art terms database
+  const artTerms = [
+    {
+      term: "Barok",
+      definition: "17. yüzyılda Avrupa'da gelişen, süslemeli, dramatik ve görkemli bir sanat akımıdır. Hareket, kontrast ve duygusal yoğunluk ile karakterizedir.",
+      category: "akım",
+      examples: "Caravaggio, Bernini, Rubens"
+    },
+    {
+      term: "Empresyonizm",
+      definition: "19. yüzyılın sonlarında Fransa'da ortaya çıkan, ışık ve anlık izlenimlere odaklanan sanat akımıdır. Açık havada resim yapma tekniğini öne çıkarmıştır.",
+      category: "akım",
+      examples: "Monet, Renoir, Degas"
+    },
+    {
+      term: "Fresk",
+      definition: "Islak sıva üzerine su bazlı boyalarla yapılan duvar resmi tekniğidir. Antik dönemlerden beri kullanılan kalıcı bir tekniktir.",
+      category: "teknik",
+      examples: "Sistine Şapeli, Pompeii duvar resimleri"
+    },
+    {
+      term: "Rönesans",
+      definition: "14-17. yüzyıllar arasında Avrupa'da yaşanan kültürel ve sanatsal canlanma dönemidir. Antik Yunan ve Roma sanatından ilham almıştır.",
+      category: "dönem",
+      examples: "Leonardo da Vinci, Michelangelo, Raphael"
+    },
+    {
+      term: "Kübizm",
+      definition: "20. yüzyıl başında Picasso ve Braque tarafından geliştirilen, nesneleri geometrik şekillere ayıran modern sanat akımıdır.",
+      category: "akım",
+      examples: "Picasso, Braque, Cézanne"
+    },
+    {
+      term: "Sürrealizm",
+      definition: "1920'lerde ortaya çıkan, bilinçaltını ve rüyaları sanatsal ifadeye dönüştüren avant-garde akımdır.",
+      category: "akım",
+      examples: "Dalí, Magritte, Ernst"
+    },
+    {
+      term: "Yağlıboya",
+      definition: "Pigmentlerin yağ (genellikle keten yağı) ile karıştırılmasıyla elde edilen resim tekniğidir. 15. yüzyıldan beri yaygın kullanılır.",
+      category: "teknik",
+      examples: "Van Eyck kardeşler, Rembrandt"
+    },
+    {
+      term: "Gotik",
+      definition: "12-16. yüzyıllar arasında Avrupa'da gelişen, yüksek kemerleri ve sivri kuleleri ile tanınan mimari ve sanat stilidir.",
+      category: "dönem",
+      examples: "Notre Dame, Chartres Katedrali"
+    },
+    {
+      term: "Perspektif",
+      definition: "Resimde üç boyutlu görünüm yaratmak için kullanılan teknik. Nesnelerin uzaklığa göre küçülmesi prensibidir.",
+      category: "kavram",
+      examples: "Doğrusal perspektif, hava perspektifi"
+    },
+    {
+      term: "Chiaroscuro",
+      definition: "İtalyanca'da 'açık-koyu' anlamına gelen, ışık ve gölge kontrastını dramatik şekilde kullanan resim tekniğidir.",
+      category: "teknik",
+      examples: "Caravaggio, Rembrandt"
+    },
+    {
+      term: "Art Nouveau",
+      definition: "19. yüzyıl sonu 20. yüzyıl başında popüler olan, doğal formlar ve süslemeli çizgilerle karakterize edilen sanat akımıdır.",
+      category: "akım",
+      examples: "Mucha, Klimt, Gaudí"
+    },
+    {
+      term: "Minimalizm",
+      definition: "1960'larda ortaya çıkan, sadelik ve geometrik formları öne çıkaran sanat akımıdır. 'Az çoktur' felsefesini benimser.",
+      category: "akım",
+      examples: "Donald Judd, Dan Flavin"
+    },
+    {
+      term: "Gravür",
+      definition: "Metal, ahşap veya taş üzerine çizilen desenlerin kağıda basılması tekniğidir. Çoklu kopya üretimi sağlar.",
+      category: "teknik",
+      examples: "Dürer'in gravürleri, Goya'nın etkinlikleri"
+    },
+    {
+      term: "Natürmort",
+      definition: "Cansız nesneler (meyveler, çiçekler, günlük eşyalar) ile yapılan resim türüdür. Fransızca 'ölü doğa' anlamındadır.",
+      category: "kavram",
+      examples: "Cézanne'ın elmalar, Hollanda Altın Çağ natürmortları"
+    },
+    {
+      term: "Kolaj",
+      definition: "Farklı malzemelerin (kağıt, kumaş, fotoğraf) bir yüzey üzerine yapıştırılarak oluşturulan sanat tekniğidir.",
+      category: "teknik",
+      examples: "Picasso, Braque kollajları"
+    },
+    {
+      term: "Romantizm",
+      definition: "18-19. yüzyıllar arasında gelişen, duygusallık, doğa ve bireyselliği öne çıkaran sanat akımıdır.",
+      category: "akım",
+      examples: "Delacroix, Géricault, Turner"
+    },
+    {
+      term: "Neoklasizm",
+      definition: "18. yüzyılda antik Yunan ve Roma sanatından ilham alan, düzen ve simetriyi öne çıkaran sanat akımıdır.",
+      category: "akım",
+      examples: "David, Ingres, Canova"
+    },
+    {
+      term: "Aquarelle",
+      definition: "Su ile seyreltilmiş boyalarla yapılan şeffaf resim tekniğidir. Kağıdın beyazlığından yararlanır.",
+      category: "teknik",
+      examples: "Turner'ın suluboyaları, Cézanne'ın aquarelle'leri"
+    },
+    {
+      term: "Tempera",
+      definition: "Yumurta sarısı ile pigmentleri karıştırarak elde edilen geleneksel resim tekniğidir.",
+      category: "teknik",
+      examples: "Giotto, Botticelli'nin eserleri"
+    },
+    {
+      term: "Portre",
+      definition: "Bir kişinin yüzünü veya tüm vücudunu betimleyen resim türüdür. Sanat tarihinin en eski türlerinden biridir.",
+      category: "kavram",
+      examples: "Mona Lisa, Van Gogh'un otoportreleri"
+    },
+    {
+      term: "Ekspresyonizm",
+      definition: "20. yüzyıl başında Almanya'da ortaya çıkan, duygusal yoğunluğu ve iç dünyayı öne çıkaran sanat akımıdır.",
+      category: "akım",
+      examples: "Munch, Kirchner, Nolde"
+    },
+    {
+      term: "Pop Art",
+      definition: "1950'lerde ortaya çıkan, popüler kültür ve tüketim toplumunu sanata dönüştüren akımdır.",
+      category: "akım",
+      examples: "Warhol, Lichtenstein, Hockney"
+    },
+    {
+      term: "Abstrakt Ekspresyonizm",
+      definition: "1940-1950'lerde ABD'de gelişen, soyut formlar ve spontane ifadeyi birleştiren sanat akımıdır.",
+      category: "akım",
+      examples: "Pollock, Rothko, de Kooning"
+    },
+    {
+      term: "Fovizm",
+      definition: "1905'te Fransa'da ortaya çıkan, saf ve canlı renkleri kullanan sanat akımıdır.",
+      category: "akım",
+      examples: "Matisse, Derain, Vlaminck"
+    },
+    {
+      term: "Dadaizm",
+      definition: "I. Dünya Savaşı sırasında ortaya çıkan, geleneksel sanat değerlerini reddeden anti-sanat akımıdır.",
+      category: "akım",
+      examples: "Duchamp, Arp, Schwitters"
+    },
+    {
+      term: "Fütürizm",
+      definition: "20. yüzyıl başında İtalya'da ortaya çıkan, hız, teknoloji ve dinamizmi öven sanat akımıdır.",
+      category: "akım",
+      examples: "Boccioni, Balla, Severini"
+    },
+    {
+      term: "Konstrüktivizm",
+      definition: "1917 Rus Devrimi sonrası ortaya çıkan, geometrik formlar ve endüstriyel malzemeleri kullanan akımdır.",
+      category: "akım",
+      examples: "Tatlin, Rodchenko, Malevich"
+    },
+    {
+      term: "De Stijl",
+      definition: "1917'de Hollanda'da ortaya çıkan, geometrik soyutlama ve temel renkleri kullanan sanat akımıdır.",
+      category: "akım",
+      examples: "Mondrian, van Doesburg, Rietveld"
+    },
+    {
+      term: "Bauhaus",
+      definition: "1919-1933 arasında Almanya'da faaliyet gösteren, sanat ve zanaatı birleştiren tasarım okulu ve akımıdır.",
+      category: "akım",
+      examples: "Gropius, Klee, Kandinsky"
+    },
+    {
+      term: "Soyut Sanat",
+      definition: "Gerçek dünya nesnelerini taklit etmeyen, saf form, renk ve çizgiye odaklanan sanat türüdür.",
+      category: "kavram",
+      examples: "Kandinsky, Malevich, Mondrian"
+    },
+    {
+      term: "Figüratif Sanat",
+      definition: "İnsan figürünü ve gerçek dünya nesnelerini betimleyen sanat türüdür.",
+      category: "kavram",
+      examples: "Rembrandt, Velázquez, Degas"
+    },
+    {
+      term: "Manzara",
+      definition: "Doğal çevreyi betimleyen resim türüdür. Sanat tarihinin en popüler türlerinden biridir.",
+      category: "kavram",
+      examples: "Turner'ın deniz manzaraları, Constable'ın kır manzaraları"
+    },
+    {
+      term: "Tarih Resmi",
+      definition: "Tarihi olayları, mitolojik sahneleri veya dini konuları betimleyen resim türüdür.",
+      category: "kavram",
+      examples: "David'in 'Napolyon'un Taç Giyme Töreni', Delacroix'in 'Halka Yol Gösteren Özgürlük'"
+    },
+    {
+      term: "Pastel",
+      definition: "Toz pigmentlerin bağlayıcı ile karıştırılarak kalem haline getirildiği resim tekniğidir.",
+      category: "teknik",
+      examples: "Degas'ın balerinleri, Toulouse-Lautrec'in posterleri"
+    },
+    {
+      term: "Enkaustik",
+      definition: "Balmumu ile karıştırılmış pigmentlerle yapılan antik resim tekniğidir.",
+      category: "teknik",
+      examples: "Fayum portreleri, antik Mısır mumya portreleri"
+    },
+    {
+      term: "Mozaik",
+      definition: "Küçük parçaların (taş, cam, seramik) bir yüzeye yapıştırılmasıyla oluşturulan sanat tekniğidir.",
+      category: "teknik",
+      examples: "Ravenna mozaikleri, Bizans sanatı"
+    },
+    {
+      term: "Vitray",
+      definition: "Renkli cam parçalarının kurşun çerçevelerle birleştirilmesiyle oluşturulan pencere sanatıdır.",
+      category: "teknik",
+      examples: "Chartres Katedrali, Sainte-Chapelle"
+    },
+    {
+      term: "Heykel",
+      definition: "Üç boyutlu sanat eseri. Taş, mermer, bronz gibi malzemelerle yapılır.",
+      category: "kavram",
+      examples: "Michelangelo'nun Davut'u, Rodin'in Düşünen Adam'ı"
+    },
+    {
+      term: "Rölyef",
+      definition: "Bir yüzey üzerine yapılan, hafif çıkıntılı heykel türüdür.",
+      category: "teknik",
+      examples: "Parthenon frizleri, Trajan Sütunu"
+    },
+    {
+      term: "Seramik",
+      definition: "Kil ve diğer inorganik malzemelerin şekillendirilip pişirilmesiyle oluşturulan sanat türüdür.",
+      category: "teknik",
+      examples: "Antik Yunan vazoları, Çin porselenleri"
+    },
+    {
+      term: "Tekstil Sanatı",
+      definition: "Dokuma, örme, nakış gibi tekniklerle oluşturulan sanat türüdür.",
+      category: "teknik",
+      examples: "Goblen dokumaları, İran halıları"
+    },
+    {
+      term: "Fotograf",
+      definition: "Işık kullanarak görüntü oluşturma sanatı ve tekniğidir.",
+      category: "teknik",
+      examples: "Cartier-Bresson, Ansel Adams, Man Ray"
+    },
+    {
+      term: "Video Sanatı",
+      definition: "Video teknolojisini kullanarak oluşturulan çağdaş sanat türüdür.",
+      category: "teknik",
+      examples: "Nam June Paik, Bill Viola, Pipilotti Rist"
+    },
+    {
+      term: "Performans Sanatı",
+      definition: "Sanatçının bedenini kullanarak gerçekleştirdiği geçici sanat türüdür.",
+      category: "kavram",
+      examples: "Marina Abramović, Yves Klein, Joseph Beuys"
+    },
+    {
+      term: "Enstalasyon",
+      definition: "Belirli bir mekanda oluşturulan, izleyiciyi çevreleyen sanat eseri türüdür.",
+      category: "kavram",
+      examples: "Christo'nun sarıp sarmaladığı eserler, Kusama'nın nokta enstalasyonları"
+    },
+    {
+      term: "Kavramsal Sanat",
+      definition: "Fikrin ve kavramın, görsel formdan daha önemli olduğu sanat türüdür.",
+      category: "kavram",
+      examples: "Duchamp'ın hazır nesneleri, Kosuth'un tanım tabloları"
+    },
+    {
+      term: "Land Art",
+      definition: "Doğal çevrede yapılan, araziyi kullanan sanat türüdür.",
+      category: "kavram",
+      examples: "Spiral Jetty (Smithson), Lightning Field (De Maria)"
+    },
+    {
+      term: "Dijital Sanat",
+      definition: "Bilgisayar teknolojisi kullanılarak oluşturulan sanat türüdür.",
+      category: "teknik",
+      examples: "Generative art, NFT sanatı, dijital kolajlar"
+    },
+    {
+      term: "Street Art",
+      definition: "Sokak ve kamusal alanlarda yapılan, genellikle izinsiz sanat türüdür.",
+      category: "kavram",
+      examples: "Banksy, Shepard Fairey, Invader"
+    },
+    {
+      term: "Grafiti",
+      definition: "Duvarlara ve yüzeylere yapılan, aerosol boyalarla oluşturulan sokak sanatıdır.",
+      category: "teknik",
+      examples: "Keith Haring, Jean-Michel Basquiat, Os Gêmeos"
+    },
+    {
+      term: "Kitsch",
+      definition: "Düşük sanatsal değere sahip, popüler ama yüzeysel sanat türüdür.",
+      category: "kavram",
+      examples: "Souvenir eşyaları, ucuz reprodüksiyonlar"
+    },
+    {
+      term: "Avangard",
+      definition: "Geleneksel sanat kurallarını reddeden, yenilikçi ve deneysel sanat akımlarıdır.",
+      category: "kavram",
+      examples: "Dada, Sürrealizm, Fluxus"
+    },
+    {
+      term: "Postmodernizm",
+      definition: "1970'lerden itibaren modernizmin katı kurallarını reddeden sanat yaklaşımıdır.",
+      category: "akım",
+      examples: "Jeff Koons, Cindy Sherman, Barbara Kruger"
+    },
+    {
+      term: "Feminist Sanat",
+      definition: "Kadın deneyimlerini ve feminist konuları ele alan sanat hareketidir.",
+      category: "akım",
+      examples: "Judy Chicago, Guerrilla Girls, Louise Bourgeois"
+    },
+    {
+      term: "Afro-Amerikan Sanat",
+      definition: "Afrika kökenli Amerikalı sanatçıların kültürel kimliklerini yansıtan sanat türüdür.",
+      category: "akım",
+      examples: "Romare Bearden, Faith Ringgold, Jean-Michel Basquiat"
+    },
+    {
+      term: "Latin Amerika Sanatı",
+      definition: "Latin Amerika kültürlerini ve kimliklerini yansıtan sanat türüdür.",
+      category: "akım",
+      examples: "Frida Kahlo, Diego Rivera, Fernando Botero"
+    },
+    {
+      term: "Asya Sanatı",
+      definition: "Asya kıtasının çeşitli kültürlerinden gelen geleneksel ve çağdaş sanat türleridir.",
+      category: "akım",
+      examples: "Ukiyo-e baskıları, Çin kaligrafisi, Japon zen sanatı"
+    },
+    {
+      term: "İslam Sanatı",
+      definition: "İslam kültürü ve dini geleneğinden beslenen sanat türüdür.",
+      category: "akım",
+      examples: "Geometrik desenler, hat sanatı, İznik çinileri"
+    },
+    {
+      term: "Bizans Sanatı",
+      definition: "Bizans İmparatorluğu döneminde gelişen, dini konulara odaklanan sanat türüdür.",
+      category: "dönem",
+      examples: "Ayasofya mozaikleri, ikonlar, el yazmaları"
+    },
+    {
+      term: "Orta Çağ Sanatı",
+      definition: "5-15. yüzyıllar arasında Avrupa'da gelişen, dini temalara odaklanan sanat türüdür.",
+      category: "dönem",
+      examples: "Romanesk ve Gotik mimari, dini resimler, el yazmaları"
+    },
+    {
+      term: "Rokoko",
+      definition: "18. yüzyılda Fransa'da gelişen, süslemeli ve zarif sanat akımıdır.",
+      category: "akım",
+      examples: "Boucher, Fragonard, Watteau"
+    },
+    {
+      term: "Realizm",
+      definition: "19. yüzyılda ortaya çıkan, gerçekliği olduğu gibi betimleyen sanat akımıdır.",
+      category: "akım",
+      examples: "Courbet, Millet, Daumier"
+    },
+    {
+      term: "Sembolizm",
+      definition: "19. yüzyıl sonunda ortaya çıkan, sembol ve alegorileri kullanan sanat akımıdır.",
+      category: "akım",
+      examples: "Moreau, Redon, Böcklin"
+    },
+    {
+      term: "Art Deco",
+      definition: "1920-1930'lar arasında popüler olan, geometrik desenler ve lüks malzemelerle karakterize edilen stil.",
+      category: "akım",
+      examples: "Tamara de Lempicka, Erté, Chrysler Building"
+    },
+    {
+      term: "Sosyal Gerçekçilik",
+      definition: "1930'larda ABD'de gelişen, toplumsal konuları ele alan sanat akımıdır.",
+      category: "akım",
+      examples: "Ben Shahn, Jacob Lawrence, Diego Rivera"
+    },
+    {
+      term: "Soyut Dışavurumculuk",
+      definition: "1940-1950'lerde ABD'de gelişen, spontane ve duygusal soyut sanat akımıdır.",
+      category: "akım",
+      examples: "Jackson Pollock, Willem de Kooning, Mark Rothko"
+    },
+    {
+      term: "Op Art",
+      definition: "1960'larda ortaya çıkan, optik yanılsamalar yaratan geometrik desenlerle karakterize edilen akım.",
+      category: "akım",
+      examples: "Bridget Riley, Victor Vasarely, Josef Albers"
+    },
+    {
+      term: "Happening",
+      definition: "1960'larda ortaya çıkan, spontane ve katılımcı performans sanatı türüdür.",
+      category: "kavram",
+      examples: "Allan Kaprow, Claes Oldenburg, Jim Dine"
+    },
+    {
+      term: "Fluxus",
+      definition: "1960'larda ortaya çıkan, günlük yaşamı sanata dönüştüren deneysel sanat hareketidir.",
+      category: "akım",
+      examples: "George Maciunas, Yoko Ono, Nam June Paik"
+    },
+    {
+      term: "Arte Povera",
+      definition: "1960'larda İtalya'da ortaya çıkan, basit ve doğal malzemeleri kullanan sanat akımıdır.",
+      category: "akım",
+      examples: "Mario Merz, Jannis Kounellis, Alighiero Boetti"
+    },
+    {
+      term: "Yeni Gerçekçilik",
+      definition: "1960'larda Fransa'da ortaya çıkan, günlük nesneleri sanata dönüştüren akım.",
+      category: "akım",
+      examples: "Arman, César, Yves Klein"
+    },
+    {
+      term: "Minimal Sanat",
+      definition: "1960'larda ortaya çıkan, en temel geometrik formları kullanan sanat akımıdır.",
+      category: "akım",
+      examples: "Donald Judd, Dan Flavin, Carl Andre"
+    },
+    {
+      term: "Kavramsal Sanat",
+      definition: "1960'larda ortaya çıkan, fikrin görsel formdan daha önemli olduğu sanat akımıdır.",
+      category: "akım",
+      examples: "Sol LeWitt, Joseph Kosuth, Lawrence Weiner"
+    },
+    {
+      term: "Body Art",
+      definition: "Sanatçının kendi bedenini sanat malzemesi olarak kullandığı performans türüdür.",
+      category: "kavram",
+      examples: "Vito Acconci, Chris Burden, Marina Abramović"
+    },
+    {
+      term: "Video Art",
+      definition: "Video teknolojisini kullanarak oluşturulan çağdaş sanat türüdür.",
+      category: "teknik",
+      examples: "Bill Viola, Nam June Paik, Pipilotti Rist"
+    },
+    {
+      term: "Dijital Sanat",
+      definition: "Bilgisayar teknolojisi kullanılarak oluşturulan sanat türüdür.",
+      category: "teknik",
+      examples: "Generative art, NFT sanatı, dijital kolajlar"
+    },
+    {
+      term: "Bio Art",
+      definition: "Canlı organizmaları ve biyolojik süreçleri kullanan çağdaş sanat türüdür.",
+      category: "teknik",
+      examples: "Eduardo Kac, Oron Catts, SymbioticA"
+    },
+    {
+      term: "Eco Art",
+      definition: "Çevresel konuları ele alan ve sürdürülebilirlik odaklı sanat türüdür.",
+      category: "kavram",
+      examples: "Agnes Denes, Andy Goldsworthy, Christo ve Jeanne-Claude"
+    },
+    {
+      term: "Participatory Art",
+      definition: "İzleyicinin aktif katılımını gerektiren sanat türüdür.",
+      category: "kavram",
+      examples: "Rirkrit Tiravanija, Thomas Hirschhorn, Tino Sehgal"
+    },
+    {
+      term: "Relational Aesthetics",
+      definition: "1990'larda ortaya çıkan, sosyal ilişkileri sanatın merkezine koyan yaklaşım.",
+      category: "kavram",
+      examples: "Nicolas Bourriaud, Rirkrit Tiravanija, Liam Gillick"
+    },
+    {
+      term: "Post-Internet Art",
+      definition: "İnternet kültürünün etkisini yansıtan çağdaş sanat türüdür.",
+      category: "akım",
+      examples: "Artie Vierkant, Katja Novitskova, Jon Rafman"
+    },
+    {
+      term: "NFT Art",
+      definition: "Blockchain teknolojisi ile doğrulanan dijital sanat türüdür.",
+      category: "teknik",
+      examples: "Beeple, Pak, Larva Labs"
+    },
+    {
+      term: "AI Art",
+      definition: "Yapay zeka algoritmaları kullanılarak oluşturulan sanat türüdür.",
+      category: "teknik",
+      examples: "Mario Klingemann, Refik Anadol, DALL-E eserleri"
+    },
+    {
+      term: "Virtual Reality Art",
+      definition: "Sanal gerçeklik teknolojisi kullanılarak oluşturulan sanat türüdür.",
+      category: "teknik",
+      examples: "Marina Abramović VR deneyimleri, VR galerileri"
+    },
+    {
+      term: "Augmented Reality Art",
+      definition: "Artırılmış gerçeklik teknolojisi kullanılarak oluşturulan sanat türüdür.",
+      category: "teknik",
+      examples: "Snapchat filtreleri, AR galerileri, Pokemon Go sanatı"
+    }
+  ];
+
+  let filteredTerms = [...artTerms];
+
+  function renderTerms() {
+    const termsList = document.getElementById('termsList');
+    const noResults = document.getElementById('noResults');
+    const resultCount = document.getElementById('resultCount');
+    
+    resultCount.textContent = filteredTerms.length;
+    
+    if (filteredTerms.length === 0) {
+      termsList.innerHTML = '';
+      noResults.classList.remove('hidden');
+      return;
+    }
+    
+    noResults.classList.add('hidden');
+    
+    termsList.innerHTML = filteredTerms.map(item => `
+      <div class="art-card bg-white rounded-xl shadow-md p-6 border-l-4 border-${getCategoryColor(item.category)}-500">
+        <button onclick="toggleDefinition(this)" class="text-left w-full focus:outline-none">
+          <div class="flex justify-between items-start">
+            <h3 class="text-2xl font-bold text-gray-800 mb-2">${item.term}</h3>
+            <span class="category-tag px-3 py-1 bg-${getCategoryColor(item.category)}-100 text-${getCategoryColor(item.category)}-700 rounded-full text-sm font-medium ml-4">
+              ${getCategoryName(item.category)}
+            </span>
+          </div>
+          <div class="transform transition-transform duration-200" data-chevron>
+            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </div>
+        </button>
+        <div class="mt-4 hidden" data-definition>
+          <p class="text-gray-700 text-lg leading-relaxed mb-3">${item.definition}</p>
+          ${item.examples ? `
+            <div class="bg-gray-50 rounded-lg p-4">
+              <h4 class="font-semibold text-gray-800 mb-2">🎨 Örnekler:</h4>
+              <p class="text-gray-600">${item.examples}</p>
+            </div>
+          ` : ''}
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function getCategoryColor(category) {
+    const colors = {
+      'akım': 'purple',
+      'teknik': 'green',
+      'dönem': 'orange',
+      'kavram': 'blue'
+    };
+    return colors[category] || 'gray';
+  }
+
+  function getCategoryName(category) {
+    const names = {
+      'akım': 'Akım',
+      'teknik': 'Teknik',
+      'dönem': 'Dönem',
+      'kavram': 'Kavram'
+    };
+    return names[category] || category;
+  }
+
+  function toggleDefinition(button) {
+    const definition = button.parentElement.querySelector('[data-definition]');
+    const chevron = button.querySelector('[data-chevron] svg');
+    
+    if (definition.classList.contains('hidden')) {
+      definition.classList.remove('hidden');
+      definition.classList.add('definition-enter');
+      chevron.style.transform = 'rotate(180deg)';
+    } else {
+      definition.classList.add('hidden');
+      definition.classList.remove('definition-enter');
+      chevron.style.transform = 'rotate(0deg)';
+    }
+  }
+
+  function filterTerms() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    const categoryFilter = document.getElementById('categoryFilter').value;
+    
+    filteredTerms = artTerms.filter(item => {
+      const matchesSearch = item.term.toLowerCase().includes(searchTerm) || 
+                           item.definition.toLowerCase().includes(searchTerm);
+      const matchesCategory = !categoryFilter || item.category === categoryFilter;
+      return matchesSearch && matchesCategory;
+    });
+    
+    renderTerms();
+  }
+
+  function filterByCategory() {
+    filterTerms();
+  }
+
+  function quickFilter(category) {
+    document.getElementById('categoryFilter').value = category;
+    document.getElementById('searchInput').value = '';
+    filterTerms();
+    
+    // Update button styles
+    document.querySelectorAll('.category-tag').forEach(btn => {
+      btn.classList.remove('bg-indigo-500', 'text-white');
+      btn.classList.add('bg-indigo-100', 'text-indigo-700');
+    });
+    event.target.classList.remove('bg-indigo-100', 'text-indigo-700');
+    event.target.classList.add('bg-indigo-500', 'text-white');
+  }
+
+  // Initialize the page
+  document.addEventListener('DOMContentLoaded', function() {
+    renderTerms();
+  });
+
+  // Add keyboard shortcuts
+  document.addEventListener('keydown', function(e) {
+    if (e.key === '/' && e.target !== document.getElementById('searchInput')) {
+      e.preventDefault();
+      document.getElementById('searchInput').focus();
+    }
+  });
+</script>
+{% endblock %} 

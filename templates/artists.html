@@ -1,0 +1,33 @@
+{% extends "layout_tailwind.html" %}
+
+{% block title %}Sanatçılar - Art of Museum{% endblock %}
+
+{% block content %}
+    <h1 class="text-3xl font-bold text-rose-800 mb-8 text-center">Sanatçılar - Art of Museum</h1>
+    {% if artists.items %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for artist in artists.items %}
+                <div class="glass-effect rounded-2xl shadow-lg p-6 flex flex-col items-center card-hover border border-white/50">
+                    <img src="{{ url_for('static', filename='uploads/' + artist.image_file) }}" alt="{{ artist.name }}" class="w-32 h-32 rounded-full object-cover mb-4 shadow-md">
+                    <h2 class="text-xl font-bold text-rose-900 mb-2">{{ artist.name }}</h2>
+                    <p class="text-gray-600 mb-2">{{ artist.period }}</p>
+                    <a href="{{ url_for('artist_detail_page', artist_id=artist.id) }}" class="inline-block bg-gradient-to-r from-rose-600 to-rose-700 text-white px-6 py-2 rounded-full font-semibold hover:from-rose-700 hover:to-rose-800 transition-all shadow-md hover:shadow-lg">Profili Gör</a>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="flex justify-center mt-8">
+            {% if artists.has_prev %}
+                <a href="{{ url_for('artists_page', page=artists.prev_num) }}" class="px-4 py-2 rounded-l bg-gray-200 text-gray-700 hover:bg-rose-100">&laquo; Önceki</a>
+            {% endif %}
+            <span class="px-4 py-2 bg-white text-gray-700">{{ artists.page }} / {{ artists.pages }}</span>
+            {% if artists.has_next %}
+                <a href="{{ url_for('artists_page', page=artists.next_num) }}" class="px-4 py-2 rounded-r bg-gray-200 text-gray-700 hover:bg-rose-100">Sonraki &raquo;</a>
+            {% endif %}
+        </div>
+    {% else %}
+        <div class="text-center text-gray-500 mt-16">
+            <i class="fa-solid fa-user-slash text-4xl mb-4"></i>
+            <div class="text-lg">Gösterilecek sanatçı bulunamadı.</div>
+        </div>
+    {% endif %}
+{% endblock %}

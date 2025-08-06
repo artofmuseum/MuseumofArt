@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ post.title }} - Art of Museum PDF</title>
+    <style>
+        body {
+            font-family: 'DejaVu Sans', Arial, serif;
+            color: #2c2c2c;
+            background: #faf7f0;
+            margin: 0;
+            padding: 0 0 32px 0;
+        }
+        .pdf-header {
+            text-align: center;
+            padding: 40px 0 24px 0;
+            border-bottom: 3px solid #d4af37;
+            background: linear-gradient(135deg, #f8f4e6 0%, #faf7f0 100%);
+            position: relative;
+        }
+        .pdf-logo {
+            font-size: 2.3rem;
+            color: #722f37;
+            font-weight: 700;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+        }
+        .pdf-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #2c2c2c;
+            margin-bottom: 10px;
+        }
+        .pdf-meta {
+            color: #888;
+            font-size: 1.05rem;
+            margin-bottom: 18px;
+        }
+        .pdf-cover {
+            width: 100%;
+            max-width: 520px;
+            display: block;
+            margin: 0 auto 28px auto;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(212, 175, 55, 0.08);
+            border: 2px solid #d4af37;
+        }
+        .pdf-toc {
+            background: #f8f4e6;
+            border-left: 5px solid #d4af37;
+            padding: 18px 32px;
+            margin: 32px auto 36px auto;
+            border-radius: 10px;
+            max-width: 700px;
+        }
+        .pdf-toc h3 {
+            font-size: 1.15rem;
+            color: #722f37;
+            margin-bottom: 10px;
+        }
+        .pdf-toc ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .pdf-toc li {
+            margin-bottom: 7px;
+            font-size: 1.05rem;
+        }
+        .pdf-toc a {
+            color: #b08d2c;
+            text-decoration: none;
+        }
+        .pdf-toc a:hover {
+            text-decoration: underline;
+        }
+        .pdf-content {
+            font-size: 1.18rem;
+            line-height: 1.8;
+            color: #2c2c2c;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 32px;
+        }
+        .pdf-content h1, .pdf-content h2, .pdf-content h3, .pdf-content h4 {
+            color: #722f37;
+            margin-top: 2.2rem;
+            margin-bottom: 1rem;
+        }
+        .pdf-content h2 {
+            border-bottom: 2px solid #d4af37;
+            padding-bottom: 0.3rem;
+        }
+        .pdf-content h3 {
+            color: #b08d2c;
+        }
+        .pdf-content p {
+            font-size: 1.08rem;
+            margin-bottom: 1.2rem;
+            text-align: justify;
+            text-indent: 1.5rem;
+        }
+        .pdf-footer {
+            margin-top: 60px;
+            text-align: center;
+            color: #aaa;
+            font-size: 1rem;
+            border-top: 2px solid #d4af37;
+            padding-top: 18px;
+        }
+        .pdf-watermark {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            opacity: 0.08;
+            font-size: 5rem;
+            color: #d4af37;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .pdf-page-number {
+            position: fixed;
+            bottom: 18px;
+            right: 32px;
+            color: #b08d2c;
+            font-size: 1rem;
+        }
+        @page {
+            margin: 40px 0 60px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="pdf-header">
+        <div class="pdf-logo">Art of Museum</div>
+        <img src="{{ url_for('static', filename='uploads/' + post.image_file) }}" class="pdf-cover" alt="Kapak Görseli">
+        <div class="pdf-title">{{ post.title }}</div>
+        <div class="pdf-meta">
+            Yazar: {{ post.author.username }}<br>
+            Yayın Tarihi: {{ post.date_posted.strftime('%d %B %Y') }}
+        </div>
+    </div>
+    {# İçindekiler (TOC) - Otomatik oluşturulamıyorsa, başlıkları post.content içinden çekmek için bir filter veya JS gerekir. Şimdilik örnek statik bırakıyoruz. #}
+    {% if post.toc %}
+    <div class="pdf-toc">
+        <h3>İçindekiler</h3>
+        <ul>
+            {% for item in post.toc %}
+            <li><a href="#">{{ item }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+    <div class="pdf-content">
+        {{ post.content | safe }}
+    </div>
+    <div class="pdf-footer">
+        Art of Museum &copy; {{ year }}<br>
+        www.artofmuseum.com
+    </div>
+    <div class="pdf-watermark">Art of Museum</div>
+</body>
+</html> 

@@ -1,0 +1,957 @@
+{% extends "layout_tailwind.html" %}
+
+{% block title %}
+    {% if post %}{{ post.title }}{% else %}Yazı Bulunamadı{% endif %} - Blog - Art of Museum
+{% endblock %}
+
+{% block content %}
+<!-- Progress Bar at the very top -->
+<div class="fixed top-0 left-0 w-full h-2 bg-gray-200 dark:bg-gray-700 z-50">
+    <div id="progress-bar" class="h-full bg-gradient-to-r from-rose-500 to-amber-500 transition-all duration-300" style="width: 0%"></div>
+</div>
+
+<div class="min-h-screen bg-gradient-to-br from-gray-50 via-rose-50 to-amber-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 pt-2">
+    <div class="max-w-7xl mx-auto px-4 py-8">
+        <!-- Professional Breadcrumb -->
+        <nav class="mb-8" aria-label="Breadcrumb">
+            <ol class="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
+                <li><a href="/" class="hover:text-rose-600 dark:hover:text-rose-400 transition-colors duration-200 font-medium">Ana Sayfa</a></li>
+                <li><i class="fa-solid fa-chevron-right text-xs text-gray-400"></i></li>
+                <li><a href="/blog" class="hover:text-rose-600 dark:hover:text-rose-400 transition-colors duration-200 font-medium">Blog</a></li>
+                <li><i class="fa-solid fa-chevron-right text-xs text-gray-400"></i></li>
+                <li class="text-gray-800 dark:text-white font-semibold truncate">{{ post.title[:40] }}...</li>
+            </ol>
+        </nav>
+
+        <!-- Main Content with Right Sidebar -->
+        <div class="grid grid-cols-1 xl:grid-cols-5 gap-12">
+            <!-- Main Content -->
+            <article class="xl:col-span-4">
+                {% if post %}
+                <div class="professional-card overflow-hidden">
+                    <!-- Hero Image -->
+                    <div class="relative h-96 overflow-hidden">
+                        <img src="{{ url_for('static', filename='uploads/' + post.image_file) }}" 
+                             alt="{{ post.title }}" 
+                             class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+                        <div class="absolute bottom-6 left-6 right-6 text-white">
+                            <div class="flex items-center gap-2 mb-3">
+                                {% if post.category %}
+                                    <span class="bg-rose-600 text-xs px-3 py-1 rounded-full font-medium">{{ post.category.name }}</span>
+                                {% endif %}
+                                <span class="bg-black/30 text-xs px-3 py-1 rounded-full">{{ (post.content|length / 200)|round|int }} dk okuma</span>
+                            </div>
+                            
+                            <!-- Post Type Badge -->
+                            <div class="flex items-center gap-2">
+                                {% if post.post_type == 'makale' %}
+                                    <span class="bg-blue-500/80 backdrop-blur-sm text-white text-xs px-3 py-1 rounded-full">📄 Makale</span>
+                                {% elif post.post_type == 'arastirma' %}
+                                    <span class="bg-green-500/80 backdrop-blur-sm text-white text-xs px-3 py-1 rounded-full">🔬 Araştırma</span>
+                                {% elif post.post_type == 'inceleme' %}
+                                    <span class="bg-purple-500/80 backdrop-blur-sm text-white text-xs px-3 py-1 rounded-full">📖 İnceleme</span>
+                                {% elif post.post_type == 'haber' %}
+                                    <span class="bg-red-500/80 backdrop-blur-sm text-white text-xs px-3 py-1 rounded-full">📰 Haber</span>
+                                {% elif post.post_type == 'roportaj' %}
+                                    <span class="bg-orange-500/80 backdrop-blur-sm text-white text-xs px-3 py-1 rounded-full">🎤 Röportaj</span>
+                                {% elif post.post_type == 'kitap_tanitimi' %}
+                                    <span class="bg-yellow-500/80 backdrop-blur-sm text-white text-xs px-3 py-1 rounded-full">📚 Kitap Tanıtımı</span>
+                                {% elif post.post_type == 'sergi_haberi' %}
+                                    <span class="bg-pink-500/80 backdrop-blur-sm text-white text-xs px-3 py-1 rounded-full">🎨 Sergi Haberi</span>
+                                {% else %}
+                                    <span class="bg-gray-500/80 backdrop-blur-sm text-white text-xs px-3 py-1 rounded-full">📝 Blog</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Article Header -->
+                    <div class="p-8">
+                        <!-- Author Info -->
+                        <div class="flex items-center justify-between mb-8 pb-6 border-b border-gray-200 dark:border-gray-700">
+                            <div class="flex items-center gap-4">
+                                <img src="{{ url_for('static', filename='uploads/' + (post.author.profile_image or 'default_artist.jpg')) }}" 
+                                     alt="{{ post.author.username }}" 
+                                     class="w-14 h-14 rounded-full object-cover border-2 border-gray-200 dark:border-gray-600">
+                                <div>
+                                    <h3 class="font-semibold text-gray-800 dark:text-white text-lg">{{ post.author.username }}</h3>
+                                    <div class="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
+                                        <span class="flex items-center gap-1">
+                                            <i class="fa-solid fa-calendar-days text-xs"></i>
+                                            {{ post.date_posted.strftime('%d %B %Y') }}
+                                        </span>
+                                        <span class="flex items-center gap-1">
+                                            <i class="fa-solid fa-eye text-xs"></i>
+                                            2.4K görüntülenme
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Action Buttons -->
+                            <div class="flex items-center gap-3">
+                                <button id="likeBtn" onclick="toggleLike()" class="btn-secondary text-sm">
+                                    <i class="fa-regular fa-thumbs-up mr-1"></i>
+                                    <span id="likeText">Beğen</span>
+                                </button>
+                                <button id="favoriteBtn" onclick="toggleFavorite()" class="btn-secondary text-sm">
+                                    <i class="fa-regular fa-heart mr-1"></i>
+                                    <span id="favoriteText">Favorile</span>
+                                </button>
+                                <button class="btn-secondary text-sm">
+                                    <i class="fa-solid fa-share mr-1"></i>
+                                    Paylaş
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Title -->
+                        <h1 class="text-5xl font-bold text-gray-800 dark:text-white mb-8 leading-tight">{{ post.title }}</h1>
+
+                        <!-- Article Content -->
+                        <div class="text-lg leading-relaxed text-gray-800 dark:text-gray-200" id="article-content">
+                            <div class="whitespace-pre-wrap">{{ post.content | safe }}</div>
+                        </div>
+
+                        <!-- Additional Images Gallery -->
+                        {% if post.images %}
+                        <div class="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700">
+                            <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-6 flex items-center gap-2">
+                                <i class="fa-solid fa-images text-rose-600"></i>
+                                Galeri
+                            </h3>
+                            <div class="grid grid-cols-2 md:grid-cols-3 gap-6" id="gallery-grid">
+                                {% for img in post.images %}
+                                <div class="gallery-item cursor-pointer group relative overflow-hidden rounded-xl" data-index="{{ loop.index0 }}">
+                                    <img src="{{ url_for('static', filename='uploads/' + img.image_file) }}" 
+                                         alt="Galeri Görseli" 
+                                         class="w-full h-40 object-cover transition-transform group-hover:scale-110 duration-300">
+                                    <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center">
+                                        <i class="fa-solid fa-expand text-white opacity-0 group-hover:opacity-100 transition-opacity text-2xl"></i>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <!-- Social Share -->
+                        <div class="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-4">
+                                    <span class="text-lg font-medium text-gray-600 dark:text-gray-400">Bu makaleyi paylaş:</span>
+                                    <div class="flex items-center gap-4">
+                                        <a href="https://twitter.com/intent/tweet?text={{ post.title }}&url={{ request.url }}" 
+                                           target="_blank" 
+                                           class="social-share-btn bg-blue-500 hover:bg-blue-600">
+                                            <i class="fab fa-twitter text-lg"></i>
+                                        </a>
+                                        <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.url }}" 
+                                           target="_blank" 
+                                           class="social-share-btn bg-blue-600 hover:bg-blue-700">
+                                            <i class="fab fa-facebook text-lg"></i>
+                                        </a>
+                                        <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ request.url }}&title={{ post.title }}" 
+                                           target="_blank" 
+                                           class="social-share-btn bg-blue-700 hover:bg-blue-800">
+                                            <i class="fab fa-linkedin text-lg"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                                
+                                <!-- Article Stats -->
+                                <div class="flex items-center gap-6 text-lg text-gray-500 dark:text-gray-400">
+                                    <span class="flex items-center gap-2">
+                                        <i class="fa-solid fa-heart text-red-500"></i>
+                                        42 beğeni
+                                    </span>
+                                    <span class="flex items-center gap-2">
+                                        <i class="fa-solid fa-comment"></i>
+                                        {{ post.comments.count() }} yorum
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Comments Section -->
+                <div class="professional-card mt-8">
+                    <div class="p-8">
+                        <h2 class="text-3xl font-bold text-gray-800 dark:text-white mb-8 flex items-center gap-3">
+                            <i class="fa-solid fa-comments text-rose-600 dark:text-rose-400"></i>
+                            Yorumlar ({{ post.comments.count() }})
+                        </h2>
+
+                        <!-- Comment Form -->
+                        {% if current_user.is_authenticated %}
+                        <form method="POST" class="mb-8">
+                            {{ form.hidden_tag() }}
+                            <div class="space-y-6">
+                                <div class="relative">
+                                    <textarea name="content" 
+                                              rows="6" 
+                                              placeholder="Düşüncelerinizi profesyonel bir şekilde paylaşın..." 
+                                              class="form-textarea text-lg"></textarea>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-4 text-lg text-gray-500">
+                                        <span class="flex items-center gap-2">
+                                            <i class="fa-solid fa-info-circle"></i>
+                                            Saygılı ve yapıcı yorumlar yazınız
+                                        </span>
+                                    </div>
+                                    <button type="submit" class="btn-primary text-lg px-8 py-4">
+                                        <i class="fa-solid fa-paper-plane mr-2"></i>
+                                        Yorum Gönder
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                        {% else %}
+                        <div class="text-center py-12 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
+                            <i class="fa-solid fa-user-lock text-4xl text-gray-400 mb-6"></i>
+                            <h3 class="text-2xl font-semibold text-gray-800 dark:text-white mb-4">Yorum Yapmak İçin Giriş Yapın</h3>
+                            <p class="text-gray-600 dark:text-gray-400 mb-6 text-lg">Görüşlerinizi paylaşmak için lütfen hesabınıza giriş yapın.</p>
+                            <a href="{{ url_for('login_page') }}" class="btn-primary text-lg px-8 py-4">
+                                <i class="fa-solid fa-sign-in-alt mr-2"></i>
+                                Giriş Yap
+                            </a>
+                        </div>
+                        {% endif %}
+
+                        <!-- Comments List -->
+                        <div class="space-y-8">
+                            {% for comment in top_level_comments %}
+                            <div class="comment-card">
+                                <div class="flex items-start gap-6">
+                                    <img src="{{ url_for('static', filename='uploads/' + (comment.author.profile_image or 'default_artist.jpg')) }}" 
+                                         alt="{{ comment.author.username }}" 
+                                         class="w-12 h-12 rounded-full object-cover border border-gray-200 dark:border-gray-600">
+                                    <div class="flex-1">
+                                        <div class="flex items-center justify-between mb-3">
+                                            <div class="flex items-center gap-3">
+                                                <h4 class="font-semibold text-gray-800 dark:text-white text-lg">{{ comment.author.username }}</h4>
+                                                <span class="text-sm text-gray-500 dark:text-gray-400">
+                                                    {{ comment.date_posted.strftime('%d.%m.%Y %H:%M') }}
+                                                </span>
+                                            </div>
+                                            <button class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                                                <i class="fa-solid fa-ellipsis-h"></i>
+                                            </button>
+                                        </div>
+                                        <p class="text-gray-700 dark:text-gray-300 mb-4 leading-relaxed text-lg">{{ comment.content }}</p>
+                                        
+                                        <!-- Comment Actions -->
+                                        <div class="flex items-center gap-6">
+                                            <button class="comment-action-btn text-gray-500 hover:text-red-500 text-lg">
+                                                <i class="fa-regular fa-heart mr-2"></i>
+                                                <span class="text-lg">{{ comment.likes.count() }}</span>
+                                            </button>
+                                            {% if current_user.is_authenticated %}
+                                            <button class="comment-action-btn text-gray-500 hover:text-blue-500 text-lg">
+                                                <i class="fa-solid fa-reply mr-2"></i>
+                                                <span class="text-lg">Yanıtla</span>
+                                            </button>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="professional-card text-center py-20">
+                    <i class="fa-solid fa-exclamation-triangle text-8xl text-amber-500 mb-8"></i>
+                    <h2 class="text-4xl font-bold text-gray-800 dark:text-white mb-6">Yazı Bulunamadı</h2>
+                    <p class="text-gray-600 dark:text-gray-400 text-xl mb-8">Aradığınız blog yazısı mevcut değil veya kaldırılmış olabilir.</p>
+                    <a href="/blog" class="btn-primary text-xl px-8 py-4">
+                        <i class="fa-solid fa-arrow-left mr-2"></i>
+                        Blog'a Dön
+                    </a>
+                </div>
+                {% endif %}
+            </article>
+
+            <!-- Right Sidebar - Table of Contents -->
+            <aside class="xl:col-span-1">
+                <div class="sticky top-24">
+                    <div class="professional-card">
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-6 flex items-center gap-2">
+                                <i class="fa-solid fa-list text-rose-600"></i>
+                                İçindekiler
+                            </h3>
+                            
+                            <nav class="space-y-3" id="table-of-contents">
+                                <!-- Table of contents will be generated by JavaScript -->
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+</div>
+
+<!-- Professional Lightbox Modal -->
+<div id="lightbox" class="fixed inset-0 bg-black/95 z-50 hidden items-center justify-center backdrop-blur-sm">
+    <div class="relative w-full h-full flex items-center justify-center p-4">
+        <!-- Close Button -->
+        <button id="close-lightbox" class="absolute top-8 right-8 text-white hover:text-red-400 transition-colors z-20 bg-red-600/80 rounded-full w-16 h-16 flex items-center justify-center border-2 border-white/20 backdrop-blur-sm shadow-2xl">
+            <i class="fa-solid fa-times text-2xl"></i>
+        </button>
+        
+        <!-- Navigation Buttons -->
+        <button id="prev-btn" class="absolute left-6 top-1/2 transform -translate-y-1/2 text-white hover:text-amber-400 transition-colors z-10 bg-black/50 rounded-full w-12 h-12 flex items-center justify-center border border-white/20 backdrop-blur-sm">
+            <i class="fa-solid fa-chevron-left text-xl"></i>
+        </button>
+        
+        <button id="next-btn" class="absolute right-6 top-1/2 transform -translate-y-1/2 text-white hover:text-amber-400 transition-colors z-10 bg-black/50 rounded-full w-12 h-12 flex items-center justify-center border border-white/20 backdrop-blur-sm">
+            <i class="fa-solid fa-chevron-right text-xl"></i>
+        </button>
+        
+        <!-- Image Container -->
+        <div class="relative max-w-5xl max-h-[90vh]">
+            <img id="lightbox-image" src="" alt="Gallery Image" class="max-w-full max-h-full object-contain rounded-lg shadow-2xl">
+        </div>
+        
+        <!-- Image Counter -->
+        <div id="image-counter" class="absolute bottom-6 left-1/2 transform -translate-x-1/2 text-white bg-black/50 px-4 py-2 rounded-full border border-white/20 backdrop-blur-sm">
+            <span id="current-index">1</span> / <span id="total-images">1</span>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Professional Card Styles */
+.professional-card {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 20px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.professional-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+}
+
+.dark .professional-card {
+    background: rgba(30, 41, 59, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Button Styles */
+.btn-primary {
+    background: linear-gradient(135deg, rgb(225, 29, 72), rgb(217, 70, 22));
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 12px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, rgb(190, 24, 93), rgb(194, 65, 12));
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(225, 29, 72, 0.3);
+}
+
+.btn-secondary {
+    background: rgba(148, 163, 184, 0.1);
+    color: rgb(71, 85, 105);
+    padding: 0.75rem 1.25rem;
+    border-radius: 10px;
+    font-weight: 500;
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.btn-secondary:hover {
+    background: rgba(148, 163, 184, 0.2);
+    border-color: rgba(148, 163, 184, 0.3);
+    transform: translateY(-1px);
+}
+
+.dark .btn-secondary {
+    background: rgba(148, 163, 184, 0.1);
+    color: rgb(203, 213, 225);
+    border-color: rgba(148, 163, 184, 0.2);
+}
+
+.dark .btn-secondary:hover {
+    background: rgba(148, 163, 184, 0.2);
+}
+
+/* Form Styles */
+.form-input, .form-textarea {
+    width: 100%;
+    padding: 1rem 1.25rem;
+    border: 2px solid rgb(203, 213, 225);
+    border-radius: 12px;
+    background: white;
+    color: rgb(30, 41, 59);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    resize: vertical;
+}
+
+.form-input:focus, .form-textarea:focus {
+    outline: none;
+    border-color: rgb(225, 29, 72);
+    box-shadow: 0 0 0 4px rgba(225, 29, 72, 0.1);
+}
+
+.dark .form-input, .dark .form-textarea {
+    background: rgb(51, 65, 85);
+    border-color: rgb(71, 85, 105);
+    color: rgb(248, 250, 252);
+}
+
+.dark .form-input:focus, .dark .form-textarea:focus {
+    border-color: rgb(225, 29, 72);
+}
+
+/* Social Share Buttons */
+.social-share-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    color: white;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-size: 1.125rem;
+}
+
+.social-share-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Comment Styles */
+.comment-card {
+    padding: 1.5rem;
+    border-radius: 16px;
+    background: rgba(248, 250, 252, 0.6);
+    border: 1px solid rgba(148, 163, 184, 0.1);
+    transition: all 0.3s ease;
+}
+
+.comment-card:hover {
+    background: rgba(248, 250, 252, 0.9);
+    border-color: rgba(148, 163, 184, 0.2);
+    transform: translateY(-2px);
+}
+
+.dark .comment-card {
+    background: rgba(51, 65, 85, 0.6);
+    border-color: rgba(148, 163, 184, 0.1);
+}
+
+.dark .comment-card:hover {
+    background: rgba(51, 65, 85, 0.9);
+    border-color: rgba(148, 163, 184, 0.2);
+}
+
+.comment-action-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    font-size: 1rem;
+}
+
+.comment-action-btn:hover {
+    transform: translateY(-1px);
+}
+
+/* Gallery Styles */
+.gallery-item {
+    transition: all 0.3s ease;
+}
+
+.gallery-item:hover {
+    transform: scale(1.05);
+}
+
+/* Lightbox Styles */
+#lightbox {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+#lightbox img {
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+/* Progress Bar */
+#progress-bar {
+    transition: width 0.3s ease;
+}
+
+/* Table of Contents Styles */
+.toc-item {
+    display: block;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    color: rgb(71, 85, 105);
+    text-decoration: none;
+    font-size: 0.875rem;
+    line-height: 1.4;
+    transition: all 0.3s ease;
+    border-left: 3px solid transparent;
+}
+
+.toc-item:hover {
+    background: rgba(225, 29, 72, 0.1);
+    color: rgb(225, 29, 72);
+    border-left-color: rgb(225, 29, 72);
+    transform: translateX(4px);
+}
+
+.toc-item.active {
+    background: rgba(225, 29, 72, 0.15);
+    color: rgb(225, 29, 72);
+    border-left-color: rgb(225, 29, 72);
+    font-weight: 600;
+}
+
+.dark .toc-item {
+    color: rgb(148, 163, 184);
+}
+
+.dark .toc-item:hover {
+    background: rgba(225, 29, 72, 0.2);
+    color: rgb(251, 146, 60);
+}
+
+.dark .toc-item.active {
+    background: rgba(225, 29, 72, 0.25);
+    color: rgb(251, 146, 60);
+}
+
+.toc-subitem {
+    padding-left: 1.5rem;
+    font-size: 0.8rem;
+    opacity: 0.8;
+}
+
+/* Typography */
+.prose {
+    font-size: 1.125rem;
+    line-height: 1.8;
+}
+
+.prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
+    color: inherit;
+    font-weight: 700;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+}
+
+.prose p {
+    margin-bottom: 1.5rem;
+    font-size: 1.125rem;
+}
+
+.prose img {
+    border-radius: 1rem;
+    margin: 2rem 0;
+}
+
+.prose blockquote {
+    border-left: 4px solid #f59e0b;
+    padding-left: 1.5rem;
+    font-style: italic;
+    color: #6b7280;
+    margin: 2rem 0;
+}
+
+/* Responsive Design */
+@media (max-width: 1280px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .xl\\:col-span-4 {
+        grid-column: span 1;
+    }
+    
+    .xl\\:col-span-1 {
+        grid-column: span 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .prose {
+        font-size: 1rem;
+    }
+    
+    .prose p {
+        font-size: 1rem;
+    }
+    
+    h1 {
+        font-size: 2.5rem !important;
+    }
+}
+</style>
+
+<script>
+// Progress Bar
+window.addEventListener('scroll', function() {
+    const scrollTop = window.pageYOffset;
+    const docHeight = document.body.offsetHeight - window.innerHeight;
+    const scrollPercent = (scrollTop / docHeight) * 100;
+    document.getElementById('progress-bar').style.width = scrollPercent + '%';
+});
+
+// Table of Contents Generation
+document.addEventListener('DOMContentLoaded', function() {
+    const articleContent = document.getElementById('article-content');
+    const tocContainer = document.getElementById('table-of-contents');
+    
+    if (articleContent && tocContainer) {
+        const headings = articleContent.querySelectorAll('h1, h2, h3, h4, h5, h6');
+        const tocItems = [];
+        
+        // If no headings found, create some based on content structure
+        if (headings.length === 0) {
+            // Create a simple table of contents based on the article structure
+            const paragraphs = articleContent.querySelectorAll('p');
+            let sectionCount = 0;
+            
+            // Add main sections based on content
+            tocItems.push({
+                id: 'introduction',
+                text: 'Giriş',
+                level: 2
+            });
+            
+            // Look for paragraphs that might indicate sections
+            paragraphs.forEach((p, index) => {
+                const text = p.textContent.trim();
+                
+                // If paragraph is short and seems like a heading
+                if (text.length < 100 && (text.includes(':') || text.includes('•') || text.includes('-') || text.includes('1.') || text.includes('2.') || text.includes('3.'))) {
+                    sectionCount++;
+                    const id = `section-${sectionCount}`;
+                    p.id = id;
+                    
+                    tocItems.push({
+                        id: id,
+                        text: text,
+                        level: 3
+                    });
+                }
+            });
+            
+            // Add conclusion if we have content
+            if (paragraphs.length > 0) {
+                tocItems.push({
+                    id: 'conclusion',
+                    text: 'Sonuç',
+                    level: 2
+                });
+            }
+            
+            // If still no items, create a simple structure
+            if (tocItems.length === 0) {
+                tocItems.push(
+                    { id: 'content', text: 'Makale İçeriği', level: 2 },
+                    { id: 'details', text: 'Detaylar', level: 3 },
+                    { id: 'summary', text: 'Özet', level: 2 }
+                );
+            }
+        } else {
+            // Use actual headings
+            headings.forEach((heading, index) => {
+                // Add ID to heading if not exists
+                if (!heading.id) {
+                    heading.id = `heading-${index}`;
+                }
+                
+                const level = parseInt(heading.tagName.charAt(1));
+                const text = heading.textContent.trim();
+                
+                tocItems.push({
+                    id: heading.id,
+                    text: text,
+                    level: level
+                });
+            });
+        }
+        
+        // Generate TOC HTML
+        if (tocItems.length > 0) {
+            let tocHTML = '';
+            tocItems.forEach(item => {
+                const indentClass = item.level > 2 ? 'toc-subitem' : '';
+                tocHTML += `
+                    <a href="#${item.id}" class="toc-item ${indentClass}" data-target="${item.id}">
+                        ${item.text}
+                    </a>
+                `;
+            });
+            tocContainer.innerHTML = tocHTML;
+            
+            // Add scroll spy functionality
+            const tocLinks = tocContainer.querySelectorAll('.toc-item');
+            const observerOptions = {
+                rootMargin: '-20% 0px -80% 0px',
+                threshold: 0
+            };
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    const id = entry.target.id;
+                    const tocLink = tocContainer.querySelector(`[data-target="${id}"]`);
+                    
+                    if (entry.isIntersecting) {
+                        // Remove active class from all links
+                        tocLinks.forEach(link => link.classList.remove('active'));
+                        // Add active class to current link
+                        if (tocLink) {
+                            tocLink.classList.add('active');
+                        }
+                    }
+                });
+            }, observerOptions);
+            
+            // Observe all headings and sections
+            const allElements = articleContent.querySelectorAll('h1, h2, h3, h4, h5, h6, p[id]');
+            allElements.forEach(element => {
+                observer.observe(element);
+            });
+            
+            // Smooth scroll for TOC links
+            tocLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = link.getAttribute('data-target');
+                    const targetElement = document.getElementById(targetId);
+                    
+                    if (targetElement) {
+                        const headerOffset = 100;
+                        const elementPosition = targetElement.getBoundingClientRect().top;
+                        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                        
+                        window.scrollTo({
+                            top: offsetPosition,
+                            behavior: 'smooth'
+                        });
+                    } else {
+                        // If target doesn't exist, scroll to top of article
+                        const articleTop = articleContent.offsetTop - 100;
+                        window.scrollTo({
+                            top: articleTop,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        } else {
+            tocContainer.innerHTML = '<p class="text-gray-500 text-sm">Bu makalede başlık bulunamadı.</p>';
+        }
+    }
+});
+
+// Lightbox functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImage = document.getElementById('lightbox-image');
+    const closeBtn = document.getElementById('close-lightbox');
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const currentIndexSpan = document.getElementById('current-index');
+    const totalImagesSpan = document.getElementById('total-images');
+    
+    let currentIndex = 0;
+    let images = [];
+    
+    // Gallery images
+    const galleryItems = document.querySelectorAll('.gallery-item');
+    if (galleryItems.length > 0) {
+        images = Array.from(galleryItems).map(item => {
+            const img = item.querySelector('img');
+            return {
+                src: img.src,
+                alt: img.alt
+            };
+        });
+        
+        totalImagesSpan.textContent = images.length;
+        
+        // Add click event to gallery items
+        galleryItems.forEach((item, index) => {
+            item.addEventListener('click', () => {
+                openLightbox(index);
+            });
+        });
+    }
+    
+    function openLightbox(index) {
+        currentIndex = index;
+        updateLightboxImage();
+        lightbox.classList.remove('hidden');
+        lightbox.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+    }
+    
+    function closeLightbox() {
+        lightbox.classList.add('hidden');
+        lightbox.classList.remove('flex');
+        document.body.style.overflow = 'auto';
+    }
+    
+    function updateLightboxImage() {
+        if (images[currentIndex]) {
+            lightboxImage.src = images[currentIndex].src;
+            lightboxImage.alt = images[currentIndex].alt;
+            currentIndexSpan.textContent = currentIndex + 1;
+        }
+    }
+    
+    function nextImage() {
+        currentIndex = (currentIndex + 1) % images.length;
+        updateLightboxImage();
+    }
+    
+    function prevImage() {
+        currentIndex = (currentIndex - 1 + images.length) % images.length;
+        updateLightboxImage();
+    }
+    
+    // Event listeners
+    closeBtn.addEventListener('click', closeLightbox);
+    prevBtn.addEventListener('click', prevImage);
+    nextBtn.addEventListener('click', nextImage);
+    
+    // Close on background click
+    lightbox.addEventListener('click', (e) => {
+        if (e.target === lightbox) {
+            closeLightbox();
+        }
+    });
+    
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+        if (!lightbox.classList.contains('hidden')) {
+            switch(e.key) {
+                case 'Escape':
+                    closeLightbox();
+                    break;
+                case 'ArrowLeft':
+                    prevImage();
+                    break;
+                case 'ArrowRight':
+                    nextImage();
+                    break;
+            }
+        }
+    });
+});
+
+// Like and Favorite functionality
+let isLiked = false;
+let isFavorited = false;
+
+function toggleLike() {
+    fetch(`/content/blog_post/{{ post.id }}/like`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        isLiked = data.status === 'liked';
+        updateLikeButton();
+        showToast(data.message);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showToast('Bir hata oluştu!');
+    });
+}
+
+function toggleFavorite() {
+    fetch(`/content/blog_post/{{ post.id }}/favorite`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        isFavorited = data.status === 'favorited';
+        updateFavoriteButton();
+        showToast(data.message);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showToast('Bir hata oluştu!');
+    });
+}
+
+function updateLikeButton() {
+    const btn = document.getElementById('likeBtn');
+    const icon = btn.querySelector('i');
+    const text = document.getElementById('likeText');
+    
+    if (isLiked) {
+        icon.className = 'fa-solid fa-thumbs-up mr-1 text-blue-500';
+        text.textContent = 'Beğenildi';
+    } else {
+        icon.className = 'fa-regular fa-thumbs-up mr-1';
+        text.textContent = 'Beğen';
+    }
+}
+
+function updateFavoriteButton() {
+    const btn = document.getElementById('favoriteBtn');
+    const icon = btn.querySelector('i');
+    const text = document.getElementById('favoriteText');
+    
+    if (isFavorited) {
+        icon.className = 'fa-solid fa-heart mr-1 text-red-500';
+        text.textContent = 'Favorilendi';
+    } else {
+        icon.className = 'fa-regular fa-heart mr-1';
+        text.textContent = 'Favorile';
+    }
+}
+
+function showToast(message) {
+    const toast = document.createElement('div');
+    toast.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.remove();
+    }, 3000);
+}
+</script>
+{% endblock %}

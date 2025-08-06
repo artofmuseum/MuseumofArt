@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Art of Museum{% endblock %}</title>
+    <link rel="icon" type="image/png" href="/static/uploads/favicon_new.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class'
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* Alpine.js Transitions */
+        [x-cloak] { display: none !important; }
+        
+        .dropdown-enter-active {
+            transition: all 0.2s ease-out;
+        }
+        .dropdown-leave-active {
+            transition: all 0.15s ease-in;
+        }
+        .dropdown-enter-from,
+        .dropdown-leave-to {
+            opacity: 0;
+            transform: translateY(-0.5rem);
+        }
+
+        /* Modern CSS Variables */
+        :root {
+            --primary: #8B4513;
+            --primary-light: #A0522D;
+            --accent: #DAA520;
+            --accent-light: #F4E4BC;
+            --surface: #FEFDFB;
+            --surface-glass: rgba(254, 253, 251, 0.85);
+            --text-primary: #2C1810;
+            --text-secondary: #6B4423;
+            --border-subtle: rgba(139, 69, 19, 0.1);
+            --shadow-soft: 0 4px 20px rgba(139, 69, 19, 0.08);
+            --shadow-medium: 0 8px 40px rgba(139, 69, 19, 0.12);
+            --transition-base: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
+        
+        /* Modern Header with Glass Morphism */
+        header {
+            background: var(--surface-glass);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-bottom: 1px solid var(--border-subtle);
+            box-shadow: var(--shadow-soft);
+            transform: translateY(-100%);
+            animation: slideDown 0.6s ease-out forwards;
+        }
+
+        @keyframes slideDown {
+            to { transform: translateY(0); }
+        }
+        
+        .dark header {
+            background: rgba(17, 24, 39, 0.85) !important;
+            backdrop-filter: blur(20px) saturate(180%);
+        }
+        
+        /* Static Logo - No Animations */
+        .logo-container {
+            transition: none;
+        }
+        
+        .logo-container:hover {
+            transform: none;
+        }
+        
+        .logo-container img {
+            transition: none;
+        }
+        
+        .logo-container:hover img {
+            transform: none;
+            box-shadow: none;
+        }
+        
+        /* Modern Search with Glass Effect */
+        .search-container {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-subtle);
+            border-radius: 50px;
+            transition: all var(--transition-base);
+            box-shadow: var(--shadow-soft);
+        }
+        
+        .search-container:hover {
+            border-color: var(--accent);
+            box-shadow: var(--shadow-medium);
+            transform: translateY(-1px);
+        }
+        
+        .search-container:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(139, 69, 19, 0.1), var(--shadow-medium);
+            transform: translateY(-2px) scale(1.02);
+        }
+        
+        .search-input:focus {
+            background-color: transparent;
+        }
+        
+        .dark .search-container {
+            background: rgba(31, 41, 55, 0.7);
+        }
+        
+        /* Modern Buttons with Advanced Effects */
+        .modern-button {
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid var(--border-subtle);
+            backdrop-filter: blur(10px);
+            transition: all var(--transition-base);
+            box-shadow: var(--shadow-soft);
+        }
+        
+        .modern-button:hover {
+            background: var(--accent-light);
+            border-color: var(--accent);
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .modern-button-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            border: none;
+            color: white;
+        }
+        
+        .modern-button-primary:hover {
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--accent) 100%);
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: var(--shadow-medium);
+        }
+        
+        /* Enhanced Typography */
+        .brand-name {
+            font-family: 'Playfair Display', serif;
+            color: var(--text-primary);
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            text-shadow: 2px 2px 4px rgba(139, 69, 19, 0.1);
+        }
+        
+        .brand-tagline {
+            color: var(--text-secondary);
+            font-weight: 500;
+            letter-spacing: 0.05em;
+        }
+        
+        /* Smooth Page Transitions */
+        * {
+            transition: color var(--transition-base), background-color var(--transition-base), border-color var(--transition-base);
+        }
+        
+        /* Enhanced Responsiveness */
+        @media (max-width: 1024px) {
+            .gap-3 { gap: 0.75rem; }
+        }
+        
+        @media (max-width: 768px) {
+            header { backdrop-filter: blur(15px); }
+            .px-6 { padding: 0 1rem; }
+            
+            /* Categories menu responsive */
+            .categories-menu {
+                margin-left: 0.5rem;
+            }
+            
+            .categories-menu button {
+                padding: 0.5rem 1rem;
+                font-size: 0.8rem;
+            }
+            
+            .categories-dropdown {
+                min-width: 180px;
+                left: -50px;
+            }
+        }
+        
+        @media (max-width: 640px) {
+            .categories-menu {
+                display: none;
+            }
+        }
+        
+        /* Dark mode enhancements */
+        .dark .modern-button {
+            background: rgba(55, 65, 81, 0.5);
+            border-color: rgba(75, 85, 99, 0.3);
+        }
+        
+        .dark .brand-name {
+            color: #F3F4F6;
+        }
+        
+        .dark .brand-tagline {
+            color: #D1D5DB;
+        }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="bg-gradient-to-br from-gray-50 to-rose-50 min-h-screen w-full dark:bg-gray-900 dark:text-white">
+    <!-- Ultra Modern Art Museum Header -->
+    <header style="
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        background: linear-gradient(135deg, 
+            rgba(255,255,255,0.95) 0%,
+            rgba(254,242,235,0.98) 50%,
+            rgba(253,230,218,0.95) 100%);
+        backdrop-filter: blur(20px) saturate(150%);
+        border-bottom: 1px solid rgba(251,191,36,0.2);
+        box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+    ">
+        <div style="
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.5rem;
+            padding: 0.8rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            height: 100px;
+        ">
+            <!-- Logo Section -->
+            <div style="
+                display: flex;
+                align-items: center;
+                gap: 0rem;
+                cursor: pointer;
+            " onclick="window.location.href='/'">
+                <img src="/static/uploads/logo_new.svg" alt="Art of Museum" style="
+                    width: 150px;
+                    height: 150px;
+                    object-fit: contain;
+                    filter: drop-shadow(0 4px 12px rgba(0,0,0,0.15));
+                    transition: none;
+                                ">
+                <div style="
+                    font-family: 'Georgia', serif;
+                    font-size: 1.6rem;
+                    font-weight: 700;
+                    background: linear-gradient(135deg, #92400e, #dc2626, #7c2d12);
+                    -webkit-background-clip: text;
+                    -webkit-text-fill-color: transparent;
+                    background-clip: text;
+                    letter-spacing: -0.02em;
+                    white-space: nowrap;
+                    margin-left: -2rem;
+                ">
+                    Art of Museum
+                </div>
+            </div>
+
+            <!-- Search Section -->
+            <form method="POST" action="/search" style="
+                display: flex;
+                justify-content: center;
+                width: 100%;
+                max-width: 550px;
+                margin: 0 auto;
+            ">
+                <div style="
+                    position: relative;
+                    width: 100%;
+                ">
+                    <input type="text" name="searched" placeholder="Hangi sanat eserini keşfetmek istiyorsun?" required style="
+                        width: 100%;
+                        padding: 0.6rem 1.2rem 0.6rem 2.8rem;
+                        border: 1px solid rgba(251,191,36,0.4);
+                        border-radius: 50px;
+                        background: rgba(255,255,255,0.95);
+                        font-size: 0.95rem;
+                        transition: all 0.2s ease;
+                        box-shadow: 0 2px 8px rgba(251,191,36,0.1);
+                        outline: none;
+                    " onfocus="
+                        this.style.borderColor='rgba(251,191,36,0.7)';
+                        this.style.boxShadow='0 4px 16px rgba(251,191,36,0.15)';
+                    " onblur="
+                        this.style.borderColor='rgba(251,191,36,0.4)';
+                        this.style.boxShadow='0 2px 8px rgba(251,191,36,0.1)';
+                    ">
+                    <i class="fa-solid fa-search" style="
+                        position: absolute;
+                        left: 1rem;
+                        top: 50%;
+                        transform: translateY(-50%);
+                        color: #f59e0b;
+                        font-size: 1rem;
+                    "></i>
+                </div>
+            </form>
+
+            <!-- Action Buttons -->
+            <div style="
+                display: flex;
+                align-items: center;
+                gap: 0.6rem;
+                white-space: nowrap;
+                margin-right: 1rem;
+            ">
+                <!-- Language Switcher -->
+                <div style="
+                    display: flex;
+                    align-items: center;
+                    gap: 0.3rem;
+                    margin-right: 0.5rem;
+                ">
+                    <a href="{{ url_for('set_language', lang='en') }}" style="
+                        padding: 0.5rem 0.8rem;
+                        border-radius: 20px;
+                        background: {{ 'linear-gradient(135deg, #dc2626, #991b1b)' if current_lang == 'en' else 'rgba(255,255,255,0.9)' }};
+                        color: {{ 'white' if current_lang == 'en' else '#dc2626' }};
+                        border: 2px solid rgba(220,38,38,0.3);
+                        font-weight: 600;
+                        cursor: pointer;
+                        transition: all 0.3s ease;
+                        font-size: 0.8rem;
+                        text-decoration: none;
+                    " onmouseover="
+                        this.style.background='linear-gradient(135deg, #dc2626, #991b1b)';
+                        this.style.color='white';
+                        this.style.transform='translateY(-1px)';
+                    " onmouseout="
+                        this.style.background='{{ 'linear-gradient(135deg, #dc2626, #991b1b)' if current_lang == 'en' else 'rgba(255,255,255,0.9)' }}';
+                        this.style.color='{{ 'white' if current_lang == 'en' else '#dc2626' }}';
+                        this.style.transform='translateY(0)';
+                    ">EN</a>
+                    
+                    <a href="{{ url_for('set_language', lang='tr') }}" style="
+                        padding: 0.5rem 0.8rem;
+                        border-radius: 20px;
+                        background: {{ 'linear-gradient(135deg, #dc2626, #991b1b)' if current_lang == 'tr' else 'rgba(255,255,255,0.9)' }};
+                        color: {{ 'white' if current_lang == 'tr' else '#dc2626' }};
+                        border: 2px solid rgba(220,38,38,0.3);
+                        font-weight: 600;
+                        cursor: pointer;
+                        transition: all 0.3s ease;
+                        font-size: 0.8rem;
+                        text-decoration: none;
+                    " onmouseover="
+                        this.style.background='linear-gradient(135deg, #dc2626, #991b1b)';
+                        this.style.color='white';
+                        this.style.transform='translateY(-1px)';
+                    " onmouseout="
+                        this.style.background='{{ 'linear-gradient(135deg, #dc2626, #991b1b)' if current_lang == 'tr' else 'rgba(255,255,255,0.9)' }}';
+                        this.style.color='{{ 'white' if current_lang == 'tr' else '#dc2626' }}';
+                        this.style.transform='translateY(0)';
+                    ">TR</a>
+                </div>
+                {% if current_user.is_authenticated %}
+                    {% if current_user.role == 'admin' %}
+                        <button onclick="window.location.href='/admin'" style="
+                            padding: 0.7rem 1.5rem;
+                            border-radius: 25px;
+                            background: linear-gradient(135deg, #dc2626, #991b1b);
+                            color: white;
+                            border: none;
+                            font-weight: 600;
+                            cursor: pointer;
+                            transition: all 0.3s ease;
+                            box-shadow: 0 4px 15px rgba(220,38,38,0.3);
+                            font-size: 0.9rem;
+                        " onmouseover="
+                            this.style.transform='translateY(-2px)';
+                            this.style.boxShadow='0 6px 25px rgba(220,38,38,0.4)';
+                        " onmouseout="
+                            this.style.transform='translateY(0)';
+                            this.style.boxShadow='0 4px 15px rgba(220,38,38,0.3)';
+                        ">{{ current_user.username }}</button>
+                        
+                        <button onclick="window.location.href='/profile'" style="
+                            padding: 0.7rem 1.5rem;
+                            border-radius: 25px;
+                            background: linear-gradient(135deg, #0891b2, #0e7490);
+                            color: white;
+                            border: none;
+                            font-weight: 600;
+                            cursor: pointer;
+                            transition: all 0.3s ease;
+                            box-shadow: 0 4px 15px rgba(8,145,178,0.3);
+                            font-size: 0.9rem;
+                        " onmouseover="
+                            this.style.transform='translateY(-2px)';
+                            this.style.boxShadow='0 6px 25px rgba(8,145,178,0.4)';
+                        " onmouseout="
+                            this.style.transform='translateY(0)';
+                            this.style.boxShadow='0 4px 15px rgba(8,145,178,0.3)';
+                        ">Profilim</button>
+                    {% else %}
+                        <button onclick="window.location.href='/profile'" style="
+                            padding: 0.7rem 1.5rem;
+                            border-radius: 25px;
+                            background: linear-gradient(135deg, #dc2626, #991b1b);
+                            color: white;
+                            border: none;
+                            font-weight: 600;
+                            cursor: pointer;
+                            transition: all 0.3s ease;
+                            box-shadow: 0 4px 15px rgba(220,38,38,0.3);
+                            font-size: 0.9rem;
+                        " onmouseover="
+                            this.style.transform='translateY(-2px)';
+                            this.style.boxShadow='0 6px 25px rgba(220,38,38,0.4)';
+                        " onmouseout="
+                            this.style.transform='translateY(0)';
+                            this.style.boxShadow='0 4px 15px rgba(220,38,38,0.3)';
+                        ">{{ current_user.username }}</button>
+                        
+
+                    {% endif %}
+                    
+                    <button onclick="window.location.href='/logout'" style="
+                        padding: 0.7rem 1.5rem;
+                        border-radius: 25px;
+                        background: rgba(255,255,255,0.9);
+                        color: #dc2626;
+                        border: 2px solid rgba(220,38,38,0.3);
+                        font-weight: 600;
+                        cursor: pointer;
+                        transition: all 0.3s ease;
+                        font-size: 0.9rem;
+                    " onmouseover="
+                        this.style.background='#dc2626';
+                        this.style.color='white';
+                        this.style.transform='translateY(-2px)';
+                    " onmouseout="
+                        this.style.background='rgba(255,255,255,0.9)';
+                        this.style.color='#dc2626';
+                        this.style.transform='translateY(0)';
+                    ">Çıkış</button>
+                {% else %}
+                    <button onclick="window.location.href='/login'" style="
+                        padding: 0.7rem 1.5rem;
+                        border-radius: 25px;
+                        background: linear-gradient(135deg, #dc2626, #991b1b);
+                        color: white;
+                        border: none;
+                        font-weight: 600;
+                        cursor: pointer;
+                        transition: all 0.3s ease;
+                        box-shadow: 0 4px 15px rgba(220,38,38,0.3);
+                        font-size: 0.9rem;
+                    " onmouseover="
+                        this.style.transform='translateY(-2px)';
+                        this.style.boxShadow='0 6px 25px rgba(220,38,38,0.4)';
+                    " onmouseout="
+                        this.style.transform='translateY(0)';
+                        this.style.boxShadow='0 4px 15px rgba(220,38,38,0.3)';
+                    ">Giriş Yap</button>
+                    
+                    <button onclick="window.location.href='/login?form=register'" style="
+                        padding: 0.7rem 1.5rem;
+                        border-radius: 25px;
+                        background: rgba(255,255,255,0.9);
+                        color: #dc2626;
+                        border: 2px solid rgba(220,38,38,0.3);
+                        font-weight: 600;
+                        cursor: pointer;
+                        transition: all 0.3s ease;
+                        font-size: 0.9rem;
+                    " onmouseover="
+                        this.style.background='#dc2626';
+                        this.style.color='white';
+                        this.style.transform='translateY(-2px)';
+                    " onmouseout="
+                        this.style.background='rgba(255,255,255,0.9)';
+                        this.style.color='#dc2626';
+                        this.style.transform='translateY(0)';
+                    ">Üye Ol</button>
+                {% endif %}
+                
+                <button onclick="window.location.href='/art-academy'" style="
+                    padding: 0.7rem 1.5rem;
+                    border-radius: 25px;
+                    background: linear-gradient(135deg, #059669, #047857);
+                    color: white;
+                    border: none;
+                    font-weight: 600;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    box-shadow: 0 4px 15px rgba(5,150,105,0.3);
+                    font-size: 0.9rem;
+                " onmouseover="
+                    this.style.transform='translateY(-2px)';
+                    this.style.boxShadow='0 6px 25px rgba(5,150,105,0.4)';
+                " onmouseout="
+                    this.style.transform='translateY(0)';
+                    this.style.boxShadow='0 4px 15px rgba(5,150,105,0.3)';
+                ">Art Akademi</button>
+                
+                <button id="theme-toggle" style="
+                    padding: 0.7rem;
+                    border-radius: 50%;
+                    background: rgba(255,255,255,0.9);
+                    border: 2px solid rgba(251,191,36,0.3);
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    font-size: 1.2rem;
+                    color: #f59e0b;
+                    width: 45px;
+                    height: 45px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                " onmouseover="
+                    this.style.transform='translateY(-2px)';
+                    this.style.background='#f59e0b';
+                    this.style.color='white';
+                " onmouseout="
+                    this.style.transform='translateY(0)';
+                    this.style.background='rgba(255,255,255,0.9)';
+                    this.style.color='#f59e0b';
+                " title="Tema Değiştir">
+                    <i id="theme-icon" class="fa-solid fa-moon"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+    {% if announcement %}
+    <div class="w-full bg-gradient-to-r from-rose-600 to-pink-600 text-white text-sm text-center py-2 select-none">
+        {{ announcement }}
+    </div>
+    {% endif %}
+    <main class="w-full max-w-none mx-auto px-4 py-8 dark:bg-gray-900">
+        {% block content %}{% endblock %}
+    </main>
+
+
+    <!-- Art of Museum Minimalist ve Şık Footer -->
+    <footer class="relative mt-20 overflow-hidden">
+        <!-- Soft gradient arka plan -->
+        <div class="absolute inset-0 bg-gradient-to-br from-gray-50 via-rose-50 to-amber-50 dark:from-gray-800 dark:via-gray-900 dark:to-gray-800"></div>
+        
+        <!-- Dekoratif şekiller (çok hafif) -->
+        <div class="absolute inset-0 opacity-5">
+            <div class="absolute top-10 left-10 w-32 h-32 border-2 border-rose-300 rounded-full"></div>
+            <div class="absolute top-20 right-24 w-24 h-24 border border-amber-300" style="clip-path: polygon(50% 0%, 0% 100%, 100% 100%)"></div>
+            <div class="absolute bottom-20 right-16 w-20 h-20 border border-rose-200 transform rotate-45"></div>
+            <div class="absolute bottom-32 left-32 w-28 h-28 border border-amber-200" style="border-radius: 0 100% 0 100%"></div>
+        </div>
+        
+        <!-- Hafif doku efekti -->
+        <div class="absolute inset-0 bg-gradient-to-t from-white/20 via-transparent to-white/10 dark:from-gray-900/20 dark:to-gray-800/10"></div>
+        
+        <!-- Ana içerik -->
+        <div class="relative z-10 max-w-screen-xl mx-auto px-6 py-16">
+            <!-- Üst kısım -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8 mb-12">
+                <!-- Logo ve açıklama -->
+                <div class="lg:col-span-3">
+                    <div class="flex items-center gap-4 mb-6">
+                        <img src="/static/uploads/logo_new.svg" alt="Art of Museum Logo" class="h-24 w-auto rounded-full shadow-lg" />
+                        <div>
+                            <h3 class="text-3xl font-serif text-gray-800 dark:text-white tracking-wide">Art of Museum</h3>
+                            <p class="text-rose-600 dark:text-rose-400 text-sm font-light italic">Ars longa, vita brevis</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 dark:text-gray-300 text-lg leading-relaxed mb-6 max-w-md font-light">
+                        Sanatın büyülü dünyasında zamanda yolculuk edin. Antik Yunan'dan Rönesans'a, Barok'tan Modern sanatın zirvesine kadar binlerce yıllık sanat mirasını keşfedin.
+                    </p>
+                    
+                    <!-- Tarihi quote -->
+                    <div class="bg-white/60 dark:bg-gray-700/60 backdrop-blur-sm rounded-lg p-4 mb-6 border-l-4 border-rose-400">
+                        <p class="text-gray-700 dark:text-gray-300 italic text-sm mb-2">
+                            "Sanat, doğanın gördüklerini tekrarlamak değil, doğanın görmediğini görünür kılmaktır."
+                        </p>
+                        <p class="text-rose-600 dark:text-rose-400 text-xs font-semibold">— Paul Klee</p>
+                    </div>
+                    
+                    <!-- Sosyal medya -->
+                    <div class="flex gap-4">
+                        <a href="#" class="w-12 h-12 bg-white/70 dark:bg-gray-700/70 rounded-full flex items-center justify-center hover:bg-rose-100 dark:hover:bg-gray-600 transition-all duration-300 hover:scale-110 shadow-md">
+                            <i class="fa-brands fa-twitter text-gray-600 dark:text-gray-300 text-lg"></i>
+                        </a>
+                        <a href="#" class="w-12 h-12 bg-white/70 dark:bg-gray-700/70 rounded-full flex items-center justify-center hover:bg-amber-100 dark:hover:bg-gray-600 transition-all duration-300 hover:scale-110 shadow-md">
+                            <i class="fa-brands fa-instagram text-gray-600 dark:text-gray-300 text-lg"></i>
+                        </a>
+                        <a href="#" class="w-12 h-12 bg-white/70 dark:bg-gray-700/70 rounded-full flex items-center justify-center hover:bg-rose-100 dark:hover:bg-gray-600 transition-all duration-300 hover:scale-110 shadow-md">
+                            <i class="fa-brands fa-facebook text-gray-600 dark:text-gray-300 text-lg"></i>
+                        </a>
+                        <a href="#" class="w-12 h-12 bg-white/70 dark:bg-gray-700/70 rounded-full flex items-center justify-center hover:bg-amber-100 dark:hover:bg-gray-600 transition-all duration-300 hover:scale-110 shadow-md">
+                            <i class="fa-brands fa-youtube text-gray-600 dark:text-gray-300 text-lg"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Sanat Dönemleri -->
+                <div>
+                    <h4 class="text-rose-700 dark:text-rose-400 font-serif font-bold text-lg mb-6 flex items-center gap-2 whitespace-nowrap">
+                        <i class="fa-solid fa-landmark-dome text-amber-600 dark:text-amber-400"></i>
+                        Sanat Dönemleri
+                    </h4>
+                    <ul class="space-y-4">
+                        <li><a href="/periods/ancient" class="text-gray-600 dark:text-gray-300 hover:text-rose-600 dark:hover:text-rose-400 transition-colors duration-300 flex items-center gap-2 hover:translate-x-1 transform font-light">
+                            <i class="fa-solid fa-columns text-sm"></i> Antik Dönem
+                        </a></li>
+                        <li><a href="/periods/renaissance" class="text-gray-600 dark:text-gray-300 hover:text-amber-600 dark:hover:text-amber-400 transition-colors duration-300 flex items-center gap-2 hover:translate-x-1 transform font-light">
+                            <i class="fa-solid fa-crown text-sm"></i> Rönesans
+                        </a></li>
+                        <li><a href="/periods/baroque" class="text-gray-600 dark:text-gray-300 hover:text-rose-600 dark:hover:text-rose-400 transition-colors duration-300 flex items-center gap-2 hover:translate-x-1 transform font-light">
+                            <i class="fa-solid fa-gem text-sm"></i> Barok
+                        </a></li>
+                        <li><a href="/periods/impressionism" class="text-gray-600 dark:text-gray-300 hover:text-amber-600 dark:hover:text-amber-400 transition-colors duration-300 flex items-center gap-2 hover:translate-x-1 transform font-light">
+                            <i class="fa-solid fa-sun text-sm"></i> İzlenimcilik
+                        </a></li>
+                        <li><a href="/periods/modern" class="text-gray-600 dark:text-gray-300 hover:text-rose-600 dark:hover:text-rose-400 transition-colors duration-300 flex items-center gap-2 hover:translate-x-1 transform font-light">
+                            <i class="fa-solid fa-lightbulb text-sm"></i> Modern Sanat
+                        </a></li>
+                    </ul>
+                </div>
+                
+                <!-- Büyük Ustalar -->
+                <div>
+                    <h4 class="text-rose-700 dark:text-rose-400 font-serif font-bold text-lg mb-6 flex items-center gap-2 whitespace-nowrap">
+                        <i class="fa-solid fa-user-tie text-amber-600 dark:text-amber-400"></i>
+                        Büyük Ustalar
+                    </h4>
+                    <ul class="space-y-4">
+                        <li><a href="/artists/leonardo" class="text-gray-600 dark:text-gray-300 hover:text-rose-600 dark:hover:text-rose-400 transition-colors duration-300 flex items-center gap-2 hover:translate-x-1 transform font-light">
+                            <i class="fa-solid fa-paintbrush text-sm"></i> Leonardo da Vinci
+                        </a></li>
+                        <li><a href="/artists/michelangelo" class="text-gray-600 dark:text-gray-300 hover:text-amber-600 dark:hover:text-amber-400 transition-colors duration-300 flex items-center gap-2 hover:translate-x-1 transform font-light">
+                            <i class="fa-solid fa-hammer text-sm"></i> Michelangelo
+                        </a></li>
+                        <li><a href="/artists/van-gogh" class="text-gray-600 dark:text-gray-300 hover:text-rose-600 dark:hover:text-rose-400 transition-colors duration-300 flex items-center gap-2 hover:translate-x-1 transform font-light">
+                            <i class="fa-solid fa-star text-sm"></i> Van Gogh
+                        </a></li>
+                        <li><a href="/artists/picasso" class="text-gray-600 dark:text-gray-300 hover:text-amber-600 dark:hover:text-amber-400 transition-colors duration-300 flex items-center gap-2 hover:translate-x-1 transform font-light">
+                            <i class="fa-solid fa-shapes text-sm"></i> Picasso
+                        </a></li>
+                        <li><a href="/artists/monet" class="text-gray-600 dark:text-gray-300 hover:text-rose-600 dark:hover:text-rose-400 transition-colors duration-300 flex items-center gap-2 hover:translate-x-1 transform font-light">
+                            <i class="fa-solid fa-water text-sm"></i> Monet
+                        </a></li>
+                    </ul>
+                </div>
+                
+                <!-- Müze Hizmetleri -->
+                <div>
+                    <h4 class="text-rose-700 dark:text-rose-400 font-serif font-bold text-lg mb-6 flex items-center gap-2 whitespace-nowrap">
+                        <i class="fa-solid fa-building-columns text-amber-600 dark:text-amber-400"></i>
+                        Müze Hizmetleri
+                    </h4>
+                    <ul class="space-y-4">
+                        <li><a href="/visit" class="text-gray-600 dark:text-gray-300 hover:text-rose-600 dark:hover:text-rose-400 transition-colors duration-300 flex items-center gap-2 hover:translate-x-1 transform font-light">
+                            <i class="fa-solid fa-ticket text-sm"></i> Ziyaret Planlayın
+                        </a></li>
+                        <li><a href="/exhibitions" class="text-gray-600 dark:text-gray-300 hover:text-amber-600 dark:hover:text-amber-400 transition-colors duration-300 flex items-center gap-2 hover:translate-x-1 transform font-light">
+                            <i class="fa-solid fa-image text-sm"></i> Güncel Sergiler
+                        </a></li>
+                        <li><a href="/events" class="text-gray-600 dark:text-gray-300 hover:text-rose-600 dark:hover:text-rose-400 transition-colors duration-300 flex items-center gap-2 hover:translate-x-1 transform font-light">
+                            <i class="fa-solid fa-calendar text-sm"></i> Etkinlik Takvimi
+                        </a></li>
+                        <li><a href="/library" class="text-gray-600 dark:text-gray-300 hover:text-amber-600 dark:hover:text-amber-400 transition-colors duration-300 flex items-center gap-2 hover:translate-x-1 transform font-light">
+                            <i class="fa-solid fa-book text-sm"></i> Sanat Kütüphanesi
+                        </a></li>
+                        <li><a href="/virtual-tours" class="text-gray-600 dark:text-gray-300 hover:text-rose-600 dark:hover:text-rose-400 transition-colors duration-300 flex items-center gap-2 hover:translate-x-1 transform font-light">
+                            <i class="fa-solid fa-vr-cardboard text-sm"></i> Sanal Turlar
+                        </a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Newsletter -->
+            <div class="bg-white/70 dark:bg-gray-700/70 backdrop-blur-sm rounded-2xl p-8 mb-12 border border-rose-200 dark:border-gray-600 relative overflow-hidden shadow-lg">
+                <div class="flex flex-col md:flex-row items-center gap-6 relative z-10">
+                    <div class="flex-1">
+                        <h4 class="text-rose-700 dark:text-rose-400 font-serif font-bold text-2xl mb-3 flex items-center gap-3">
+                            <i class="fa-solid fa-palette text-amber-600 dark:text-amber-400"></i>
+                            Sanat Tarihçisi Bülteni
+                        </h4>
+                        <p class="text-gray-700 dark:text-gray-300 text-lg font-light leading-relaxed">
+                            Sanat tarihinin derinliklerinden haftalık keşifler, uzman analizleri ve unutulmuş hikayeleri doğrudan e-postanızda.
+                        </p>
+                        <div class="flex items-center gap-2 mt-3">
+                            <span class="text-rose-600 dark:text-rose-400 text-sm italic">✨ Her hafta yeni bir sanat harikası keşfedin</span>
+                            <span class="text-amber-600 dark:text-amber-400 text-xs px-2 py-1 bg-amber-50 dark:bg-amber-900/20 rounded-full font-medium">Ücretsiz</span>
+                        </div>
+                    </div>
+                    <div class="flex gap-3 w-full md:w-auto">
+                        <input type="email" placeholder="Sanat severlerimize katılın..." 
+                               class="flex-1 md:w-80 px-6 py-4 rounded-lg bg-white/80 dark:bg-gray-600/80 border border-rose-200 dark:border-gray-500 text-gray-700 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-rose-400 focus:border-transparent transition-all font-light"/>
+                        <button class="px-8 py-4 bg-gradient-to-r from-rose-600 to-rose-700 text-white font-semibold rounded-lg transition-all duration-300 hover:scale-105 shadow-lg whitespace-nowrap">
+                            Katıl
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Alt kısım -->
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6 pt-8 border-t border-rose-200 dark:border-gray-600">
+                <div class="flex flex-col md:flex-row items-center gap-4 text-gray-600 dark:text-gray-300 font-light">
+                    <p class="flex items-center gap-2">
+                        <i class="fa-solid fa-copyright text-rose-500"></i>
+                        2024 Art of Museum. 
+                        <span class="italic">Ars gratia artis</span>
+                    </p>
+                    <div class="flex gap-6 text-sm">
+                        <a href="/gizlilik_politikasi" class="hover:text-rose-600 dark:hover:text-rose-400 transition-colors border-b border-transparent hover:border-rose-400">Gizlilik Politikası</a>
+                        <a href="/kullanici_sozlesmesi" class="hover:text-amber-600 dark:hover:text-amber-400 transition-colors border-b border-transparent hover:border-amber-400">Kullanım Şartları</a>
+                        <a href="/iletisim" class="hover:text-rose-600 dark:hover:text-rose-400 transition-colors border-b border-transparent hover:border-rose-400">İletişim</a>
+                    </div>
+                </div>
+                
+                <!-- Mobil uygulama butonları -->
+                <div class="flex gap-3">
+                    <a href="#" class="flex items-center gap-3 bg-white/70 dark:bg-gray-700/70 backdrop-blur-sm px-4 py-3 rounded-lg border border-rose-200 dark:border-gray-600 hover:bg-rose-50 dark:hover:bg-gray-600 transition-all duration-300 text-gray-700 dark:text-gray-300 text-sm shadow-md">
+                        <i class="fa-brands fa-apple text-xl text-rose-500"></i>
+                        <div class="text-left">
+                            <div class="text-xs text-rose-600 dark:text-rose-400 font-light">Sanat Kütüphanesi</div>
+                            <div class="font-serif font-semibold">iOS</div>
+                        </div>
+                    </a>
+                    <a href="#" class="flex items-center gap-3 bg-white/70 dark:bg-gray-700/70 backdrop-blur-sm px-4 py-3 rounded-lg border border-amber-200 dark:border-gray-600 hover:bg-amber-50 dark:hover:bg-gray-600 transition-all duration-300 text-gray-700 dark:text-gray-300 text-sm shadow-md">
+                        <i class="fa-brands fa-google-play text-xl text-amber-500"></i>
+                        <div class="text-left">
+                            <div class="text-xs text-rose-600 dark:text-rose-400 font-light">Sanat Kütüphanesi</div>
+                            <div class="font-serif font-semibold">Android</div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Yukarı çık butonu -->
+        <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" 
+                class="fixed bottom-8 right-8 w-16 h-16 bg-gradient-to-r from-rose-600 to-rose-700 text-white rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-110 z-50">
+            <i class="fa-solid fa-arrow-up text-lg font-bold"></i>
+        </button>
+    </footer>
+    {% block extra_scripts %}{% endblock %}
+    <script>
+    // Sayfa yüklenmeden önce temayı uygula (FOUC'u önlemek için)
+    (function() {
+        const savedTheme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        
+        if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+            document.documentElement.classList.add('dark');
+        }
+    })();
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        const themeBtn = document.getElementById('theme-toggle');
+        if (!themeBtn) return;
+        const body = document.documentElement;
+        const moonIcon = themeBtn.querySelector('i');
+        
+        // Sayfa yüklendiğinde localStorage'dan temayı oku ve uygula
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            body.classList.add('dark');
+            if (moonIcon) {
+                moonIcon.classList.remove('fa-moon');
+                moonIcon.classList.add('fa-sun');
+            }
+        }
+        
+        themeBtn.addEventListener('click', () => {
+            body.classList.toggle('dark');
+            const isDark = body.classList.contains('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            
+            if (moonIcon) {
+                if (isDark) {
+                    moonIcon.classList.remove('fa-moon');
+                    moonIcon.classList.add('fa-sun');
+                } else {
+                    moonIcon.classList.remove('fa-sun');
+                    moonIcon.classList.add('fa-moon');
+                }
+            }
+        });
+    });
+    </script>
+</body>
+</html> 

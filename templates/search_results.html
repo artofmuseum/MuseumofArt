@@ -1,0 +1,56 @@
+{% extends "layout.html" %}
+
+{% block title %}"{{ searched }}" için Arama Sonuçları{% endblock %}
+
+{% block content %}
+    <h1>"{{ searched }}" için Arama Sonuçları</h1>
+    <hr>
+
+    {# --- Sanatçı Sonuçları --- #}
+    <div class="search-results-section">
+        <h2>Bulunan Sanatçılar ({{ artists|length }})</h2>
+        {% if artists %}
+            <ul style="list-style-type: none; padding: 0;">
+                {% for artist in artists %}
+                    <li class="artist-list-item">
+                        {% set image_url = url_for('static', filename='uploads/' + artist.image_file) %}
+                        <img src="{{ image_url }}" alt="{{ artist.name }}" class="artist-image-list">
+                        <div class="artist-info">
+                            <a href="{{ url_for('artist_detail_page', artist_id=artist.id) }}" style="text-decoration: none; color: #333;">
+                                <h3>{{ artist.name }}</h3>
+                            </a> 
+                            <p style="margin: 0;">{{ artist.period }}</p>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>Bu arama terimiyle eşleşen sanatçı bulunamadı.</p>
+        {% endif %}
+    </div>
+
+    <hr>
+
+    {# --- Blog Yazısı Sonuçları --- #}
+    <div class="search-results-section">
+        <h2>Bulunan Blog Yazıları ({{ posts|length }})</h2>
+        {% if posts %}
+            {% for post in posts %}
+                <article>
+                    <h3>
+                        <a href="{{ url_for('blog_post_detail_page', post_id=post.id) }}">
+                           {{ post.title }}
+                        </a>
+                    </h3>
+                    <p><small>Yazar: {{ post.author }} | Tarih: {{ post.date_posted.strftime('%Y-%m-%d') }}</small></p>
+                    <p>{{ post.summary }}</p>
+                    <a href="{{ url_for('blog_post_detail_page', post_id=post.id) }}">Devamını Oku...</a>
+                    <hr style="margin-top: 20px;">
+                </article>
+            {% endfor %}
+        {% else %}
+            <p>Bu arama terimiyle eşleşen blog yazısı bulunamadı.</p>
+        {% endif %}
+    </div>
+
+{% endblock %}

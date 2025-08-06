@@ -1,0 +1,18 @@
+    {% extends "layout.html" %}
+
+    {% block title %}Akım Silme Onayı - Art of Museum{% endblock %}
+
+    {% block content %}
+        <div class="form-container">
+            <h2>Silme Onayı</h2>
+            <p><strong>"{{ movement_to_delete.name }}"</strong> adlı sanat akımını kalıcı olarak silmek istediğinizden emin misiniz?</p>
+            <p class="text-danger"><strong>Uyarı:</strong> Bu akıma bağlı olan tüm sanatçıların "akım" bilgisi de sıfırlanacaktır. Bu işlem geri alınamaz.</p>
+            
+            <form method="POST" action="{{ url_for('delete_movement_page', movement_id=movement_to_delete.id) }}" style="display: inline;">
+                <input type="submit" value="Evet, Sil" class="btn btn-danger">
+            </form>
+
+            <a href="{{ url_for('movement_detail_page', movement_id=movement_to_delete.id) }}" class="btn btn-secondary" style="display: inline; margin-left: 10px;">Vazgeç</a>
+        </div>
+    {% endblock %}
+    

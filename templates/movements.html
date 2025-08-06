@@ -1,0 +1,25 @@
+{% extends "layout_tailwind.html" %}
+
+{% block title %}Sanat Akımları - Art of Museum{% endblock %}
+
+{% block content %}
+    <h1 class="text-3xl font-bold text-rose-800 mb-8 text-center">Sanat Akımları - Art of Museum</h1>
+    {% if movements %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for movement in movements %}
+                <div class="glass-effect rounded-2xl shadow-lg p-6 flex flex-col items-center card-hover border border-white/50">
+                    <img src="{{ url_for('static', filename='uploads/' + movement.image_file) }}" alt="{{ movement.name }}" class="w-32 h-32 rounded-xl object-cover mb-4 shadow-md">
+                    <h2 class="text-xl font-bold text-rose-900 mb-2">{{ movement.name }}</h2>
+                    <p class="text-gray-600 mb-2">{{ movement.period }}</p>
+                    <a href="{{ url_for('movement_detail_page', movement_id=movement.id) }}" class="inline-block bg-gradient-to-r from-rose-600 to-rose-700 text-white px-6 py-2 rounded-full font-semibold hover:from-rose-700 hover:to-rose-800 transition-all shadow-md hover:shadow-lg">Detay</a>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="text-center text-gray-500 mt-16">
+            <i class="fa-solid fa-layer-group text-4xl mb-4"></i>
+            <div class="text-lg">Gösterilecek sanat akımı bulunamadı.</div>
+        </div>
+    {% endif %}
+{% endblock %}
+    

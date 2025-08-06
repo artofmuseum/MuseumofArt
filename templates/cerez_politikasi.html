@@ -1,0 +1,310 @@
+{% extends "layout.html" %}
+
+{% block title %}Çerez Politikası - Art of Museum{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-gradient-primary text-white text-center py-4">
+                    <h1 class="mb-0">
+                        <i class="fas fa-cookie-bite me-3"></i>
+                        Çerez Politikası
+                    </h1>
+                    <p class="mb-0 mt-2 opacity-75">Son Güncelleme: 30 Haziran 2025</p>
+                </div>
+                
+                <div class="card-body p-5">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Önemli:</strong> Bu çerez politikası, platformumuzda kullanılan çerezlerin türlerini, amaçlarını ve yönetimini açıklar.
+                    </div>
+
+                    <h2 class="text-primary mb-4">1. Çerez Nedir?</h2>
+                    <p>Çerezler (cookies), web sitelerinin tarayıcınızda sakladığı küçük metin dosyalarıdır. Bu dosyalar:</p>
+                    <ul>
+                        <li>Kullanıcı tercihlerini hatırlar</li>
+                        <li>Site performansını iyileştirir</li>
+                        <li>Kişiselleştirilmiş deneyim sağlar</li>
+                        <li>Güvenlik önlemlerini destekler</li>
+                        <li>Analitik veriler toplar</li>
+                    </ul>
+
+                    <h2 class="text-primary mb-4 mt-5">2. Çerez Türleri</h2>
+                    <p>Platformumuzda aşağıdaki çerez türleri kullanılmaktadır:</p>
+
+                    <h3 class="text-secondary mb-3">2.1 Zorunlu Çerezler (Essential Cookies)</h3>
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead class="table-primary">
+                                <tr>
+                                    <th>Çerez Adı</th>
+                                    <th>Amaç</th>
+                                    <th>Süre</th>
+                                    <th>Zorunlu</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>session_id</code></td>
+                                    <td>Kullanıcı oturumunu koruma</td>
+                                    <td>Oturum süresi</td>
+                                    <td><span class="badge bg-success">Evet</span></td>
+                                </tr>
+                                <tr>
+                                    <td><code>csrf_token</code></td>
+                                    <td>Güvenlik doğrulaması</td>
+                                    <td>Oturum süresi</td>
+                                    <td><span class="badge bg-success">Evet</span></td>
+                                </tr>
+                                <tr>
+                                    <td><code>language</code></td>
+                                    <td>Dil tercihi</td>
+                                    <td>1 yıl</td>
+                                    <td><span class="badge bg-success">Evet</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h3 class="text-secondary mb-3">2.2 Analitik Çerezler (Analytics Cookies)</h3>
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead class="table-info">
+                                <tr>
+                                    <th>Çerez Adı</th>
+                                    <th>Amaç</th>
+                                    <th>Süre</th>
+                                    <th>Zorunlu</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>_ga</code></td>
+                                    <td>Google Analytics - Kullanıcı ayırt etme</td>
+                                    <td>2 yıl</td>
+                                    <td><span class="badge bg-warning">Hayır</span></td>
+                                </tr>
+                                <tr>
+                                    <td><code>_gid</code></td>
+                                    <td>Google Analytics - Günlük kullanım</td>
+                                    <td>24 saat</td>
+                                    <td><span class="badge bg-warning">Hayır</span></td>
+                                </tr>
+                                <tr>
+                                    <td><code>_gat</code></td>
+                                    <td>Google Analytics - İstek hızı sınırlama</td>
+                                    <td>1 dakika</td>
+                                    <td><span class="badge bg-warning">Hayır</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h3 class="text-secondary mb-3">2.3 Tercih Çerezleri (Preference Cookies)</h3>
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead class="table-warning">
+                                <tr>
+                                    <th>Çerez Adı</th>
+                                    <th>Amaç</th>
+                                    <th>Süre</th>
+                                    <th>Zorunlu</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>theme</code></td>
+                                    <td>Görünüm teması tercihi</td>
+                                    <td>1 yıl</td>
+                                    <td><span class="badge bg-warning">Hayır</span></td>
+                                </tr>
+                                <tr>
+                                    <td><code>font_size</code></td>
+                                    <td>Yazı boyutu tercihi</td>
+                                    <td>1 yıl</td>
+                                    <td><span class="badge bg-warning">Hayır</span></td>
+                                </tr>
+                                <tr>
+                                    <td><code>notifications</code></td>
+                                    <td>Bildirim tercihleri</td>
+                                    <td>1 yıl</td>
+                                    <td><span class="badge bg-warning">Hayır</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h3 class="text-secondary mb-3">2.4 Üçüncü Taraf Çerezler (Third-Party Cookies)</h3>
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead class="table-danger">
+                                <tr>
+                                    <th>Çerez Adı</th>
+                                    <th>Amaç</th>
+                                    <th>Süre</th>
+                                    <th>Zorunlu</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>google_oauth</code></td>
+                                    <td>Google giriş hizmeti</td>
+                                    <td>Oturum süresi</td>
+                                    <td><span class="badge bg-warning">Hayır</span></td>
+                                </tr>
+                                <tr>
+                                    <td><code>social_share</code></td>
+                                    <td>Sosyal medya paylaşım</td>
+                                    <td>1 ay</td>
+                                    <td><span class="badge bg-warning">Hayır</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h2 class="text-primary mb-4 mt-5">3. Çerez Amaçları</h2>
+                    <p>Platformumuzda kullanılan çerezler aşağıdaki amaçlara hizmet eder:</p>
+
+                    <h3 class="text-secondary mb-3">3.1 Temel İşlevsellik</h3>
+                    <ul>
+                        <li><strong>Oturum Yönetimi:</strong> Giriş yapma durumunu koruma</li>
+                        <li><strong>Güvenlik:</strong> CSRF koruması ve güvenlik doğrulaması</li>
+                        <li><strong>Tercihler:</strong> Kullanıcı tercihlerini hatırlama</li>
+                    </ul>
+
+                    <h3 class="text-secondary mb-3">3.2 Performans ve Analitik</h3>
+                    <ul>
+                        <li><strong>Site Analizi:</strong> Kullanım istatistikleri</li>
+                        <li><strong>Performans:</strong> Sayfa yükleme hızı optimizasyonu</li>
+                        <li><strong>Hata Takibi:</strong> Teknik sorunların tespiti</li>
+                    </ul>
+
+                    <h3 class="text-secondary mb-3">3.3 Kişiselleştirme</h3>
+                    <ul>
+                        <li><strong>Görünüm:</strong> Tema ve renk tercihleri</li>
+                        <li><strong>İçerik:</strong> Kişiselleştirilmiş öneriler</li>
+                        <li><strong>Dil:</strong> Dil ve bölge tercihleri</li>
+                    </ul>
+
+                    <h2 class="text-primary mb-4 mt-5">4. Çerez Yönetimi</h2>
+                    <p>Çerezlerinizi aşağıdaki yöntemlerle yönetebilirsiniz:</p>
+
+                    <h3 class="text-secondary mb-3">4.1 Tarayıcı Ayarları</h3>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4 class="text-info">Chrome</h4>
+                            <ol>
+                                <li>Ayarlar > Gizlilik ve Güvenlik</li>
+                                <li>Çerezler ve diğer site verileri</li>
+                                <li>Çerez ayarlarını yönet</li>
+                            </ol>
+                        </div>
+                        <div class="col-md-6">
+                            <h4 class="text-info">Firefox</h4>
+                            <ol>
+                                <li>Ayarlar > Gizlilik ve Güvenlik</li>
+                                <li>Çerezler ve site verileri</li>
+                                <li>Çerez ayarlarını yönet</li>
+                            </ol>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <h4 class="text-info">Safari</h4>
+                            <ol>
+                                <li>Tercihler > Gizlilik</li>
+                                <li>Çerezler ve web sitesi verileri</li>
+                                <li>Çerez ayarlarını yönet</li>
+                            </ol>
+                        </div>
+                        <div class="col-md-6">
+                            <h4 class="text-info">Edge</h4>
+                            <ol>
+                                <li>Ayarlar > Çerezler ve site izinleri</li>
+                                <li>Çerezler ve depolanan veriler</li>
+                                <li>Çerez ayarlarını yönet</li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <h3 class="text-secondary mb-3">4.2 Platform Ayarları</h3>
+                    <p>Platformumuzda çerez tercihlerinizi aşağıdaki şekilde yönetebilirsiniz:</p>
+                    <ul>
+                        <li><strong>Çerez Banner:</strong> İlk ziyarette çerez tercihlerini belirleme</li>
+                        <li><strong>Ayarlar Sayfası:</strong> Hesap ayarlarından çerez tercihlerini değiştirme</li>
+                        <li><strong>Çerez Yöneticisi:</strong> Aktif çerezleri görüntüleme ve silme</li>
+                    </ul>
+
+                    <h2 class="text-primary mb-4 mt-5">5. Çerez Onayı</h2>
+                    <p>Çerez kullanımı ile ilgili onay süreci:</p>
+                    <ul>
+                        <li><strong>İlk Ziyaret:</strong> Çerez banner'ı ile bilgilendirme</li>
+                        <li><strong>Onay Seçenekleri:</strong> Tüm çerezler, sadece gerekli çerezler, reddetme</li>
+                        <li><strong>Değişiklik:</strong> İstediğiniz zaman tercihleri değiştirme</li>
+                        <li><strong>Hatırlatma:</strong> 6 ayda bir çerez tercihlerini hatırlatma</li>
+                    </ul>
+
+                    <h2 class="text-primary mb-4 mt-5">6. Çerez Güvenliği</h2>
+                    <p>Çerezlerinizin güvenliği için alınan önlemler:</p>
+                    <ul>
+                        <li><strong>HTTPS:</strong> Tüm çerezler güvenli bağlantı üzerinden</li>
+                        <li><strong>Şifreleme:</strong> Hassas veriler şifrelenmiş çerezlerde</li>
+                        <li><strong>HttpOnly:</strong> JavaScript erişimi olmayan çerezler</li>
+                        <li><strong>Secure Flag:</strong> Sadece güvenli bağlantılarda gönderilen çerezler</li>
+                        <li><strong>SameSite:</strong> CSRF saldırılarına karşı koruma</li>
+                    </ul>
+
+                    <h2 class="text-primary mb-4 mt-5">7. Üçüncü Taraf Çerezler</h2>
+                    <p>Platformumuzda kullanılan üçüncü taraf hizmetler:</p>
+
+                    <h3 class="text-secondary mb-3">7.1 Google Analytics</h3>
+                    <ul>
+                        <li><strong>Amaç:</strong> Site kullanım analizi</li>
+                        <li><strong>Veri:</strong> Anonim kullanım istatistikleri</li>
+                        <li><strong>Gizlilik:</strong> IP adresi anonimleştirilir</li>
+                        <li><strong>Devre Dışı Bırakma:</strong> <a href="https://tools.google.com/dlpage/gaoptout" target="_blank">Google Analytics Opt-out</a></li>
+                    </ul>
+
+                    <h3 class="text-secondary mb-3">7.2 Google OAuth</h3>
+                    <ul>
+                        <li><strong>Amaç:</strong> Sosyal giriş hizmeti</li>
+                        <li><strong>Veri:</strong> Temel profil bilgileri</li>
+                        <li><strong>Gizlilik:</strong> Google gizlilik politikasına tabi</li>
+                    </ul>
+
+                    <h2 class="text-primary mb-4 mt-5">8. Çerez Politikası Değişiklikleri</h2>
+                    <p>Bu çerez politikası gerektiğinde güncellenebilir. Değişiklikler:</p>
+                    <ul>
+                        <li>Platform üzerinden duyurulur</li>
+                        <li>30 gün önceden bildirilir</li>
+                        <li>Yeni çerez türleri için ayrı onay istenir</li>
+                        <li>Önemli değişiklikler e-posta ile bildirilir</li>
+                    </ul>
+
+                    <h2 class="text-primary mb-4 mt-5">9. İletişim</h2>
+                    <p>Çerez politikası ile ilgili sorularınız için:</p>
+                    <ul>
+                        <li><strong>E-posta:</strong> cookies@artofmuseum.com</li>
+                        <li><strong>Adres:</strong> [Platform Adresi]</li>
+                        <li><strong>Telefon:</strong> [İletişim Numarası]</li>
+                    </ul>
+
+                    <div class="alert alert-warning mt-5">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>Uyarı:</strong> Zorunlu çerezleri devre dışı bırakırsanız, platformun temel işlevleri çalışmayabilir.
+                    </div>
+
+                    <div class="text-center mt-5">
+                        <a href="/" class="btn btn-primary btn-lg">
+                            <i class="fas fa-home me-2"></i>
+                            Ana Sayfaya Dön
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
